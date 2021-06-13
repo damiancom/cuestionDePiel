@@ -17,9 +17,14 @@
 
         <q-btn-group spread flat>
           <q-btn
+            label="Alta Paciente"
+            icon="r_person_add_alt"
+            to="/alta-paciente"
+          />
+          <q-btn
             label="Pacientes"
             icon="r_contacts"
-            to="/Pacientes"
+            to="/pacientes"
           />
           <q-btn
             label="Agenda"

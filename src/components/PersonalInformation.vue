@@ -1,72 +1,77 @@
 <template>
-  <q-card class="bg-amber-2 col-3" square bordered flat>
-    <q-img
-      :src="patient.foto"
-      spinner-color="white"
-      style="height: 140px; max-width: 150px"
-    />
+  <q-card bordered flat>
+    <q-card-section class="full-width row justify-center content-center">
+      <q-img class="imagenContenedorHijo" :src="patient.fotoPerfil" spinner-color="white" @click="upload"/>
+    </q-card-section>
 
     <q-card-section>
       <div class="text-h6">{{ patient.apellido }}, {{ patient.nombre }}</div>
       <div class="text-subtitle2">{{ edad(patient.fechaNacimiento) }} años</div>
     </q-card-section>
 
-    <q-card-section class="q-pt-none">
-      <q-input filled dense bottom-slots v-model="patient.nombre" label="Apellido, Nombre" :disable="!editarInformacionContacto">
+    <q-card-section>
+      <q-input filled dense bottom-slots v-model="patient.nombre" label="Nombre" v-show="editarInformacionContacto">
         <template v-slot:before>
-          <q-icon name="flight_takeoff"></q-icon>
+          <q-icon name="r_person"/>
         </template>
       </q-input>
-      <q-input  dense v-model="patient.fechaNacimiento" bottom-slots filled type="date" label="Fecha de Nacimiento" :disable="!editarInformacionContacto">
+      <q-input filled dense bottom-slots v-model="patient.apellido" label="Apellido" v-show="editarInformacionContacto">
         <template v-slot:before>
-          <q-icon name="r_event"></q-icon>
+          <q-icon name="r_person"/>
         </template>
       </q-input>
-      <q-input filled dense bottom-slots v-model="patient.domicilio" label="Domicilio" :disable="!editarInformacionContacto">
+      <q-input filled dense bottom-slots v-model="patient.fechaNacimiento" type="date" label="Fecha de Nacimiento"
+               :readonly="!editarInformacionContacto">
         <template v-slot:before>
-          <q-icon name="r_home"></q-icon>
+          <q-icon name="r_event"/>
         </template>
       </q-input>
-      <q-input filled dense bottom-slots v-model="patient.localidad" label="Localidad" :disable="!editarInformacionContacto">
+      <q-input filled dense bottom-slots v-model="patient.domicilio" label="Domicilio" :readonly="!editarInformacionContacto">
+        <template v-slot:before>
+          <q-icon name="r_home"/>
+        </template>
+      </q-input>
+      <q-input filled dense bottom-slots v-model="patient.localidad" label="Localidad" :readonly="!editarInformacionContacto">
         <template v-slot:before>
           <q-icon name="r_place"></q-icon>
         </template>
       </q-input>
-      <q-input filled dense bottom-slots v-model="patient.telefono" label="Telefono" :disable="!editarInformacionContacto">
+      <q-input filled dense bottom-slots v-model="patient.telefono" label="Telefono" :readonly="!editarInformacionContacto">
         <template v-slot:before>
           <q-icon name="r_local_phone"></q-icon>
         </template>
       </q-input>
-      <q-input filled dense bottom-slots v-model="patient.celular" label="Celular" :disable="!editarInformacionContacto">
+      <q-input filled dense bottom-slots v-model="patient.celular" label="Celular" :readonly="!editarInformacionContacto">
         <template v-slot:before>
           <q-icon name="r_phone_iphone"></q-icon>
         </template>
       </q-input>
-      <q-input filled dense bottom-slots v-model="patient.mail" label="E-Mail" :disable="!editarInformacionContacto">
+      <q-input filled dense bottom-slots v-model="patient.mail" label="E-Mail" :readonly="!editarInformacionContacto">
         <template v-slot:before>
           <q-icon name="r_mail"></q-icon>
         </template>
       </q-input>
-      <q-input filled dense bottom-slots v-model="patient.ocupacion" label="Ocupacion" :disable="!editarInformacionContacto">
-        <template v-slot:before>
-          <q-icon name="r_work"></q-icon>
-        </template>
-      </q-input>
     </q-card-section>
-    <q-card-actions class="full-width">
-      <q-btn
-        rounded
-        outline
-        label="Editar información"
-        @click="editarInformacionContacto=!editarInformacionContacto"
-      />
+    <q-card-actions class="full-width row justify-center content-center">
+      <q-btn v-show="!editarInformacionContacto" rounded outline label="Editar información" icon="r_edit"
+             @click="editarInformacionContacto=!editarInformacionContacto"/>
+      <q-btn-group v-show="editarInformacionContacto" rounded>
+        <q-btn rounded outline color="secondary" label="Confirmar" icon="r_check"
+               @click="confirmarDatosPaciente(); editarInformacionContacto=!editarInformacionContacto"/>
+        <q-btn rounded outline color="negative" label="Cancelar" icon="r_clear"
+               @click="cargarDatosPaciente(); editarInformacionContacto=!editarInformacionContacto"/>
+      </q-btn-group>
     </q-card-actions>
   </q-card>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api'
-import { calcularEdad, formatearFecha } from 'src/js/utils'
+import { calcularEdad } from 'src/js/utils'
+import { datosPersonales } from './models'
+import axios, { AxiosResponse } from 'axios'
+import { URL_PACIENTES } from 'src/js/constants'
+import { Loading, Notify } from 'quasar'
 
 export default defineComponent({
   name: 'PersonalInformation',
@@ -84,31 +89,52 @@ export default defineComponent({
       nombre: '',
       fechaNacimiento: '',
       localidad: '',
-      domicilio: ''
+      domicilio: '',
+      patient: <datosPersonales>{}
     }
   },
-  computed: {
-    patient: function () {
-      return {
-        id: parseInt(this.id),
-        foto: 'https://placeimg.com/500/300/nature',
-        nombre: 'Damián',
-        apellido: 'Comba',
-        fechaNacimiento: new Date(1986, 5, 10),
-        localidad: 'Lobos',
-        domicilio: 'Buenos Aires 1041',
-        ocupacion: 'Desarrollador',
-        telefono: '(011) 3975-8071',
-        celular: '(0221) 317-5110',
-        mail: 'damiancom@gmail.com'
-      }
-    }
+  created () {
+    this.cargarDatosPaciente()
   },
   methods: {
-    formatearFecha (fechaNac : Date) : string {
-      return formatearFecha(fechaNac)
+    upload () {
+      console.log('hola')
     },
-    edad (fechaNac : Date) : number {
+    cargarDatosPaciente () {
+      Loading.show()
+      axios
+        .get(`${URL_PACIENTES}/${this.id}`, {
+          headers: { 'Content-Type': 'application/json' }
+        })
+        .then((response: AxiosResponse<datosPersonales>) => {
+          this.patient = response.data
+          Loading.hide()
+        })
+        .catch(error => {
+          console.error('Ocurrio un error al intentar recuperar los pacientes... ', error)
+          Loading.hide()
+        })
+    },
+    confirmarDatosPaciente () {
+      Loading.show()
+      axios
+        .patch(`${URL_PACIENTES}/${this.id}`, this.patient, {
+          headers: { 'Content-Type': 'application/json' }
+        })
+        .then((response: AxiosResponse<datosPersonales>) => {
+          this.patient = response.data
+          Loading.hide()
+          Notify.create({
+            type: 'positive',
+            message: 'Se han actualizado los datos del paciente correctamente.'
+          })
+        })
+        .catch(error => {
+          console.error('Ocurrio un error al intentar recuperar los pacientes... ', error)
+          Loading.hide()
+        })
+    },
+    edad (fechaNac: Date): number {
       return calcularEdad(fechaNac)
     }
   }
@@ -116,5 +142,17 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
+.imagenContenedorPadre {
+  /*IMPORTANTE*/
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.imagenContenedorHijo {
+  height: 140px;
+  max-width: 150px
+}
 
 </style>

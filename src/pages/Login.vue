@@ -25,7 +25,6 @@
 
       <q-btn class="log-btn" color="amber" @click="login" glossy label="Ingresar"/>
     </div>
-    <!--<Loading v-if="isLoging" marginTop="-30%"></Loading>-->
   </div>
 </template>
 

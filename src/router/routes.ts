@@ -1,47 +1,55 @@
 import { RouteConfig } from 'vue-router'
+import MainLayout from 'layouts/MainLayout.vue'
+import Index from 'pages/Index.vue'
+import Pacientes from 'pages/Pacientes.vue'
+import Paciente from 'components/Paciente.vue'
+import Login from 'pages/Login.vue'
+import ApoyoDomiciliario from 'components/ApoyoDomiciliario.vue'
+import ObservacionDiagnostico from 'components/ObservacionDiagnostico.vue'
+import AltaPaciente from 'components/AltaPaciente.vue'
 
 const routes: RouteConfig[] = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    component: MainLayout,
     children: [
-      { path: '', component: () => import('pages/Index.vue') },
-      { path: 'Pacientes', component: () => import('pages/Pacientes.vue') }
+      {
+        name: 'index',
+        path: '',
+        component: Index
+      },
+      {
+        name: '/alta-paciente',
+        path: 'alta-paciente',
+        component: AltaPaciente
+      },
+      {
+        name: '/pacientes',
+        path: 'pacientes',
+        component: Pacientes
+      },
+      {
+        name: '/login',
+        path: 'login',
+        component: Login
+      },
+      {
+        name: 'paciente',
+        path: '/paciente/:idPaciente',
+        component: Paciente
+      },
+      {
+        name: 'apoyoDomiciliario',
+        path: '/apoyoDomiciliario',
+        component: ApoyoDomiciliario
+      },
+      {
+        name: 'observacionDiagnostico',
+        path: '/observacion-diagnostico',
+        component: ObservacionDiagnostico
+      }
     ]
   },
-  {
-    path: '/Login',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      { path: '', component: () => import('pages/Login.vue') }
-    ]
-  },
-  {
-    name: 'Paciente',
-    path: '/Paciente/:idPaciente',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      { path: '', component: () => import('src/components/Paciente.vue') }
-    ]
-  },
-  {
-    name: 'AnamnesisSocial',
-    path: '/Paciente/:idPaciente/AnamnesisSocial',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      { path: '', component: () => import('src/components/AnamnesisSocial.vue') }
-    ]
-  },
-  {
-    name: 'ObservacionDiagnostivo',
-    path: '/Paciente/:idPaciente/ObservacionDiagnostico',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      { path: '', component: () => import('src/components/ObservacionDiagnostico.vue') }
-    ]
-  },
-  // Always leave this as last one,
-  // but you can also remove it
   {
     path: '*',
     component: () => import('pages/Error404.vue')

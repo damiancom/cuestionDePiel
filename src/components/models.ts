@@ -1,13 +1,6 @@
-export interface Todo {
-  id: number;
-  content: string;
-}
-
-export interface Meta {
-  totalCount: number;
-}
-
 export interface datosPersonales {
+  id?: string,
+  fotoPerfil: string,
   nombre: string,
   apellido: string,
   fechaNacimiento: Date,
@@ -17,7 +10,8 @@ export interface datosPersonales {
   telefono: string,
   mail: string,
   genero: string,
-  estadoCivil: string
+  estadoCivil: string,
+  escolaridad: string
 }
 
 export interface datosAdicionales {
@@ -25,31 +19,39 @@ export interface datosAdicionales {
   motivoConsulta: string
 }
 
-export interface antecedentesMedicos {
+export interface antecedenteMedico {
+  id?: number,
   intervencionesQuirurgicas: string,
   enfermedades: string,
   alergias: string,
   medicamentos: string,
   habitos: string,
-  antedecentesEnfermedadesCutaneas: string,
+  antecedentesEnfermedadesCutaneas: string,
   antecedentesFamiliares: string
 }
 
-export interface anamnesisSocial {
-  ocupacionLaboral: string,
-  aficiones: string,
-  exposicionRiesgos: string
+export interface apoyoDomiciliario {
+  id?: number,
+  motivoConsulta: string,
+  rutinaDia: string,
+  rutinaNoche: string,
+  rutinaSemanal: string
 }
 
 export interface observacionDiagnostico {
+  id: number,
   biotipoCutaneo: string,
   fototipo: string,
-  edadCronologica: string,
-  edadAparente: string,
-  observaciones: string,
+  sesiones: sesion[]
+}
+
+export interface sesion {
+  id?: number,
+  observacion: string,
   tratamiento: string,
   frecuenciaSesiones: string,
-  apoyoDomiciliario: string
+  apoyoDomiciliario: string,
+  fecha: Date
 }
 
 export interface piel {
@@ -59,18 +61,18 @@ export interface piel {
   distribucionLesiones: string
 }
 
-export interface lesion {
+export interface lesionCutanea {
   inicio: string,
   lugarInicio: string,
   sintomas: string,
   evolucion: string,
   cambios: string,
-  factoresIncrementanSintomas: string,
-  tratamientoPosteriores: string
+  factoresIncrementanRiesgo: string,
+  tratamientosPosteriores: string
 }
 
 export interface observacionLesiones {
   aspectoFisico: string,
   piel: piel,
-  lesion: lesion
+  lesionCutanea: lesionCutanea
 }

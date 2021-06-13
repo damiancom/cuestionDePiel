@@ -1,95 +1,122 @@
 <template>
-  <q-form
-    @submit="onSubmit"
-    @reset="onReset"
-    class="q-gutter-md"
-  >
+  <div>
     <div class="row">
-      <q-input
-        filled
-        v-model="intervencionesQuirurgicas"
-        label="Intervenciones Quirúrgicas"
-        lazy-rules
-        :rules="intervencionesQuirurgicasRules"
-        :counter="maxLengthIntervencionesQuirurgicas"
-        class="col-6"
-      />
+      <q-input filled v-model="intervencionesQuirurgicas" label="Intervenciones Quirúrgicas" class="col-6"/>
       <q-separator/>
-      <q-input
-        filled
-        v-model="enfermedades"
-        label="Enfermedades"
-        lazy-rules
-        :rules="enfermedadesRules"
-        :counter="maxLengthEnfermedades"
-        class="col-6"
-      />
+      <q-input filled v-model="enfermedades" label="Enfermedades" class="col-6"/>
     </div>
     <div class="row">
-      <q-input
-        filled
-        v-model="alergias"
-        label="Alergias"
-        lazy-rules
-        :rules="alergiasRules"
-        :counter="maxLengthAlergias"
-        class="col-6"
-      />
+      <q-input filled v-model="alergias" label="Alergias" class="col-6"/>
       <q-separator/>
-      <q-input
-        filled
-        v-model="medicamentos"
-        label="Medicamentos"
-        lazy-rules
-        :rules="medicamentosRules"
-        :counter="maxLengthMedicamentos"
-        class="col-6"
-      />
+      <q-input filled v-model="medicamentos" label="Medicamentos" class="col-6"/>
     </div>
-    <q-input
-      filled
-      v-model="habitos"
-      label="Hábitos"
-      lazy-rules
-      :rules="habitosRules"
-      :counter="maxLengthHabitos"
-      class="col-6"
-    />
-    <q-input
-      filled
-      v-model="antecedentesEnfCutaneas"
-      label="Antecedentes de Enfermedades Cutáneas"
-      lazy-rules
-      :rules="antecedentesEnfCutaneasRules"
-      :counter="maxLengthAntecedentesEnfCutaneas"
-      class="col-6"
-    />
-    <q-input
-      filled
-      v-model="antecedentesFam"
-      label="Antecedentes Familiares"
-      lazy-rules
-      :rules="antecedentesFamRules"
-      :counter="maxLengthAntecedentesFam"
-      class="col-6"
-    />
-  </q-form>
+    <q-input filled v-model="habitos" label="Hábitos" class="col-6"/>
+    <q-input filled v-model="antecedentesEnfermedadesCutaneas" label="Antecedentes de Enfermedades Cutáneas" class="col-6"/>
+    <q-input filled v-model="antecedentesFamiliares" label="Antecedentes Familiares" class="col-6"/>
+    <q-btn-group class="vertical-bottom" rounded>
+      <q-btn rounded outline color="secondary" label="Actualizar Antecedentes Médicos" icon="r_check" @click="actualizarAntecedentesMedicos()"/>
+    </q-btn-group>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api'
+import axios, { AxiosResponse } from 'axios'
+import { URI_ANTECEDENTES_MEDICOS, URL_PACIENTES } from 'src/js/constants'
+import { antecedenteMedico } from 'components/models'
+import { Loading, Notify } from 'quasar'
 
 export default defineComponent({
   name: 'AntecedentesMedicos',
+  props: {
+    idCliente: {
+      type: Number,
+      default: 0
+    }
+  },
   data () {
     return {
-      maxLengthIntervencionesQuirurgicas: 0,
-      maxLengthAntecedentesEnfCutaneas: 0,
-      maxLengthAntecedentesFam: 0,
-      maxLengthHabitos: 0,
-      maxLengthMedicamentos: 0,
-      maxLengthAlergias: 0,
-      maxLengthEnfermedades: 0
+      intervencionesQuirurgicas: '',
+      enfermedades: '',
+      alergias: '',
+      medicamentos: '',
+      habitos: '',
+      antecedentesEnfermedadesCutaneas: '',
+      antecedentesFamiliares: '',
+      antecedenteMedico: <antecedenteMedico>{}
+    }
+  },
+  created () {
+    this.cargarAntecedentesMedicos()
+  },
+  methods: {
+    cargarAntecedentesMedicos () {
+      Loading.show()
+      axios
+        .get(`${URL_PACIENTES}/${this.idCliente}/${URI_ANTECEDENTES_MEDICOS}`, {
+          headers: { 'Content-Type': 'application/json' }
+        })
+        .then((response: AxiosResponse<antecedenteMedico>) => {
+          this.antecedenteMedico = response.data
+          this.setearDatosApoyoDomiciliarioEnInputs()
+          Loading.hide()
+        })
+        .catch(error => {
+          console.error('Ocurrio un error al intentar recuperar el antecedente médico del paciente... ', error)
+          Loading.hide()
+        })
+    },
+    actualizarAntecedentesMedicos () {
+      if (this.validarCambios()) {
+        Loading.show()
+        this.actualizarDatosApoyoDomiciliario()
+        axios
+          .patch(`${URL_PACIENTES}/${this.idCliente}/${URI_ANTECEDENTES_MEDICOS}`, this.antecedenteMedico, {
+            headers: { 'Content-Type': 'application/json' }
+          })
+          .then((response: AxiosResponse<antecedenteMedico>) => {
+            this.antecedenteMedico = response.data
+            this.setearDatosApoyoDomiciliarioEnInputs()
+            Loading.hide()
+            Notify.create({
+              type: 'positive',
+              message: 'Se han actualizado los antecedentes médicos correctamente.'
+            })
+          })
+          .catch(error => {
+            console.error('Ocurrio un error al intentar actualizar el antecedente médico del paciente... ', error)
+            Loading.hide()
+          })
+      }
+    },
+    setearDatosApoyoDomiciliarioEnInputs () {
+      this.antecedentesFamiliares = this.antecedenteMedico.antecedentesFamiliares
+      this.enfermedades = this.antecedenteMedico.enfermedades
+      this.medicamentos = this.antecedenteMedico.medicamentos
+      this.habitos = this.antecedenteMedico.habitos
+      this.intervencionesQuirurgicas = this.antecedenteMedico.intervencionesQuirurgicas
+      this.alergias = this.antecedenteMedico.alergias
+      this.antecedentesEnfermedadesCutaneas = this.antecedenteMedico.antecedentesEnfermedadesCutaneas
+    },
+    actualizarDatosApoyoDomiciliario () {
+      this.antecedenteMedico = {
+        antecedentesFamiliares: this.antecedentesFamiliares,
+        enfermedades: this.enfermedades,
+        medicamentos: this.medicamentos,
+        habitos: this.habitos,
+        intervencionesQuirurgicas: this.intervencionesQuirurgicas,
+        alergias: this.alergias,
+        antecedentesEnfermedadesCutaneas: this.antecedentesEnfermedadesCutaneas
+      }
+    },
+    validarCambios (): boolean {
+      return !(this.antecedentesFamiliares === this.antecedenteMedico.antecedentesFamiliares &&
+        this.enfermedades === this.antecedenteMedico.enfermedades &&
+        this.medicamentos === this.antecedenteMedico.medicamentos &&
+        this.habitos === this.antecedenteMedico.habitos &&
+        this.intervencionesQuirurgicas === this.antecedenteMedico.intervencionesQuirurgicas &&
+        this.alergias === this.antecedenteMedico.alergias &&
+        this.antecedentesEnfermedadesCutaneas === this.antecedenteMedico.antecedentesEnfermedadesCutaneas)
     }
   }
 })

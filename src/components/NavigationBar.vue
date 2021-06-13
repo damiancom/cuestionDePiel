@@ -8,7 +8,7 @@
       <v-list-item two-line>
 
         <v-list-item-avatar>
-          <img src="https://randomuser.me/api/portraits/women/2.jpg">
+          <img src="https://randomuser.me/api/portraits/women/2.jpg" alt="">
         </v-list-item-avatar>
 
         <v-list-item-content>

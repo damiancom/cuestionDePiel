@@ -9,7 +9,7 @@
       align="justify"
     >
       <q-tab name="antecedentes" label="Antecedentes Médicos"/>
-      <q-tab name="anamnesis" label="Anamnesis Social"/>
+      <q-tab name="apoyoDomiciliario" label="Apoyo Domiciliario"/>
       <q-tab name="diagnostico" label="Observación y Diagnóstico"/>
       <q-tab name="lesiones" label="Observación de Lesiones"/>
     </q-tabs>
@@ -17,19 +17,19 @@
     <q-tab-panels v-model="tab" animated>
       <q-tab-panel name="antecedentes">
         <div class="text-h6">Antecedentes Médicos</div>
-        <antecedentes-medicos/>
+        <antecedentes-medicos :id-cliente="id" />
       </q-tab-panel>
-      <q-tab-panel name="anamnesis">
-        <div class="text-h6">Anamnesis Social</div>
-        <social-anamnesis/>
+      <q-tab-panel name="apoyoDomiciliario">
+        <div class="text-h6">Apoyo Domiciliario</div>
+        <apoyo-domiciliario :id-cliente="id" />
       </q-tab-panel>
       <q-tab-panel name="diagnostico">
         <div class="text-h6">Observación y Diagnóstico</div>
-        <observacion-diagnostico />
+        <observacion-diagnostico :id-cliente="id" />
       </q-tab-panel>
       <q-tab-panel name="lesiones">
         <div class="text-h6">Observación de Lesiones</div>
-        <observacion-lesiones />
+        <observacion-lesiones :id-cliente="id" />
       </q-tab-panel>
     </q-tab-panels>
   </q-card>
@@ -37,23 +37,22 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api'
-import SocialAnamnesis from 'components/AnamnesisSocial.vue'
 import AntecedentesMedicos from 'components/AntecedentesMedicos.vue'
 import ObservacionDiagnostico from 'components/ObservacionDiagnostico.vue'
 import ObservacionLesiones from 'components/ObservacionLesiones.vue'
+import ApoyoDomiciliario from 'components/ApoyoDomiciliario.vue'
 
 export default defineComponent({
   name: 'TreatmentInformation',
   components: {
+    ApoyoDomiciliario,
     ObservacionLesiones,
     ObservacionDiagnostico,
-    AntecedentesMedicos,
-    SocialAnamnesis
+    AntecedentesMedicos
   },
   props: {
     id: {
-      type: String,
-      default: '',
+      type: Number,
       required: true
     }
   },

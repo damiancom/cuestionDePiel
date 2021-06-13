@@ -23,5 +23,14 @@ export default route<Store<StateInterface>>(function ({ Vue }) {
     base: process.env.VUE_ROUTER_BASE
   })
 
+  Router.beforeEach((to, from, next) => {
+    console.log('To:')
+    console.log(to)
+    console.log('From:')
+    console.log(from)
+    console.log(next)
+    next()
+  })
+
   return Router
 })

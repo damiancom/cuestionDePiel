@@ -4,12 +4,13 @@
     "baseUrl": ".",
     "esModuleInterop": true,
     "types": [
-      "jest",
       "quasar"
     ]
   },
   "exclude": [
     "test/cypress",
+    "test/lighthouse",
+    "test/loaders",
     "/dist",
     ".quasar",
     "node_modules"
