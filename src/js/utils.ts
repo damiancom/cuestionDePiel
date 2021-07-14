@@ -22,3 +22,9 @@ export function formatearFecha (fechaNac : Date | string) : string {
 export function formatearFechaDB (fechaNac : Date | string) : string {
   return date.formatDate(fechaNac, 'YYYY-MM-DD')
 }
+
+export function base64ToArrayBuffer (base64: string) {
+  const binaryString = window.atob(base64)
+  const bytes = new Uint8Array(binaryString.length)
+  return bytes.map((byte, i) => binaryString.charCodeAt(i))
+}

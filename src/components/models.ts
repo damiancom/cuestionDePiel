@@ -76,3 +76,10 @@ export interface observacionLesiones {
   piel: piel,
   lesionCutanea: lesionCutanea
 }
+
+export interface rutina {
+  id?: number,
+  nombre: string,
+  multipartFile: string,
+  mimeType: string
+}
