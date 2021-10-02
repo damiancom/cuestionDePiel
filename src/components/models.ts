@@ -83,3 +83,8 @@ export interface rutina {
   multipartFile: string,
   mimeType: string
 }
+
+export interface marca {
+  id?: number,
+  nombre: string
+}

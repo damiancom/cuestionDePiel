@@ -1,4 +1,4 @@
-import { RouteConfig } from 'vue-router'
+import {RouteConfig} from 'vue-router'
 import MainLayout from 'layouts/MainLayout.vue'
 import Index from 'pages/Index.vue'
 import Pacientes from 'pages/Pacientes.vue'
@@ -7,6 +7,8 @@ import Login from 'pages/Login.vue'
 import ApoyoDomiciliario from 'components/ApoyoDomiciliario.vue'
 import ObservacionDiagnostico from 'components/ObservacionDiagnostico.vue'
 import AltaPaciente from 'components/AltaPaciente.vue'
+import Productos from 'pages/Productos.vue'
+import Marcas from 'pages/Marcas.vue'
 
 const routes: RouteConfig[] = [
   {
@@ -27,6 +29,16 @@ const routes: RouteConfig[] = [
         name: '/pacientes',
         path: 'pacientes',
         component: Pacientes
+      },
+      {
+        name: '/productos',
+        path: 'productos',
+        component: Productos
+      },
+      {
+        name: '/marcas',
+        path: 'marcas',
+        component: Marcas
       },
       {
         name: '/login',

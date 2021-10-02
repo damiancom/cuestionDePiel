@@ -15,20 +15,35 @@
           Cuestión de Piel
         </q-toolbar-title>
 
-        <q-btn-group spread flat>
+        <q-btn-group flat>
           <q-btn
+            stack
             label="Alta Paciente"
             icon="r_person_add_alt"
             to="/alta-paciente"
           />
           <q-btn
+            stack
             label="Pacientes"
             icon="r_contacts"
             to="/pacientes"
           />
           <q-btn
+            stack
             label="Agenda"
             icon="r_event"
+          />
+          <q-btn
+            stack
+            label="Productos"
+            icon="r_inventory_2"
+            to="/productos"
+          />
+          <q-btn
+            stack
+            label="Marcas"
+            icon="r_branding_watermark"
+            to="/marcas"
           />
         </q-btn-group>
 
@@ -76,6 +91,7 @@
 
 <script lang="ts">
 import EssentialLink from 'components/EssentialLink.vue'
+import {defineComponent, ref} from '@vue/composition-api'
 
 const linksData = [
   {
@@ -107,8 +123,6 @@ const linksData = [
     idPaciente: '65465165'
   }
 ]
-
-import { defineComponent, ref } from '@vue/composition-api'
 
 export default defineComponent({
   name: 'MainLayout',
