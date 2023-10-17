@@ -11,11 +11,12 @@
       >
         <template v-slot:body="props">
           <q-tr :props="props">
+<!--            <q-td key="delete" :props="props">-->
+<!--              <q-btn flat round text-color="brown" icon="r_delete_sweep" @click="showConfirm(props.row.id)"/>-->
+<!--            </q-td>-->
+
             <q-td key="marca" :props="props">
-              {{ props.row.marca }}
-              <q-popup-edit v-model="props.row.marca" v-slot="scope">
-                <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set"></q-input>
-              </q-popup-edit>
+              {{ props.row.marca.nombre }}
             </q-td>
 
             <q-td key="codigo" :props="props">
@@ -34,19 +35,33 @@
               </q-popup-edit>
             </q-td>
 
-            <q-td key="precio" :props="props">
-              {{ props.row.precio }}
-              <q-popup-edit v-model.number="props.row.precio" v-slot="scope">
-                <q-input type="number" v-model.number="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>
+            <q-td key="name" :props="props">
+              {{ props.row.name }}
+              <q-popup-edit v-model="props.row.name" v-slot="scope" @save="editarProducto(props.row)" buttons label-set="Confirmar">
+                <q-input v-model="props.row.name" dense autofocus counter/>
               </q-popup-edit>
             </q-td>
 
-            <q-td key="cantidad" :props="props">
-              <div class="text-pre-wrap">{{ props.row.cantidad }}</div>
-              <q-popup-edit v-model.number="props.row.cantidad" v-slot="scope">
-                <q-input type="number" v-model.number="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>
+            <q-td key="contenido" :props="props">
+              {{ props.row.contenido }}
+              <q-popup-edit v-model="props.row.contenido" v-slot="scope" @cancel="notificaCancelaCambio" buttons label-set="Confirmar">
+                <q-input v-model="props.row.contenido" dense autofocus counter @keyup.enter="editarProducto(props.row)"/>
               </q-popup-edit>
             </q-td>
+
+            <q-td key="precioCompra" :props="props">
+              $ {{ props.row.precioCompra }}
+              <q-popup-edit v-model.number="props.row.precioCompra" v-slot="scope" @cancel="notificaCancelaCambio" buttons label-set="Confirmar">
+                <q-input type="number" v-model.number="scope.value" dense autofocus @keyup.enter="editarProducto(props.row)"/>
+              </q-popup-edit>
+            </q-td>
+
+            <!--            <q-td key="cantidad" :props="props">-->
+            <!--              <div class="text-pre-wrap">{{ props.row.cantidad }}</div>-->
+            <!--              <q-popup-edit v-model.number="props.row.cantidad" v-slot="scope">-->
+            <!--                <q-input type="number" v-model.number="scope.value" dense autofocus @keyup.enter="scope.set"></q-input>-->
+            <!--              </q-popup-edit>-->
+            <!--            </q-td>-->
           </q-tr>
         </template>
       </q-table>
@@ -164,20 +179,112 @@ export default defineComponent({
   created () {
   },
   methods: {
+    cargarMarcas () {
+      Loading.show()
+      axios
+        .get(URL_MARCAS, {
+          headers: { 'Content-Type': 'application/json' }
+        })
+        .then((response: AxiosResponse<marca[]>) => {
+          response.data.forEach((brand: marca) => {
+            const brandSelect = { label: brand.nombre, brand: brand }
+            this.brands.push(brandSelect)
+          })
+          Loading.hide()
+        })
+        .catch(error => {
+          console.error('Ocurrio un error al intentar recuperar las marcas.... ', error)
+          Loading.hide()
+        })
+    },
     cargarProductos () {
-      console.log(this.rows)
-      this.rows = [
-        {
-          marca: 'Frozen Yogurt',
-          codigo: '<p>It\'s cold but great and tastes different than normal ice cream, but it\'s great too!</p><p><strong>Have a taste!</strong></p>',
-          producto: 'asdf',
-          contenido: 'afadsfasdfd',
-          precio: 6.0,
-          cantidad: 2
+      Loading.show()
+      this.products = []
+      axios
+        .get(URL_PRODUCTS, {
+          headers: { 'Content-Type': 'application/json' }
+        })
+        .then((response: AxiosResponse<product[]>) => {
+          this.products = response.data
+          Loading.hide()
+        })
+        .catch(error => {
+          console.error('Ocurrio un error al intentar recuperar los productos.... ', error)
+          Loading.hide()
+        })
+    },
+    agregarProducto () {
+      Loading.show()
+      const newProduct = {
+        name: this.productName,
+        codigo: this.productCode,
+        contenido: this.productContent,
+        precioCompra: this.productPrice / 100
+      }
+      console.log(this.productSelectBrand)
+      axios
+        .post(`${URL_MARCAS}/${this.productSelectBrand.brand.id}/${URI_PRODUCTS}`, newProduct, {
+          headers: { 'Content-Type': 'application/json' }
+        })
+        .then((response: AxiosResponse<product>) => {
+          console.log(response.status)
+          if (response.status === 201) {
+            console.log('Se dió de alta el producto correctamente...')
+            this.cargarProductos()
+          }
+          Loading.hide()
+        })
+        .catch(error => {
+          console.error('Ocurrio un error al intentar dar de alta el producto.... ', error)
+          Loading.hide()
+        })
+    },
+    popupClean () {
+      this.productCode = ''
+      this.productName = ''
+      this.productContent = ''
+      this.productPrice = 0.0
+      this.productSelectBrand = { label: '', brand: { nombre: '' } }
+    },
+    editarProducto (product: product) {
+      if (product.marca) {
+        Loading.show()
+        const editProduct = {
+          name: product.name,
+          codigo: product.codigo,
+          contenido: product.contenido,
+          precioCompra: product.precioCompra
         }
-      ]
-      console.log(this.rows)
+        axios
+          .patch(`${URL_MARCAS}/${product.marca.id}/${URI_PRODUCTS}/${product.id}`, editProduct, {
+            headers: {'Content-Type': 'application/json'}
+          })
+          .then((response: AxiosResponse<product>) => {
+            if (response.status === 201) {
+              console.log('Se actualizó el producto correctamente...')
+              this.cargarProductos()
+            }
+            Loading.hide()
+          })
+          .catch(error => {
+            console.error('Ocurrio un error al intentar actualizar el producto.... ', error)
+            Loading.hide()
+          })
+      }
+    },
+    showConfirm (productId: number) {
+      this.productIdDelete = productId
+      this.confirm = true
+    },
+    notificaCancelaCambio (valueNew: any, oldValue: any) {
+      console.log('Canceló el cambio...')
+      if (valueNew !== oldValue) {
+        alert('Al salir sin guardar perderá los cambios.')
+      }
     }
+    // eliminarProducto () {
+    //   console.log(this.productIdDelete)
+    // }
   }
 })
 </script>
