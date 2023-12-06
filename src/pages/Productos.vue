@@ -37,14 +37,14 @@
 
             <q-td key="name" :props="props">
               {{ props.row.name }}
-              <q-popup-edit v-model="props.row.name" v-slot="scope" @save="editarProducto(props.row)" buttons label-set="Confirmar">
+              <q-popup-edit v-model="props.row.name" @save="editarProducto(props.row)" buttons label-set="Confirmar">
                 <q-input v-model="props.row.name" dense autofocus counter/>
               </q-popup-edit>
             </q-td>
 
             <q-td key="contenido" :props="props">
               {{ props.row.contenido }}
-              <q-popup-edit v-model="props.row.contenido" v-slot="scope" @cancel="notificaCancelaCambio" buttons label-set="Confirmar">
+              <q-popup-edit v-model="props.row.contenido" @cancel="notificaCancelaCambio" buttons label-set="Confirmar">
                 <q-input v-model="props.row.contenido" dense autofocus counter @keyup.enter="editarProducto(props.row)"/>
               </q-popup-edit>
             </q-td>
@@ -76,7 +76,11 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from '@vue/composition-api'
+import { defineComponent } from '@vue/composition-api'
+import axios, { AxiosResponse } from 'axios'
+import { Loading } from 'quasar'
+import { marca, marcaSelect, product } from 'src/components/models'
+import { URL_MARCAS, URL_PRODUCTS, URI_PRODUCTS } from 'src/js/constants'
 
 const columns = [
   { name: 'marca', style: 'min-width: 160px; width: 160px', align: 'left', label: 'Marca', field: 'marca' },
@@ -91,6 +95,15 @@ export default defineComponent({
   name: 'Productos',
   data () {
     return {
+      brands: <marcaSelect[]>[],
+      products: <product[]>[],
+      productSelectBrand: <marcaSelect> {},
+      productCode: '',
+      productName: '',
+      productContent: '',
+      productPrice: 0.0,
+      productIdDelete: 0,
+      confirm: true,
       columns,
       rows: [
         {
@@ -176,8 +189,6 @@ export default defineComponent({
       ]
     }
   },
-  created () {
-  },
   methods: {
     cargarMarcas () {
       Loading.show()
@@ -222,8 +233,11 @@ export default defineComponent({
         precioCompra: this.productPrice / 100
       }
       console.log(this.productSelectBrand)
+
+      const brandId = this.productSelectBrand.brand.id ?? 0
+
       axios
-        .post(`${URL_MARCAS}/${this.productSelectBrand.brand.id}/${URI_PRODUCTS}`, newProduct, {
+        .post(`${URL_MARCAS}/${brandId}/${URI_PRODUCTS}`, newProduct, {
           headers: { 'Content-Type': 'application/json' }
         })
         .then((response: AxiosResponse<product>) => {
@@ -255,9 +269,13 @@ export default defineComponent({
           contenido: product.contenido,
           precioCompra: product.precioCompra
         }
+
+        const brandId = product.marca.id ?? 0
+        const productId = product.id ?? 0
+
         axios
-          .patch(`${URL_MARCAS}/${product.marca.id}/${URI_PRODUCTS}/${product.id}`, editProduct, {
-            headers: {'Content-Type': 'application/json'}
+          .patch(`${URL_MARCAS}/${brandId}/${URI_PRODUCTS}/${productId}`, editProduct, {
+            headers: { 'Content-Type': 'application/json' }
           })
           .then((response: AxiosResponse<product>) => {
             if (response.status === 201) {

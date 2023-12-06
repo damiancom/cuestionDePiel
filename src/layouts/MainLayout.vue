@@ -2,14 +2,14 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-<!--        <q-btn-->
-<!--          flat-->
-<!--          dense-->
-<!--          round-->
-<!--          icon="menu"-->
-<!--          aria-label="Menu"-->
-<!--          @click="leftDrawerOpen = !leftDrawerOpen"-->
-<!--        />-->
+        <!--        <q-btn-->
+        <!--          flat-->
+        <!--          dense-->
+        <!--          round-->
+        <!--          icon="menu"-->
+        <!--          aria-label="Menu"-->
+        <!--          @click="leftDrawerOpen = !leftDrawerOpen"-->
+        <!--        />-->
 
         <q-toolbar-title>
           Cuestión de Piel
@@ -17,33 +17,33 @@
 
         <q-btn-group flat>
           <q-btn
-            stack
-            label="Alta Paciente"
-            icon="r_person_add_alt"
-            to="/alta-paciente"
+              stack
+              label="Alta Paciente"
+              icon="r_person_add_alt"
+              to="/alta-paciente"
           />
           <q-btn
-            stack
-            label="Pacientes"
-            icon="r_contacts"
-            to="/pacientes"
+              stack
+              label="Pacientes"
+              icon="r_contacts"
+              to="/pacientes"
           />
           <q-btn
-            stack
-            label="Agenda"
-            icon="r_event"
+              stack
+              label="Agenda"
+              icon="r_event"
           />
           <q-btn
-            stack
-            label="Productos"
-            icon="r_inventory_2"
-            to="/productos"
+              stack
+              label="Productos"
+              icon="r_inventory_2"
+              to="/productos"
           />
           <q-btn
-            stack
-            label="Marcas"
-            icon="r_branding_watermark"
-            to="/marcas"
+              stack
+              label="Marcas"
+              icon="r_branding_watermark"
+              to="/marcas"
           />
         </q-btn-group>
 
@@ -54,44 +54,44 @@
       </q-toolbar>
     </q-header>
 
-<!--    <q-drawer-->
-<!--      v-model="leftDrawerOpen"-->
-<!--      show-if-above-->
-<!--      bordered-->
-<!--      content-class="bg-grey-1"-->
-<!--    >-->
-<!--      <q-list>-->
-<!--        <q-item-label-->
-<!--          header-->
-<!--          class="text-grey-8"-->
-<!--        >-->
-<!--          Pacientes-->
-<!--        </q-item-label>-->
+    <!--    <q-drawer-->
+    <!--      v-model="leftDrawerOpen"-->
+    <!--      show-if-above-->
+    <!--      bordered-->
+    <!--      content-class="bg-grey-1"-->
+    <!--    >-->
+    <!--      <q-list>-->
+    <!--        <q-item-label-->
+    <!--          header-->
+    <!--          class="text-grey-8"-->
+    <!--        >-->
+    <!--          Pacientes-->
+    <!--        </q-item-label>-->
 
-<!--        <EssentialLink-->
-<!--          v-for="link in essentialLinks"-->
-<!--          :key="link.title"-->
-<!--          v-bind="link"-->
-<!--        />-->
-<!--      </q-list>-->
-<!--      <q-separator/>-->
-<!--      <q-btn-group spread>-->
-<!--        <q-btn-->
-<!--          outline-->
-<!--          label="Alta Paciente"-->
-<!--        />-->
-<!--      </q-btn-group>-->
-<!--    </q-drawer>-->
+    <!--        <EssentialLink-->
+    <!--          v-for="link in essentialLinks"-->
+    <!--          :key="link.title"-->
+    <!--          v-bind="link"-->
+    <!--        />-->
+    <!--      </q-list>-->
+    <!--      <q-separator/>-->
+    <!--      <q-btn-group spread>-->
+    <!--        <q-btn-->
+    <!--          outline-->
+    <!--          label="Alta Paciente"-->
+    <!--        />-->
+    <!--      </q-btn-group>-->
+    <!--    </q-drawer>-->
 
     <q-page-container>
-      <router-view />
+      <router-view/>
     </q-page-container>
   </q-layout>
 </template>
 
 <script lang="ts">
 import EssentialLink from 'components/EssentialLink.vue'
-import {defineComponent, ref} from '@vue/composition-api'
+import { defineComponent, ref } from '@vue/composition-api'
 
 const linksData = [
   {

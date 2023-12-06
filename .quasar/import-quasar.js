@@ -17,7 +17,7 @@ import iconSet from 'quasar/icon-set/material-icons'
 
 import Vue from 'vue'
 
-import {Cookies, Loading, LocalStorage, Notify, Quasar} from 'quasar'
+import {Quasar,Notify,Cookies,Loading,LocalStorage} from 'quasar'
 
 
 Vue.use(Quasar, { config: {"notify":{"timeout":2500,"position":"bottom"},"dark":false},lang: lang,iconSet: iconSet,plugins: {Notify,Cookies,Loading,LocalStorage} })

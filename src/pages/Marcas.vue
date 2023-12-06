@@ -76,7 +76,7 @@
 
           <q-td key="nombre" :props="props" class="col-2">
             {{ props.row.nombre }}
-            <q-popup-edit v-model="props.row.nombre" v-slot="scope">
+            <q-popup-edit v-model="props.row.nombre">
               <q-input v-model="props.row.nombre" dense autofocus counter @keyup.enter="prueba(props.row.id)"></q-input>
             </q-popup-edit>
           </q-td>
@@ -87,11 +87,11 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref} from '@vue/composition-api'
-import axios, {AxiosResponse} from 'axios'
-import {URL_MARCAS} from 'src/js/constants'
-import {Loading} from 'quasar'
-import {marca} from 'components/models'
+import { defineComponent, ref } from '@vue/composition-api'
+import axios, { AxiosResponse } from 'axios'
+import { URL_MARCAS } from 'src/js/constants'
+import { Loading } from 'quasar'
+import { marca } from 'components/models'
 
 const columns = [
   {},
@@ -100,7 +100,7 @@ const columns = [
 ]
 
 export default defineComponent({
-  name: "Marcas",
+  name: 'Marcas',
   data () {
     return {
       columns,
@@ -130,7 +130,7 @@ export default defineComponent({
     agregarMarca () {
       Loading.show()
       axios
-        .post(URL_MARCAS, {'nombre': this.brand}, {
+        .post(URL_MARCAS, { nombre: this.brand }, {
           headers: { 'Content-Type': 'application/json' }
         })
         .then((response: AxiosResponse<marca>) => {
@@ -147,7 +147,7 @@ export default defineComponent({
     eliminarMarca (idMarca: number) {
       Loading.show()
       axios
-        .delete(URL_MARCAS + '/' + idMarca,  {
+        .delete(`${URL_MARCAS}/idMarca`, {
           headers: { 'Content-Type': 'application/json' }
         })
         .then((response: AxiosResponse<marca>) => {
@@ -171,7 +171,7 @@ export default defineComponent({
         .filter(marca => marca.id === idMarca)
         .forEach(marca => {
           axios
-            .patch(URL_MARCAS + '/' + idMarca,  marca,{
+            .patch(`${URL_MARCAS}/idMarca`, marca, {
               headers: { 'Content-Type': 'application/json' }
             })
             .then((response: AxiosResponse<marca>) => {
@@ -184,7 +184,7 @@ export default defineComponent({
               console.error('Ocurrio un error al intentar actualizar la marca.... ', error)
               Loading.hide()
             })
-          })
+        })
     }
   }
 })

@@ -9,3 +9,6 @@ export const URI_SESIONES = 'sesiones'
 export const URI_RUTINAS = 'rutinas'
 
 export const URL_MARCAS = URL_API + '/marcas'
+
+export const URL_PRODUCTS = '/productos'
+export const URI_PRODUCTS = 'productos'

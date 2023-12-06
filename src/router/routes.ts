@@ -1,4 +1,4 @@
-import {RouteConfig} from 'vue-router'
+import { RouteConfig } from 'vue-router'
 import MainLayout from 'layouts/MainLayout.vue'
 import Index from 'pages/Index.vue'
 import Pacientes from 'pages/Pacientes.vue'
