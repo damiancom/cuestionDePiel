@@ -1,5 +1,5 @@
-// export const URL_API = 'http://ec2-3-141-36-22.us-east-2.compute.amazonaws.com:9090'
-export const URL_API = 'http://localhost:9090'
+export const URL_API = 'http://ec2-204-236-209-243.compute-1.amazonaws.com:9090'
+//export const URL_API = 'http://localhost:9090'
 export const URL_PACIENTES = URL_API + '/pacientes'
 export const URI_ANTECEDENTES_MEDICOS = 'antecedentes-medicos'
 export const URI_DIAGNOSTICOS = 'diagnosticos'
