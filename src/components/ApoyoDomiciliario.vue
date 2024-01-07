@@ -1,9 +1,9 @@
 <template>
   <div>
     <q-input filled v-model="motivoConsulta" label="Motivo de la consulta"/>
-    <q-input filled v-model="rutinaDia" label="Rutina de día"/>
-    <q-input filled v-model="rutinaNoche" label="Rutina de noche"/>
-    <q-input filled v-model="rutinaSemanal" label="Rutina semanal"/>
+    <q-input filled v-model="rutinaDiaSugerida" label="Rutina de día"/>
+    <q-input filled v-model="rutinaNocheSugerida" label="Rutina de noche"/>
+    <q-input filled v-model="rutinaSemanalSugerida" label="Rutina semanal"/>
     <q-card title="Rutinas"  v-show="rutinas.length > 0">
       <q-card-section>
         <q-list bordered class="rounded-borders">
@@ -108,9 +108,9 @@ export default defineComponent({
   data () {
     return {
       motivoConsulta: '',
-      rutinaDia: '',
-      rutinaNoche: '',
-      rutinaSemanal: '',
+      rutinaDiaSugerida: '',
+      rutinaNocheSugerida: '',
+      rutinaSemanalSugerida: '',
       apoyoDomiciliario: <apoyoDomiciliario>{},
       showUpload: false,
       rutinas: <rutina[]>[]
@@ -164,23 +164,23 @@ export default defineComponent({
     },
     setearDatosApoyoDomiciliarioEnInputs () {
       this.motivoConsulta = this.apoyoDomiciliario.motivoConsulta
-      this.rutinaDia = this.apoyoDomiciliario.rutinaDia
-      this.rutinaNoche = this.apoyoDomiciliario.rutinaNoche
-      this.rutinaSemanal = this.apoyoDomiciliario.rutinaSemanal
+      this.rutinaDiaSugerida = this.apoyoDomiciliario.rutinaDiaSugerida
+      this.rutinaNocheSugerida = this.apoyoDomiciliario.rutinaNocheSugerida
+      this.rutinaSemanalSugerida = this.apoyoDomiciliario.rutinaSemanalSugerida
     },
     actualizarDatosApoyoDomiciliario () {
       this.apoyoDomiciliario = {
         motivoConsulta: this.motivoConsulta,
-        rutinaDia: this.rutinaDia,
-        rutinaNoche: this.rutinaNoche,
-        rutinaSemanal: this.rutinaSemanal
+        rutinaDiaSugerida: this.rutinaDiaSugerida,
+        rutinaNocheSugerida: this.rutinaNocheSugerida,
+        rutinaSemanalSugerida: this.rutinaSemanalSugerida
       }
     },
     validarCambios (): boolean {
       return !(this.motivoConsulta === this.apoyoDomiciliario.motivoConsulta &&
-        this.rutinaDia === this.apoyoDomiciliario.rutinaDia &&
-        this.rutinaNoche === this.apoyoDomiciliario.rutinaNoche &&
-        this.rutinaSemanal === this.apoyoDomiciliario.rutinaSemanal)
+        this.rutinaDiaSugerida === this.apoyoDomiciliario.rutinaDiaSugerida &&
+        this.rutinaNocheSugerida === this.apoyoDomiciliario.rutinaNocheSugerida &&
+        this.rutinaSemanalSugerida === this.apoyoDomiciliario.rutinaSemanalSugerida)
     },
     getUrlUpload () {
       return `${URL_PACIENTES}/${this.idCliente}/${URI_RUTINAS}`

@@ -62,6 +62,7 @@ import { datosPersonales } from 'components/models'
 import axios from 'axios'
 import { URL_PACIENTES } from 'src/js/constants'
 import { Notify } from 'quasar'
+import { formatearFechaDB } from 'src/js/utils'
 
 const IMAGEN_DEFAULT = 'https://cdn-3.expansion.mx/dims4/default/7719710/2147483647/strip/true/crop/304x413+0+0/resize/600x815!/quality/90/?url=https%3A%2F%2Fcherry-brightspot.s3.amazonaws.com%2F34%2Fdc%2Fd3f9ed94491b9677ede5c961016f%2Fsilueta.JPG'
 
@@ -73,7 +74,7 @@ export default defineComponent({
       foto: IMAGEN_DEFAULT,
       nombre: '',
       apellido: '',
-      fechaNacimiento: new Date(),
+      fechaNacimiento: formatearFechaDB(new Date()),
       localidad: '',
       domicilio: '',
       telefono: '',
@@ -121,7 +122,7 @@ export default defineComponent({
       this.foto = IMAGEN_DEFAULT
       this.nombre = ''
       this.apellido = ''
-      this.fechaNacimiento = new Date()
+      this.fechaNacimiento = formatearFechaDB(new Date())
       this.localidad = ''
       this.domicilio = ''
       this.telefono = ''

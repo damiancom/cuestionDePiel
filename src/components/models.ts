@@ -3,7 +3,7 @@ export interface datosPersonales {
   fotoPerfil: string,
   nombre: string,
   apellido: string,
-  fechaNacimiento: Date,
+  fechaNacimiento: string,
   domicilio: string,
   localidad: string,
   celular: string,
@@ -33,9 +33,9 @@ export interface antecedenteMedico {
 export interface apoyoDomiciliario {
   id?: number,
   motivoConsulta: string,
-  rutinaDia: string,
-  rutinaNoche: string,
-  rutinaSemanal: string
+  rutinaDiaSugerida: string,
+  rutinaNocheSugerida: string,
+  rutinaSemanalSugerida: string
 }
 
 export interface observacionDiagnostico {
