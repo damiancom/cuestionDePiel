@@ -13,9 +13,11 @@
     <q-input filled v-model="habitos" label="Hábitos" class="col-6"/>
     <q-input filled v-model="antecedentesEnfermedadesCutaneas" label="Antecedentes de Enfermedades Cutáneas" class="col-6"/>
     <q-input filled v-model="antecedentesFamiliares" label="Antecedentes Familiares" class="col-6"/>
-    <q-btn-group class="vertical-bottom" rounded>
-      <q-btn rounded outline color="secondary" label="Actualizar Antecedentes Médicos" icon="r_check" @click="actualizarAntecedentesMedicos()"/>
-    </q-btn-group>
+    <q-card-actions class="full-width row justify-center content-center">
+      <q-btn-group class="vertical-bottom" rounded>
+        <q-btn rounded outline color="secondary" label="Actualizar Antecedentes Médicos" icon="r_check" @click="actualizarAntecedentesMedicos()"/>
+      </q-btn-group>
+    </q-card-actions>
   </div>
 </template>
 

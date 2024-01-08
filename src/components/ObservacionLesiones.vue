@@ -1,24 +1,24 @@
 <template>
   <div>
     <q-input filled v-model="lesion.aspectoFisico" label="Aspecto físico"/>
-    <q-card>
+    <q-card class="q-mt-md">
       <q-card-section>
         <div class="text-h6">Piel</div>
       </q-card-section>
       <q-card-section>
-        <div class="row">
+        <div class="row q-mx-md">
           <q-input filled v-model="lesion.piel.tipo" label="Tipo" class="col-6"/>
           <q-separator/>
           <q-input filled v-model="lesion.piel.forma" label="Forma" class="col-6"/>
         </div>
-        <div class="row">
+        <div class="row q-ma-md">
           <q-input filled v-model="lesion.piel.disposicion" label="Disposición" class="col-6"/>
           <q-separator/>
           <q-input filled v-model="lesion.piel.distribucionLesiones" label="Distribución de lesiones" class="col-6"/>
         </div>
       </q-card-section>
     </q-card>
-    <q-card>
+    <q-card class="q-mt-md">
       <q-card-section>
         <div class="text-h6">Lesión</div>
       </q-card-section>
@@ -32,9 +32,11 @@
         <q-input filled v-model="lesion.lesionCutanea.tratamientosPosteriores" label="Tratamientos posteriores"/>
       </q-card-section>
     </q-card>
-    <q-btn-group class="vertical-bottom" rounded>
-      <q-btn rounded outline color="secondary" label="Actualizar Lesiones" icon="r_check" @click="actualizarLesion()"/>
-    </q-btn-group>
+    <q-card-actions class="full-width row justify-center content-center">
+      <q-btn-group class="vertical-bottom" rounded>
+        <q-btn rounded outline color="secondary" label="Actualizar Lesiones" icon="r_check" @click="actualizarLesion()"/>
+      </q-btn-group>
+    </q-card-actions>
   </div>
 </template>
 

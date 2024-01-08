@@ -80,12 +80,14 @@
         </q-uploader>
       </q-card-section>
     </q-card>
-    <q-btn-group class="vertical-bottom" rounded>
-      <q-btn rounded outline color="secondary" label="Actualizar Apoyo Domiciliario" icon="r_check"
-             @click="actualizarApoyoDomiciliario()"/>
-      <q-btn rounded outline color="secondary" label="Subir rutina PDF" icon="r_cloud_upload"
-             @click="subirRutinaPDF()"/>
-    </q-btn-group>
+    <q-card-actions class="full-width row justify-center content-center">
+      <q-btn-group class="vertical-bottom" rounded>
+        <q-btn rounded outline color="secondary" label="Actualizar Apoyo Domiciliario" icon="r_check"
+               @click="actualizarApoyoDomiciliario()"/>
+        <q-btn rounded outline color="primary" label="Subir rutina PDF" icon="r_cloud_upload"
+               @click="subirRutinaPDF()"/>
+      </q-btn-group>
+    </q-card-actions>
   </div>
 </template>
 

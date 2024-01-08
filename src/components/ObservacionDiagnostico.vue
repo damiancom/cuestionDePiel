@@ -34,10 +34,12 @@
       v-on:close-dialog="closePopUpNewSesion()"
     />
 
-    <q-btn-group class="vertical-bottom" rounded>
-      <q-btn rounded outline color="secondary" label="Actualizar diagnóstico" icon="r_check" @click="actualizarDiagnostico()"/>
-      <q-btn rounded outline color="primary" label="Nueva sesión" icon="r_note_add" @click="agregarNuevaSesion()"/>
-    </q-btn-group>
+    <q-card-actions class="full-width row justify-center content-center">
+      <q-btn-group class="vertical-bottom" rounded>
+        <q-btn rounded outline color="secondary" label="Actualizar diagnóstico" icon="r_check" @click="actualizarDiagnostico()"/>
+        <q-btn rounded outline color="primary" label="Nueva sesión" icon="r_note_add" @click="agregarNuevaSesion()"/>
+      </q-btn-group>
+    </q-card-actions>
   </div>
 </template>
 
