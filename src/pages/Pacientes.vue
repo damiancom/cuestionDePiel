@@ -14,7 +14,7 @@
         </q-item-section>
         <q-item-section>
           <q-item-label>
-            {{ paciente.apellido }}, {{ paciente.nombre }}
+            {{ paciente.nombre }} {{ paciente.apellido }}
           </q-item-label>
           <q-item-label caption lines="1">
             {{ paciente.mail }} - {{ formatearFecha(paciente.fechaNacimiento) }} - {{ edad(paciente.fechaNacimiento) }} años
@@ -29,12 +29,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
-import { calcularEdad, formatearFecha } from 'src/js/utils'
-import { datosPersonales } from 'components/models'
-import axios, { AxiosResponse } from 'axios'
-import { URL_PACIENTES } from 'src/js/constants'
-import { Loading } from 'quasar'
+import {defineComponent} from '@vue/composition-api'
+import {calcularEdad, formatearFecha} from 'src/js/utils'
+import {datosPersonales} from 'components/models'
+import axios, {AxiosResponse} from 'axios'
+import {URL_PACIENTES} from 'src/js/constants'
+import {Loading} from 'quasar'
 
 export default defineComponent({
   name: 'Pacientes',
