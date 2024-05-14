@@ -1,6 +1,6 @@
 <template>
   <div>
-    {{ paciente }}
+    {{ patient }}
   </div>
 </template>
 
@@ -9,7 +9,7 @@ export default {
   name: 'PacienteItemList',
   data () {
     return {
-      paciente: 'Damián Comba'
+      patient: 'Damián Comba'
     }
   }
 }

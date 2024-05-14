@@ -1,34 +1,35 @@
 <template>
   <div>
-    <q-input filled v-model="motivoConsulta" label="Motivo de la consulta"/>
-    <q-input filled v-model="rutinaDiaSugerida" label="Rutina de día"/>
-    <q-input filled v-model="rutinaNocheSugerida" label="Rutina de noche"/>
-    <q-input filled v-model="rutinaSemanalSugerida" label="Rutina semanal"/>
+    <q-input filled autogrow counter v-model="currentRoutine" label="Rutina actual" maxlength="10000"/>
+    <q-input filled autogrow counter v-model="dayRoutine" label="Rutina de día" maxlength="10000"/>
+    <q-input filled autogrow counter v-model="nightRoutine" label="Rutina de noche" maxlength="10000"/>
+    <q-input filled autogrow counter v-model="weeklyRoutine" label="Rutina semanal" maxlength="10000"/>
+    <q-input filled autogrow counter v-model="recommendations" label="Recomendaciones" maxlength="10000"/>
     <q-card title="Rutinas"  v-show="rutinas.length > 0">
       <q-card-section>
         <q-list bordered class="rounded-borders">
-          <q-item-label header>Rutinas del paciente</q-item-label>
+          <q-item-label header>Rutinas del patient</q-item-label>
 
           <q-separator spaced/>
 
-          <q-item v-for="rutina of rutinas" :key="rutina.id">
+          <q-item v-for="routine of rutinas" :key="routine.id">
             <q-item-section avatar top>
               <q-icon name="r_picture_as_pdf" color="black" size="34px"/>
             </q-item-section>
 
             <q-item-section class="col-2 gt-sm">
-              <span class="text-weight-medium">{{ rutina.nombre }}</span>
+              <span class="text-weight-medium">{{ routine.name }}</span>
             </q-item-section>
 
             <q-item-section>
               <q-item-label lines="1" class="q-mt-xs text-body2 text-weight-bold text-primary text-uppercase">
-                <span class="cursor-pointer" @click="downloadRutina(rutina.id)">Descargar archivo</span>
+                <span class="cursor-pointer" @click="downloadRutina(routine.id)">Descargar archivo</span>
               </q-item-label>
             </q-item-section>
 
             <q-item-section top side>
               <div class="text-grey-8 q-gutter-xs">
-                <q-btn class="gt-xs" size="12px" flat dense round icon="delete" @click="deleteRutinaPdf(rutina.id)"/>
+                <q-btn class="gt-xs" size="12px" flat dense round icon="delete" @click="deleteRutinaPdf(routine.id)"/>
               </div>
             </q-item-section>
           </q-item>
@@ -84,7 +85,7 @@
       <q-btn-group class="vertical-bottom" rounded>
         <q-btn rounded outline color="secondary" label="Actualizar Apoyo Domiciliario" icon="r_check"
                @click="actualizarApoyoDomiciliario()"/>
-        <q-btn rounded outline color="primary" label="Subir rutina PDF" icon="r_cloud_upload"
+        <q-btn rounded outline color="primary" label="Subir routine PDF" icon="r_cloud_upload"
                @click="subirRutinaPDF()"/>
       </q-btn-group>
     </q-card-actions>
@@ -92,12 +93,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
-import { apoyoDomiciliario, rutina } from 'components/models'
-import axios, { AxiosResponse } from 'axios'
-import { URI_APOYOS_DOMICILIARIOS, URL_PACIENTES, URI_RUTINAS } from 'src/js/constants'
-import { Loading, Notify, QUploader } from 'quasar'
-import { base64ToArrayBuffer } from 'src/js/utils'
+import {defineComponent} from '@vue/composition-api'
+import {homeSupport, routine} from 'components/models'
+import axios, {AxiosResponse} from 'axios'
+import {URI_APOYOS_DOMICILIARIOS, URI_RUTINAS, URL_PACIENTES} from 'src/js/constants'
+import {Loading, Notify, QUploader} from 'quasar'
+import {base64ToArrayBuffer} from 'src/js/utils'
 
 export default defineComponent({
   name: 'ApoyoDomiciliario',
@@ -109,13 +110,14 @@ export default defineComponent({
   },
   data () {
     return {
-      motivoConsulta: '',
-      rutinaDiaSugerida: '',
-      rutinaNocheSugerida: '',
-      rutinaSemanalSugerida: '',
-      apoyoDomiciliario: <apoyoDomiciliario>{},
+      currentRoutine: '',
+      dayRoutine: '',
+      nightRoutine: '',
+      weeklyRoutine: '',
+      recommendations: '',
+      homeSupport: <homeSupport>{},
       showUpload: false,
-      rutinas: <rutina[]>[]
+      rutinas: <routine[]>[]
     }
   },
   created () {
@@ -129,13 +131,13 @@ export default defineComponent({
         .get(`${URL_PACIENTES}/${this.idCliente}/${URI_APOYOS_DOMICILIARIOS}`, {
           headers: { 'Content-Type': 'application/json' }
         })
-        .then((response: AxiosResponse<apoyoDomiciliario>) => {
-          this.apoyoDomiciliario = response.data
+        .then((response: AxiosResponse<homeSupport>) => {
+          this.homeSupport = response.data
           this.setearDatosApoyoDomiciliarioEnInputs()
           Loading.hide()
         })
         .catch(error => {
-          console.error('Ocurrio un error al intentar recuperar el apoyo domiciliario del paciente... ', error)
+          console.error('Ocurrio un error al intentar recuperar el apoyo domiciliario del patient... ', error)
           Loading.hide()
         })
     },
@@ -144,11 +146,11 @@ export default defineComponent({
       if (this.validarCambios()) {
         this.actualizarDatosApoyoDomiciliario()
         axios
-          .patch(`${URL_PACIENTES}/${this.idCliente}/${URI_APOYOS_DOMICILIARIOS}`, this.apoyoDomiciliario, {
+          .patch(`${URL_PACIENTES}/${this.idCliente}/${URI_APOYOS_DOMICILIARIOS}`, this.homeSupport, {
             headers: { 'Content-Type': 'application/json' }
           })
-          .then((response: AxiosResponse<apoyoDomiciliario>) => {
-            this.apoyoDomiciliario = response.data
+          .then((response: AxiosResponse<homeSupport>) => {
+            this.homeSupport = response.data
             this.setearDatosApoyoDomiciliarioEnInputs()
             Loading.hide()
             Notify.create({
@@ -157,7 +159,7 @@ export default defineComponent({
             })
           })
           .catch(error => {
-            console.error('Ocurrio un error al intentar actualizar el apoyo domiciliario del paciente... ', error)
+            console.error('Ocurrio un error al intentar actualizar el apoyo domiciliario del patient... ', error)
             Loading.hide()
           })
       } else {
@@ -165,24 +167,27 @@ export default defineComponent({
       }
     },
     setearDatosApoyoDomiciliarioEnInputs () {
-      this.motivoConsulta = this.apoyoDomiciliario.motivoConsulta
-      this.rutinaDiaSugerida = this.apoyoDomiciliario.rutinaDiaSugerida
-      this.rutinaNocheSugerida = this.apoyoDomiciliario.rutinaNocheSugerida
-      this.rutinaSemanalSugerida = this.apoyoDomiciliario.rutinaSemanalSugerida
+      this.currentRoutine = this.homeSupport.currentRoutine
+      this.dayRoutine = this.homeSupport.dayRoutine
+      this.nightRoutine = this.homeSupport.nightRoutine
+      this.weeklyRoutine = this.homeSupport.weeklyRoutine
+      this.recommendations = this.homeSupport.recommendations
     },
     actualizarDatosApoyoDomiciliario () {
-      this.apoyoDomiciliario = {
-        motivoConsulta: this.motivoConsulta,
-        rutinaDiaSugerida: this.rutinaDiaSugerida,
-        rutinaNocheSugerida: this.rutinaNocheSugerida,
-        rutinaSemanalSugerida: this.rutinaSemanalSugerida
+      this.homeSupport = {
+        currentRoutine: this.currentRoutine,
+        dayRoutine: this.dayRoutine,
+        nightRoutine: this.nightRoutine,
+        weeklyRoutine: this.weeklyRoutine,
+        recommendations: this.recommendations
       }
     },
     validarCambios (): boolean {
-      return !(this.motivoConsulta === this.apoyoDomiciliario.motivoConsulta &&
-        this.rutinaDiaSugerida === this.apoyoDomiciliario.rutinaDiaSugerida &&
-        this.rutinaNocheSugerida === this.apoyoDomiciliario.rutinaNocheSugerida &&
-        this.rutinaSemanalSugerida === this.apoyoDomiciliario.rutinaSemanalSugerida)
+      return !(this.currentRoutine === this.homeSupport.currentRoutine &&
+        this.dayRoutine === this.homeSupport.dayRoutine &&
+        this.nightRoutine === this.homeSupport.nightRoutine &&
+        this.weeklyRoutine === this.homeSupport.weeklyRoutine &&
+        this.recommendations === this.homeSupport.recommendations)
     },
     getUrlUpload () {
       return `${URL_PACIENTES}/${this.idCliente}/${URI_RUTINAS}`
@@ -196,7 +201,7 @@ export default defineComponent({
     uploadedUpload () {
       Notify.create({
         type: 'positive',
-        message: 'La rutina se guardó correctamente.'
+        message: 'La routine se guardó correctamente.'
       })
       this.getPdfRutinas()
       this.showUpload = false
@@ -207,7 +212,7 @@ export default defineComponent({
     failedUpload () {
       Notify.create({
         type: 'negative',
-        message: 'Ocurrió un error al subir la rutina.'
+        message: 'Ocurrió un error al subir la routine.'
       })
       Loading.hide()
     },
@@ -217,11 +222,11 @@ export default defineComponent({
         .get(`${URL_PACIENTES}/${this.idCliente}/${URI_RUTINAS}/${idRutina}`, {
           headers: { 'Content-Type': 'application/json' }
         })
-        .then((response: AxiosResponse<rutina>) => {
-          const rutina = response.data
-          const arrayBuffer = base64ToArrayBuffer(rutina.multipartFile)
+        .then((response: AxiosResponse<routine>) => {
+          const routine = response.data
+          const arrayBuffer = base64ToArrayBuffer(routine.multipartFile)
           const blob = new Blob([arrayBuffer])
-          const fileName = rutina.nombre
+          const fileName = routine.name
           if (navigator.msSaveBlob) {
             // IE 10+
             navigator.msSaveBlob(blob, fileName)
@@ -241,7 +246,7 @@ export default defineComponent({
           Loading.hide()
         })
         .catch(error => {
-          console.error('Ocurrio un error al intentar recuperar la rutina del paciente... ', error)
+          console.error('Ocurrio un error al intentar recuperar la routine del patient... ', error)
           Loading.hide()
         })
     },
@@ -251,12 +256,12 @@ export default defineComponent({
         .get(`${URL_PACIENTES}/${this.idCliente}/${URI_RUTINAS}`, {
           headers: { 'Content-Type': 'application/json' }
         })
-        .then((response: AxiosResponse<rutina[]>) => {
+        .then((response: AxiosResponse<routine[]>) => {
           this.rutinas = response.data
           Loading.hide()
         })
         .catch(error => {
-          console.error('Ocurrio un error al intentar recuperar los archivos de la rutina del paciente... ', error)
+          console.error('Ocurrio un error al intentar recuperar los archivos de la routine del patient... ', error)
           Loading.hide()
         })
     },
@@ -270,7 +275,7 @@ export default defineComponent({
           this.getPdfRutinas()
         })
         .catch(error => {
-          console.error('Ocurrio un error al intentar eliminar la rutina del paciente... ', error)
+          console.error('Ocurrio un error al intentar eliminar la routine del patient... ', error)
           Loading.hide()
         })
     }

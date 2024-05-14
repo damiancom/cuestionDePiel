@@ -1,104 +1,84 @@
-export interface datosPersonales {
+export interface personalInformation {
   id?: string,
-  fotoPerfil: string,
-  nombre: string,
-  apellido: string,
-  fechaNacimiento: string,
-  domicilio: string,
-  localidad: string,
-  celular: string,
-  telefono: string,
-  mail: string,
-  genero: string,
-  estadoCivil: string,
-  escolaridad: string
+  profilePicture: string,
+  firstName: string,
+  lastName: string,
+  dateOfBirth: string,
+  address: string,
+  locality: string,
+  phone: string,
+  cellphone: string,
+  email: string
 }
 
-export interface datosAdicionales {
-  escolaridad: string,
-  motivoConsulta: string
-}
-
-export interface antecedenteMedico {
+export interface medicalHistory {
   id?: number,
-  intervencionesQuirurgicas: string,
-  enfermedades: string,
-  alergias: string,
-  medicamentos: string,
-  habitos: string,
-  antecedentesEnfermedadesCutaneas: string,
-  antecedentesFamiliares: string
+  surgicalIntervention: string,
+  aestheticFilling: string,
+  disease: string,
+  allergy: string,
+  medication: string,
+  habit: string,
+  skinDiseaseHistory: string,
+  familyHistory: string
 }
 
-export interface apoyoDomiciliario {
+export interface homeSupport {
   id?: number,
-  motivoConsulta: string,
-  rutinaDiaSugerida: string,
-  rutinaNocheSugerida: string,
-  rutinaSemanalSugerida: string
+  currentRoutine: string,
+  dayRoutine: string,
+  nightRoutine: string,
+  weeklyRoutine: string,
+  recommendations: string
 }
 
-export interface observacionDiagnostico {
-  id: number,
-  biotipoCutaneo: string,
-  fototipo: string,
-  sesiones: sesion[]
-}
-
-export interface sesion {
+export interface session {
   id?: number,
-  observacion: string,
-  tratamiento: string,
-  frecuenciaSesiones: string,
-  apoyoDomiciliario: string,
-  fecha: Date
+  observation: string,
+  treatment: string,
+  date: Date
 }
 
-export interface piel {
-  tipo: string,
-  forma: string,
-  disposicion: string,
-  distribucionLesiones: string
+export interface skinLesion {
+  onset: string,
+  onsetLocation: string,
+  symptoms: string,
+  evolution: string,
+  changes: string,
+  riskIncreasingFactors: string,
+  postTreatment: string
 }
 
-export interface lesionCutanea {
-  inicio: string,
-  lugarInicio: string,
-  sintomas: string,
-  evolucion: string,
-  cambios: string,
-  factoresIncrementanRiesgo: string,
-  tratamientosPosteriores: string
+export interface diagnosis {
+  reasonForConsultation: string,
+  skinBiotype: string,
+  phototype: string,
+  recommendations: string,
+  skinLesion: skinLesion
 }
 
-export interface observacionLesiones {
-  aspectoFisico: string,
-  piel: piel,
-  lesionCutanea: lesionCutanea
-}
-
-export interface rutina {
+export interface routine {
   id?: number,
-  nombre: string,
+  name: string,
   multipartFile: string,
   mimeType: string
 }
 
-export interface marca {
+export interface brand {
   id?: number,
-  nombre: string
+  name: string
 }
 
-export interface marcaSelect {
+export interface brandSelect {
   label: string,
-  brand: marca
+  brand: brand
 }
 
 export interface product {
   id?: number,
   name: string,
-  codigo: string,
-  contenido: string,
-  marca?: marca,
-  precioCompra: number
+  code: string,
+  content: string,
+  brand?: brand,
+  purchasePrice: number
 }

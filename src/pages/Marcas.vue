@@ -87,11 +87,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api'
-import axios, { AxiosResponse } from 'axios'
-import { URL_MARCAS } from 'src/js/constants'
-import { Loading } from 'quasar'
-import { marca } from 'components/models'
+import {defineComponent, ref} from '@vue/composition-api'
+import axios, {AxiosResponse} from 'axios'
+import {URL_MARCAS} from 'src/js/constants'
+import {Loading} from 'quasar'
+import {brand} from 'components/models'
 
 const columns = [
   {},
@@ -104,7 +104,7 @@ export default defineComponent({
   data () {
     return {
       columns,
-      rows: <marca[]> [],
+      rows: <brand[]> [],
       prompt: ref(false),
       brand: '',
       filter: ''
@@ -119,7 +119,7 @@ export default defineComponent({
         .get(URL_MARCAS, {
           headers: { 'Content-Type': 'application/json' }
         })
-        .then((response: AxiosResponse<marca[]>) => {
+        .then((response: AxiosResponse<brand[]>) => {
           this.rows = response.data
         })
         .catch(error => {
@@ -133,7 +133,7 @@ export default defineComponent({
         .post(URL_MARCAS, { nombre: this.brand }, {
           headers: { 'Content-Type': 'application/json' }
         })
-        .then((response: AxiosResponse<marca>) => {
+        .then((response: AxiosResponse<brand>) => {
           console.log(response.data)
           this.brand = ''
           this.cargarMarcas()
@@ -147,10 +147,10 @@ export default defineComponent({
     eliminarMarca (idMarca: number) {
       Loading.show()
       axios
-        .delete(`${URL_MARCAS}/idMarca`, {
+        .delete(`${URL_MARCAS}/${idMarca}`, {
           headers: { 'Content-Type': 'application/json' }
         })
-        .then((response: AxiosResponse<marca>) => {
+        .then((response: AxiosResponse<brand>) => {
           console.log(response.data)
           this.brand = ''
           this.cargarMarcas()
@@ -171,10 +171,10 @@ export default defineComponent({
         .filter(marca => marca.id === idMarca)
         .forEach(marca => {
           axios
-            .patch(`${URL_MARCAS}/idMarca`, marca, {
+            .patch(`${URL_MARCAS}/${idMarca}`, marca, {
               headers: { 'Content-Type': 'application/json' }
             })
-            .then((response: AxiosResponse<marca>) => {
+            .then((response: AxiosResponse<brand>) => {
               console.log(response.data)
               this.brand = ''
               this.cargarMarcas()

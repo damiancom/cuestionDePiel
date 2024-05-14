@@ -20,7 +20,7 @@
               stack
               label="Alta Paciente"
               icon="r_person_add_alt"
-              to="/alta-paciente"
+              to="/alta-patient"
           />
           <q-btn
               stack
@@ -28,6 +28,7 @@
               icon="r_contacts"
               to="/pacientes"
           />
+          <!--
           <q-btn
               stack
               label="Agenda"
@@ -45,6 +46,7 @@
               icon="r_branding_watermark"
               to="/marcas"
           />
+          -->
         </q-btn-group>
 
         <q-space/>
@@ -91,7 +93,7 @@
 
 <script lang="ts">
 import EssentialLink from 'components/EssentialLink.vue'
-import { defineComponent, ref } from '@vue/composition-api'
+import {defineComponent, ref} from '@vue/composition-api'
 
 const linksData = [
   {

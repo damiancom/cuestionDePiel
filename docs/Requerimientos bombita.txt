@@ -1,31 +1,13 @@
 
-Dentro de paciente:
+Dentro de patient:
 
-(B)
-Apoyo Domiciliario:
-    Rutina Día, Rutina Noche y Rutina semanal: Minimo 4 reglones.
 
-(B)
-Apoyo Domicialiario Pre Consulta
-    Motivo Consulta
-    Rutina Día
-    Rutina Noche
-    Rutina semanal
-
-(B)
-Apoyo Domicialiario Sugerido
-    Rutina Día
-    Rutina Noche
-    Rutina semanal
+Sesiones:
+    Fecha
+    Tratamiento
+    Observaciones (Varios renglones)
 
 Ver si se puede remarcar que producto se lleva en las rutinas.
-
-(B)
-para las sesiones:
-    Solo dejar fecha y tratamiento y observaciones.
-
-
-Unificar observacion y diagnostico con observacion de lesiones en una misma page
 
 Agregar una solapa de Pagos, donde se pueda ir cargando los pagos que realiza el cliente, marcando si tiene deuda
 
@@ -61,3 +43,5 @@ Agregar opcion de pedidos:
     Paciente que hace el pedido.
     Producto solicitado y cantidad.
     Pago realizado.
+
+=====================================================

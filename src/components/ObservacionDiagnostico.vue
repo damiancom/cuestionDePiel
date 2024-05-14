@@ -1,77 +1,41 @@
 <template>
   <div>
-    <q-input filled v-model="diagnostico.biotipoCutaneo" label="Biotipo cutáneo"/>
-    <q-input filled v-model="diagnostico.fototipo" label="Fototipo"/>
+    <q-input filled v-model="diagnosis.reasonForConsultation" label="Motivo de la consulta"/>
+    <q-input filled v-model="diagnosis.skinBiotype" label="Biotipo"/>
+    <q-input filled v-model="diagnosis.phototype" label="Fototipo"/>
+    <q-input filled v-model="diagnosis.recommendations" label="Recomendaciones"/>
 
-    <q-list bordered class="rounded-borders">
-      <q-expansion-item switch-toggle-side expand-separator :label="`Sesión ${index + 1}`" :caption="`${formatearFecha(sesion.fecha)}`"
-                        v-for="(sesion, index) in diagnostico.sesiones" :key="sesion.id"
-      >
-        <q-card>
-          <q-card-section class="q-pa-lg-xl">
-            <q-input filled bottom-slots class="col-6" readonly label="Observaciones" :value="`${sesion.observacion}`"/>
-            <q-input filled bottom-slots class="col-6" readonly label="Tratamiento" :value="`${sesion.tratamiento}`"/>
-            <q-input filled bottom-slots class="col-6" readonly label="Frecuencia de Sesiones" :value="`${sesion.frecuenciaSesiones}`"/>
-            <q-input filled bottom-slots class="col-6" readonly label="Apoyo Domiciliario" :value="`${sesion.apoyoDomiciliario}`"/>
-          </q-card-section>
-          <q-card-actions align="right">
-            <q-btn flat label="Editar" icon="r_edit" @click="editarSesion(sesion)"/>
-          </q-card-actions>
-        </q-card>
-      </q-expansion-item>
-    </q-list>
-
-    <sesion
-      :mostrar-sesion="mostrarNuevaSesion"
-      :id-diagnostico="diagnostico.id"
-      :id-paciente="idCliente"
-      :id-sesion="idSesion"
-      :apoyo-domiciliario="apoyoDomiciliario"
-      :fecha-sesion="fechaSesion"
-      :frecuencia-sesiones="frecuenciaSesiones"
-      :observacion="observacion"
-      :tratamiento="tratamiento"
-      v-on:close-dialog="closePopUpNewSesion()"
-    />
-
+    <q-card class="q-mt-md">
+      <q-card-section>
+        <div class="text-h6">Lesión</div>
+      </q-card-section>
+      <q-card-section>
+        <q-input filled v-model="diagnosis.skinLesion.onset" label="Inicio"/>
+        <q-input filled v-model="diagnosis.skinLesion.onsetLocation" label="Lugar de inicio"/>
+        <q-input filled v-model="diagnosis.skinLesion.symptoms" label="Síntomas"/>
+        <q-input filled v-model="diagnosis.skinLesion.evolution" label="Evolución"/>
+        <q-input filled v-model="diagnosis.skinLesion.changes" label="Cambios"/>
+        <q-input filled v-model="diagnosis.skinLesion.riskIncreasingFactors" label="Factores que incrementan riesgo"/>
+        <q-input filled v-model="diagnosis.skinLesion.postTreatment" label="Tratamientos posteriores"/>
+      </q-card-section>
+    </q-card>
     <q-card-actions class="full-width row justify-center content-center">
       <q-btn-group class="vertical-bottom" rounded>
-        <q-btn rounded outline color="secondary" label="Actualizar diagnóstico" icon="r_check" @click="actualizarDiagnostico()"/>
-        <q-btn rounded outline color="primary" label="Nueva sesión" icon="r_note_add" @click="agregarNuevaSesion()"/>
+        <q-btn rounded outline color="secondary" label="Actualizar observaciones" icon="r_check" @click="actualizarObservaciones()"/>
       </q-btn-group>
     </q-card-actions>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
-import { observacionDiagnostico, sesion } from './models'
-import { date, Loading, Notify } from 'quasar'
-import axios, { AxiosResponse } from 'axios'
-import { URI_DIAGNOSTICOS, URL_PACIENTES } from 'src/js/constants'
-import { formatearFecha } from 'src/js/utils'
-import Sesion from 'components/sesion.vue'
-
-function compareSesionsDate (a: sesion, b: sesion): number {
-  let valueCompare = 0
-  if (!b) {
-    valueCompare = 1
-  }
-  if (!a) {
-    valueCompare = -1
-  }
-  if (a.fecha < b.fecha) {
-    valueCompare = -1
-  }
-  if (a.fecha > b.fecha) {
-    valueCompare = 1
-  }
-  return valueCompare
-}
+import {defineComponent} from '@vue/composition-api'
+import {diagnosis, skinLesion} from 'components/models'
+import axios, {AxiosResponse} from 'axios'
+import {URI_DIAGNOSTICOS, URL_PACIENTES} from 'src/js/constants'
+import {Loading, Notify} from 'quasar'
 
 export default defineComponent({
   name: 'ObservacionDiagnostico',
-  components: { Sesion },
   props: {
     idCliente: {
       type: Number,
@@ -80,99 +44,53 @@ export default defineComponent({
   },
   data () {
     return {
-      mostrarNuevaSesion: false,
-      observacion: <string>'',
-      tratamiento: <string>'',
-      frecuenciaSesiones: <string>'',
-      apoyoDomiciliario: <string>'',
-      nroSesion: <number>0,
-      idSesion: <number | undefined>0,
-      fechaSesion: <Date | string> new Date(),
-      diagnostico: <observacionDiagnostico>{}
+      diagnosis: <diagnosis>{}
     }
   },
   created () {
-    this.cargarObservacionDiagnostico()
+    this.diagnosis = {
+      reasonForConsultation: '',
+      skinBiotype: '',
+      phototype: '',
+      recommendations: '',
+      skinLesion: {} as skinLesion
+    }
+    this.cargarObservaciones()
   },
   methods: {
-    cargarObservacionDiagnostico () {
+    cargarObservaciones () {
       Loading.show()
       axios
         .get(`${URL_PACIENTES}/${this.idCliente}/${URI_DIAGNOSTICOS}`, {
           headers: { 'Content-Type': 'application/json' }
         })
-        .then((response: AxiosResponse<observacionDiagnostico>) => {
-          this.diagnostico = response.data
-          if (this.diagnostico && this.diagnostico.sesiones) {
-            this.diagnostico.sesiones.sort(compareSesionsDate)
-          }
-          console.log(this.diagnostico)
+        .then((response: AxiosResponse<diagnosis>) => {
+          this.diagnosis = response.data
           Loading.hide()
         })
         .catch(error => {
-          console.error('Ocurrio un error al intentar recuperar el diagnostico del paciente... ', error)
+          console.error('Ocurrio un error al intentar recuperar el diagnóstico del paciente... ', error)
           Loading.hide()
         })
     },
-    fechaAltaDiagnostico (fecha: Date): string {
-      return date.formatDate(fecha, 'DD MMMM YYYY', {
-        months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-      })
-    },
-    actualizarDiagnostico () {
+    actualizarObservaciones () {
       Loading.show()
       axios
-        .patch(`${URL_PACIENTES}/${this.idCliente}/${URI_DIAGNOSTICOS}`, this.diagnostico, {
+        .patch(`${URL_PACIENTES}/${this.idCliente}/${URI_DIAGNOSTICOS}`, this.diagnosis, {
           headers: { 'Content-Type': 'application/json' }
         })
-        .then((response: AxiosResponse<observacionDiagnostico>) => {
-          this.diagnostico = response.data
+        .then((response: AxiosResponse<diagnosis>) => {
+          this.diagnosis = response.data
           Loading.hide()
           Notify.create({
             type: 'positive',
-            message: 'Se han actualizado el diagnostico correctamente.'
+            message: 'Se ha actualizado el diagnóstico correctamente.'
           })
         })
         .catch(error => {
-          console.error('Ocurrio un error al intentar actualizar el diagnostico del paciente... ', error)
+          console.error('Ocurrio un error al intentar actualizar el diagnóstico del paciente... ', error)
           Loading.hide()
         })
-    },
-    formatearFecha (fechaNac: Date | string): string {
-      if (fechaNac !== null) {
-        if (typeof fechaNac === 'string') {
-          fechaNac = fechaNac.toString() + 'T00:00'
-        } else {
-          fechaNac.setHours(0, 0, 0, 0)
-        }
-        return formatearFecha(fechaNac)
-      } else {
-        return ''
-      }
-    },
-    editarSesion (sesionIn: sesion) {
-      console.log(this.diagnostico)
-      this.idSesion = sesionIn.id
-      this.observacion = sesionIn.observacion
-      this.tratamiento = sesionIn.tratamiento
-      this.frecuenciaSesiones = sesionIn.frecuenciaSesiones
-      this.apoyoDomiciliario = sesionIn.apoyoDomiciliario
-      this.fechaSesion = sesionIn.fecha
-      this.mostrarNuevaSesion = true
-    },
-    agregarNuevaSesion () {
-      console.log(this.diagnostico)
-      this.idSesion = 0
-      this.observacion = ''
-      this.tratamiento = ''
-      this.frecuenciaSesiones = ''
-      this.apoyoDomiciliario = ''
-      this.fechaSesion = new Date()
-      this.mostrarNuevaSesion = true
-    },
-    closePopUpNewSesion () {
-      this.mostrarNuevaSesion = false
-      this.cargarObservacionDiagnostico()
     }
   }
 })

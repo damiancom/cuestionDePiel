@@ -1,9 +1,8 @@
-import { date } from 'quasar'
+import {date} from 'quasar'
 
 export function calcularEdad (fechaNac : Date) : number {
   const hoy = new Date()
   const fechaNacimiento = new Date(fechaNac)
-  console.log(hoy, fechaNac, fechaNacimiento)
 
   let edad = hoy.getFullYear() - fechaNacimiento.getFullYear()
   const difMeses = hoy.getMonth() - fechaNacimiento.getMonth()
@@ -15,12 +14,30 @@ export function calcularEdad (fechaNac : Date) : number {
   return edad
 }
 
-export function formatearFecha (fechaNac : Date | string) : string {
-  return date.formatDate(fechaNac, 'DD/MM/YYYY')
+export function formatearFecha (fecha : Date | string) : string {
+  if (fecha !== null) {
+    if (typeof fecha === 'string') {
+      fecha = fecha.toString() + 'T00:00'
+    } else {
+      fecha.setHours(0, 0, 0, 0)
+    }
+    return date.formatDate(fecha, 'DD/MM/YYYY')
+  } else {
+    return ''
+  }
 }
 
-export function formatearFechaDB (fechaNac : Date | string) : string {
-  return date.formatDate(fechaNac, 'YYYY-MM-DD')
+export function formatearFechaDB (fecha : Date | string) : string {
+  if (fecha !== null) {
+    if (typeof fecha === 'string') {
+      fecha = fecha.toString() + 'T00:00'
+    } else {
+      fecha.setHours(0, 0, 0, 0)
+    }
+    return date.formatDate(fecha, 'YYYY-MM-DD')
+  } else {
+    return ''
+  }
 }
 
 export function base64ToArrayBuffer (base64: string) {

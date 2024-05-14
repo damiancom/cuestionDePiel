@@ -1,17 +1,13 @@
 <template>
-  <div>
-    <q-card class="full-height">
-      <q-card-section horizontal>
-        <personal-information class="personalInformationStyle" :id="parseInt(this.$route.params.idPaciente)"/>
-        <q-space/>
-        <treatment-information :id="parseInt(this.$route.params.idPaciente)"/>
-      </q-card-section>
-    </q-card>
+  <div class="row justify-evenly">
+    <personal-information class="col-3" :id="this.$route.params.idPaciente"/>
+    <q-separator spaced inset vertical></q-separator>
+    <treatment-information class="col-8" :id="parseInt(this.$route.params.idPaciente)"/>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
+import {defineComponent} from '@vue/composition-api'
 import PersonalInformation from 'src/components/PersonalInformation.vue'
 import TreatmentInformation from 'components/TreatmentInformation.vue'
 
@@ -29,10 +25,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.personalInformationStyle {
-  width: 30%;
-  left: 1.5%;
-  top: 5%;
-  bottom: 5%;
+.damian {
+  width: 70% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 </style>

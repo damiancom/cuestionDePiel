@@ -15,7 +15,8 @@
           <q-icon name="r_person"/>
         </template>
       </q-input>
-      <q-input filled dense bottom-slots v-model="fechaNacimiento" type="date" label="Fecha de Nacimiento">
+      <q-input filled dense bottom-slots v-model="fechaNacimiento" type="date"
+               label="Fecha de nacimiento">
         <template v-slot:before>
           <q-icon name="r_event"></q-icon>
         </template>
@@ -56,13 +57,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
+import {defineComponent} from '@vue/composition-api'
 import PersonalInformation from 'components/PersonalInformation.vue'
-import { datosPersonales } from 'components/models'
+import {personalInformation} from 'components/models'
 import axios from 'axios'
-import { URL_PACIENTES } from 'src/js/constants'
-import { Notify } from 'quasar'
-import { formatearFechaDB } from 'src/js/utils'
+import {URL_PACIENTES} from 'src/js/constants'
+import {Notify} from 'quasar'
+import {formatearFechaDB} from 'src/js/utils'
 
 const IMAGEN_DEFAULT = 'https://cdn-3.expansion.mx/dims4/default/7719710/2147483647/strip/true/crop/304x413+0+0/resize/600x815!/quality/90/?url=https%3A%2F%2Fcherry-brightspot.s3.amazonaws.com%2F34%2Fdc%2Fd3f9ed94491b9677ede5c961016f%2Fsilueta.JPG'
 
@@ -85,19 +86,16 @@ export default defineComponent({
   methods: {
     agregarPaciente () {
       if (this.validaDatos()) {
-        const patient: datosPersonales = {
-          fotoPerfil: this.foto,
-          estadoCivil: '',
-          escolaridad: '',
-          apellido: this.apellido,
-          fechaNacimiento: this.fechaNacimiento,
-          celular: this.celular,
-          domicilio: this.domicilio,
-          genero: '',
-          mail: this.mail,
-          localidad: this.localidad,
-          nombre: this.nombre,
-          telefono: this.telefono
+        const patient: personalInformation = {
+          profilePicture: this.foto,
+          lastName: this.apellido,
+          dateOfBirth: this.fechaNacimiento,
+          phone: this.celular,
+          address: this.domicilio,
+          email: this.mail,
+          locality: this.localidad,
+          firstName: this.nombre,
+          cellphone: this.telefono
         }
         axios
           .post(`${URL_PACIENTES}`, patient, {

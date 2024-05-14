@@ -6,21 +6,21 @@
       </q-toolbar-title>
     </q-toolbar>
     <q-list>
-      <q-item v-for="paciente in listaPacientes" :key="paciente.id" class="q-my-sm" clickable v-ripple @click="abrirPaciente(paciente.id)">
+      <q-item v-for="patient in listaPacientes" :key="patient.id" class="q-my-sm" clickable v-ripple @click="abrirPaciente(patient.id)">
         <q-item-section avatar>
           <q-avatar color="primary" text-color="white">
-            <q-img :src="paciente.foto" alt="Foto de perfil" spinner-color="white"/>
+            <q-img :src="patient.profilePicture" alt="Foto de perfil" spinner-color="white"/>
           </q-avatar>
         </q-item-section>
         <q-item-section>
           <q-item-label>
-            {{ paciente.nombre }} {{ paciente.apellido }}
+            {{ patient.firstName }} {{ patient.lastName }}
           </q-item-label>
           <q-item-label caption lines="1">
-            {{ paciente.mail }} - {{ formatearFecha(paciente.fechaNacimiento) }} - {{ edad(paciente.fechaNacimiento) }} años
+            {{ patient.email }} - {{ formatearFecha(patient.dateOfBirth) }} - {{ edad(patient.dateOfBirth) }} años
           </q-item-label>
         </q-item-section>
-        <q-item-section avatar @click="eliminar(paciente.id)">
+        <q-item-section avatar @click="eliminar(patient.id)">
           <q-btn round color="brown" glossy icon="r_delete_sweep"/>
         </q-item-section>
       </q-item>
@@ -29,32 +29,33 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
-import { calcularEdad, formatearFecha } from 'src/js/utils'
-import { datosPersonales } from 'components/models'
-import axios, { AxiosResponse } from 'axios'
-import { URL_PACIENTES } from 'src/js/constants'
-import { Loading } from 'quasar'
+import {defineComponent} from '@vue/composition-api'
+import {calcularEdad, formatearFecha} from 'src/js/utils'
+import {personalInformation} from 'components/models'
+import axios, {AxiosResponse} from 'axios'
+import {URL_PACIENTES} from 'src/js/constants'
+import {Loading} from 'quasar'
 
 export default defineComponent({
   name: 'Pacientes',
   data () {
     return {
       isClikEliminar: false,
-      listaPacientes: <datosPersonales[]>[]
+      listaPacientes: <personalInformation[]>[]
     }
   },
   created () {
     this.getPatients()
   },
   methods: {
+    formatearFecha,
     getPatients () {
       Loading.show()
       axios
         .get(URL_PACIENTES, {
           headers: { 'Content-Type': 'application/json' }
         })
-        .then((response: AxiosResponse<datosPersonales[]>) => {
+        .then((response: AxiosResponse<personalInformation[]>) => {
           this.listaPacientes = response.data
           Loading.hide()
         })
@@ -69,25 +70,22 @@ export default defineComponent({
         name: 'paciente',
         params: { idPaciente: idPaciente }
       })
-        .catch(error => console.error('Error al intentar abrir la ficha del paciente.', error))
+        .catch(error => console.error('Error al intentar abrir la ficha del patient.', error))
     },
     eliminar (idPaciente: string) {
       this.isClikEliminar = true
       Loading.show()
       axios
-        .delete(URL_PACIENTES + '/' + idPaciente, {
+        .delete(URL_PACIENTES + idPaciente, {
           headers: { 'Content-Type': 'application/json' }
         })
         .then(() => {
           this.getPatients()
         })
         .catch(error => {
-          console.error('Ocurrio un error al intentar eliminar el paciente... ', error)
+          console.error('Ocurrio un error al intentar eliminar el patient... ', error)
           Loading.hide()
         })
-    },
-    formatearFecha (fechaNac: Date): string {
-      return formatearFecha(fechaNac.toString() + 'T00:00')
     },
     edad (fechaNac: Date): number {
       return calcularEdad(fechaNac)
