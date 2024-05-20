@@ -1,4 +1,4 @@
-import {date} from 'quasar'
+import { date } from 'quasar'
 
 export function calcularEdad (fechaNac : Date) : number {
   const hoy = new Date()

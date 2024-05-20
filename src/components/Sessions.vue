@@ -39,12 +39,12 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from '@vue/composition-api'
-import {session} from './models'
-import {Loading} from 'quasar'
-import axios, {AxiosResponse} from 'axios'
-import {URI_SESIONES, URL_PACIENTES} from 'src/js/constants'
-import {formatearFecha} from 'src/js/utils'
+import { defineComponent } from '@vue/composition-api'
+import { session } from './models'
+import { Loading } from 'quasar'
+import axios, { AxiosResponse } from 'axios'
+import { URI_SESIONES, URL_PACIENTES } from 'src/js/constants'
+import { formatearFecha } from 'src/js/utils'
 import Session from 'components/session.vue'
 
 export default defineComponent({

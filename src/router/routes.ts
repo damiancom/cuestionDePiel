@@ -21,13 +21,13 @@ const routes: RouteConfig[] = [
         component: Index
       },
       {
-        name: '/alta-paciente',
-        path: 'alta-paciente',
+        name: '/add-patient',
+        path: 'add-patient',
         component: AltaPaciente
       },
       {
-        name: '/pacientes',
-        path: 'pacientes',
+        name: '/patients',
+        path: 'patients',
         component: Pacientes
       },
       {

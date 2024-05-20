@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from '@vue/composition-api'
+import { defineComponent } from '@vue/composition-api'
 import PersonalInformation from 'src/components/PersonalInformation.vue'
 import TreatmentInformation from 'components/TreatmentInformation.vue'
 

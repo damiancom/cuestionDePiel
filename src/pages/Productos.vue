@@ -76,11 +76,11 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from '@vue/composition-api'
-import axios, {AxiosResponse} from 'axios'
-import {Loading} from 'quasar'
-import {brand, brandSelect, product} from 'src/components/models'
-import {URI_PRODUCTS, URL_MARCAS, URL_PRODUCTS} from 'src/js/constants'
+import { defineComponent } from '@vue/composition-api'
+import axios, { AxiosResponse } from 'axios'
+import { Loading } from 'quasar'
+import { brand, brandSelect, product } from 'src/components/models'
+import { URI_PRODUCTS, URL_MARCAS, URL_PRODUCTS } from 'src/js/constants'
 
 const columns = [
   { name: 'brand', style: 'min-width: 160px; width: 160px', align: 'left', label: 'Marca', field: 'brand' },

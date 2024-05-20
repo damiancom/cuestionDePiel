@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from '@vue/composition-api'
+import { defineComponent } from '@vue/composition-api'
 import AntecedentesMedicos from 'components/AntecedentesMedicos.vue'
 import ObservacionDiagnostico from 'components/ObservacionDiagnostico.vue'
 import Sesiones from 'components/Sessions.vue'

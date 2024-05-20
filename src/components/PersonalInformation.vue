@@ -67,12 +67,12 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from '@vue/composition-api'
-import {calcularEdad} from 'src/js/utils'
-import {personalInformation} from './models'
-import axios, {AxiosResponse} from 'axios'
-import {URL_PACIENTES} from 'src/js/constants'
-import {Loading, Notify} from 'quasar'
+import { defineComponent } from '@vue/composition-api'
+import { calcularEdad } from 'src/js/utils'
+import { personalInformation } from './models'
+import axios, { AxiosResponse } from 'axios'
+import { URL_PACIENTES } from 'src/js/constants'
+import { Loading, Notify } from 'quasar'
 
 export default defineComponent({
   name: 'PersonalInformation',

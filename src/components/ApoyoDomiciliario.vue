@@ -93,12 +93,12 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from '@vue/composition-api'
-import {homeSupport, routine} from 'components/models'
-import axios, {AxiosResponse} from 'axios'
-import {URI_APOYOS_DOMICILIARIOS, URI_RUTINAS, URL_PACIENTES} from 'src/js/constants'
-import {Loading, Notify, QUploader} from 'quasar'
-import {base64ToArrayBuffer} from 'src/js/utils'
+import { defineComponent } from '@vue/composition-api'
+import { homeSupport, routine } from 'components/models'
+import axios, { AxiosResponse } from 'axios'
+import { URI_APOYOS_DOMICILIARIOS, URI_RUTINAS, URL_PACIENTES } from 'src/js/constants'
+import { Loading, Notify, QUploader } from 'quasar'
+import { base64ToArrayBuffer } from 'src/js/utils'
 
 export default defineComponent({
   name: 'ApoyoDomiciliario',

@@ -28,11 +28,11 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from '@vue/composition-api'
-import {diagnosis, skinLesion} from 'components/models'
-import axios, {AxiosResponse} from 'axios'
-import {URI_DIAGNOSTICOS, URL_PACIENTES} from 'src/js/constants'
-import {Loading, Notify} from 'quasar'
+import { defineComponent } from '@vue/composition-api'
+import { diagnosis, skinLesion } from 'components/models'
+import axios, { AxiosResponse } from 'axios'
+import { URI_DIAGNOSTICOS, URL_PACIENTES } from 'src/js/constants'
+import { Loading, Notify } from 'quasar'
 
 export default defineComponent({
   name: 'ObservacionDiagnostico',

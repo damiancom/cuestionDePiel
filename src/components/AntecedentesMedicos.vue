@@ -19,11 +19,11 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from '@vue/composition-api'
-import axios, {AxiosResponse} from 'axios'
-import {URI_ANTECEDENTES_MEDICOS, URL_PACIENTES} from 'src/js/constants'
-import {medicalHistory} from 'components/models'
-import {Loading, Notify} from 'quasar'
+import { defineComponent } from '@vue/composition-api'
+import axios, { AxiosResponse } from 'axios'
+import { URI_ANTECEDENTES_MEDICOS, URL_PACIENTES } from 'src/js/constants'
+import { medicalHistory } from 'components/models'
+import { Loading, Notify } from 'quasar'
 
 export default defineComponent({
   name: 'AntecedentesMedicos',

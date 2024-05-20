@@ -87,11 +87,11 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref} from '@vue/composition-api'
-import axios, {AxiosResponse} from 'axios'
-import {URL_MARCAS} from 'src/js/constants'
-import {Loading} from 'quasar'
-import {brand} from 'components/models'
+import { defineComponent, ref } from '@vue/composition-api'
+import axios, { AxiosResponse } from 'axios'
+import { URL_MARCAS } from 'src/js/constants'
+import { Loading } from 'quasar'
+import { brand } from 'components/models'
 
 const columns = [
   {},

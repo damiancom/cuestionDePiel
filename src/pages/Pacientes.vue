@@ -29,12 +29,12 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from '@vue/composition-api'
-import {calcularEdad, formatearFecha} from 'src/js/utils'
-import {personalInformation} from 'components/models'
-import axios, {AxiosResponse} from 'axios'
-import {URL_PACIENTES} from 'src/js/constants'
-import {Loading} from 'quasar'
+import { defineComponent } from '@vue/composition-api'
+import { calcularEdad, formatearFecha } from 'src/js/utils'
+import { personalInformation } from 'components/models'
+import axios, { AxiosResponse } from 'axios'
+import { URL_PACIENTES } from 'src/js/constants'
+import { Loading } from 'quasar'
 
 export default defineComponent({
   name: 'Pacientes',

@@ -20,12 +20,12 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from '@vue/composition-api'
-import {session} from 'components/models'
+import { defineComponent } from '@vue/composition-api'
+import { session } from 'components/models'
 import axios from 'axios'
-import {URI_SESIONES, URL_PACIENTES} from 'src/js/constants'
-import {Loading, Notify} from 'quasar'
-import {formatearFechaDB} from 'src/js/utils'
+import { URI_SESIONES, URL_PACIENTES } from 'src/js/constants'
+import { Loading, Notify } from 'quasar'
+import { formatearFechaDB } from 'src/js/utils'
 
 export default defineComponent({
   name: 'sesion',
