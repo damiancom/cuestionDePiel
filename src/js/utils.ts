@@ -27,17 +27,19 @@ export function formatearFecha (fecha : Date | string) : string {
   }
 }
 
-export function formatearFechaDB (fecha : Date | string) : string {
-  if (fecha !== null) {
-    if (typeof fecha === 'string') {
-      fecha = fecha.toString() + 'T00:00'
-    } else {
-      fecha.setHours(0, 0, 0, 0)
-    }
-    return date.formatDate(fecha, 'YYYY-MM-DD')
+export function formatearFechaDB (fecha: Date | string): string {
+  if (!fecha) return ''
+
+  let fechaObj: Date
+
+  if (typeof fecha === 'string') {
+    fechaObj = new Date(fecha + 'T00:00:00')
   } else {
-    return ''
+    fecha.setHours(0, 0, 0, 0)
+    fechaObj = fecha
   }
+
+  return date.formatDate(fechaObj, 'YYYY-MM-DD')
 }
 
 export function base64ToArrayBuffer (base64: string) {

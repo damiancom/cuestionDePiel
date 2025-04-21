@@ -1,40 +1,60 @@
 <template>
   <div>
-    <q-list bordered class="rounded-borders">
-      <q-expansion-item switch-toggle-side
-                        expand-separator
-                        :label="`Sesión ${index + 1}`"
-                        :caption="`${formatearFecha(sesion.date)}`"
-                        v-for="(sesion, index) in sesiones"
-                        :key="sesion.id"
+    <!-- Encabezado con título y botón -->
+    <div class="row items-center justify-between q-mb-md">
+      <div class="text-h6 text-weight-bold">Sesiones</div>
+      <q-btn
+        rounded
+        outline
+        color="primary"
+        label="Nueva sesión"
+        icon="r_note_add"
+        @click="agregarNuevaSesion"
+        class="q-ml-sm"
+      />
+    </div>
+
+    <!-- Lista de sesiones -->
+    <q-list bordered class="rounded-borders q-mb-md">
+      <div
+        v-for="(sesion) in sesiones"
+        :key="sesion.id"
+        class="q-pa-md q-mb-sm q-gutter-md bg-grey-1 rounded-borders shadow-1"
       >
-        <q-card>
-          <q-card-section class="q-pa-lg-xl">
-            <q-input filled bottom-slots class="col-6" readonly label="Tratamiento" :value="`${sesion.treatment}`"/>
-            <q-input filled bottom-slots class="col-6" readonly label="Observaciones" :value="`${sesion.observation}`"/>
-          </q-card-section>
-          <q-card-actions align="right">
-            <q-btn flat label="Editar" icon="r_edit" @click="editarSesion(sesion)"/>
-          </q-card-actions>
-        </q-card>
-      </q-expansion-item>
+        <div class="row items-center justify-between q-mb-sm">
+          <div class="text-subtitle1 text-weight-bold justify-between">
+            {{ formatearFecha(sesion.date) }} - {{ sesion.treatment }}
+            <q-btn
+              flat
+              dense
+              round
+              icon="r_edit"
+              color="primary"
+              @click="editarSesion(sesion)"
+            />
+          </div>
+        </div>
+
+        <q-input
+          filled
+          autogrow
+          type="textarea"
+          readonly
+          :value="sesion.observation"
+          class="full-width"
+        />
+      </div>
     </q-list>
 
     <Session
-      :mostrar-session="mostrarNuevaSesion"
+      :show-session="mostrarNuevaSesion"
       :id-patient="idCliente"
       :id-session="idSesion || 0"
-      :fecha-session="fechaSesion"
-      :observacion="observation"
-      :tratamiento="treatment"
+      :session-date="fechaSesion"
+      :observation="observation"
+      :treatment="treatment"
       v-on:close-dialog="closePopUpNewSesion()"
     />
-
-    <q-card-actions class="full-width row justify-center content-center">
-      <q-btn-group class="vertical-bottom" rounded>
-        <q-btn rounded outline color="primary" label="Nueva sesión" icon="r_note_add" @click="agregarNuevaSesion()"/>
-      </q-btn-group>
-    </q-card-actions>
   </div>
 </template>
 
@@ -84,6 +104,7 @@ export default defineComponent({
         })
         .catch(error => {
           console.error('Ocurrio un error al intentar recuperar las sesiones del patient... ', error)
+          this.sesiones = []
           Loading.hide()
         })
     },

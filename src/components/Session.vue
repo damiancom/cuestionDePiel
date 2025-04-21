@@ -1,22 +1,62 @@
 <template>
-  <q-dialog v-model="mostrarSesion" persistent>
-    <q-card>
-      <q-card-section>
+  <q-dialog v-model="showSession" persistent>
+    <q-card style="width: 80vw; max-width: 80vw; height: 80vh;" class="column no-wrap">
+      <q-card-section class="q-pb-none">
         <div class="text-h6">Nueva sesión</div>
       </q-card-section>
 
-      <q-card-section class="q-pt-none">
-        <q-input filled bottom-slots label="Observaciones" v-model="observation" class="col-6"/>
-        <q-input filled bottom-slots label="Tratamiento" v-model="treatment" class="col-6"/>
-        <q-input filled bottom-slots label="Fecha Sesión" v-model="fechaSesion" type="date" class="col-6"/>
+      <q-card-section class="q-pt-none scroll" style="flex: 1;">
+        <q-form class="q-gutter-md">
+          <q-input
+            filled
+            autogrow
+            counter
+            type="textarea"
+            label="Observaciones"
+            maxlength="10000"
+            v-model="observation"
+          />
+
+          <q-input
+            filled
+            autogrow
+            counter
+            type="textarea"
+            label="Tratamiento"
+            maxlength="10000"
+            v-model="treatment"
+          />
+
+          <q-input
+            filled
+            label="Fecha de sesión"
+            v-model="sessionDateStr"
+            type="date"
+          />
+        </q-form>
       </q-card-section>
 
-      <q-card-actions align="right">
-        <q-btn flat color="secondary" label="Confirmar" icon="r_check" v-close-popup @click="altaSesion()"/>
-        <q-btn flat color="negative" label="Cancelar" icon="r_clear" v-close-popup @click="$emit('close-dialog')"/>
+      <q-card-actions align="right" class="q-pa-md">
+        <q-btn
+          flat
+          color="secondary"
+          label="Confirmar"
+          icon="r_check"
+          v-close-popup
+          @click="altaSesion"
+        />
+        <q-btn
+          flat
+          color="negative"
+          label="Cancelar"
+          icon="r_clear"
+          v-close-popup
+          @click="$emit('close-dialog')"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>
+
 </template>
 
 <script lang="ts">
@@ -30,16 +70,16 @@ import { formatearFechaDB } from 'src/js/utils'
 export default defineComponent({
   name: 'sesion',
   props: {
-    idPaciente: {
+    idPatient: {
       type: Number,
       required: true
     },
-    mostrarSesion: {
+    showSession: {
       type: Boolean,
       default: false,
       required: true
     },
-    idSesion: {
+    idSession: {
       type: Number,
       required: true
     },
@@ -53,63 +93,62 @@ export default defineComponent({
       default: null,
       required: false
     },
-    fechaSesion: {
-      type: Date,
-      default: function () {
-        return new Date()
-      }
+    sessionDate: {
+      type: [Date, String],
+      default: () => new Date()
     }
   },
   data () {
-    return {}
+    return {
+      sessionDateStr: ''
+    }
+  },
+  watch: {
+    sessionDate: {
+      immediate: true,
+      handler (newVal) {
+        if (typeof newVal === 'string') {
+          this.sessionDateStr = newVal
+        } else {
+          const fecha = new Date(newVal)
+          this.sessionDateStr = fecha.toISOString().substring(0, 10) // Formato 'YYYY-MM-DD'
+        }
+      }
+    }
   },
   methods: {
     altaSesion () {
       Loading.show()
-      console.log('[DAMIAN] Fecha a dar de alta', this.fechaSesion, formatearFechaDB(this.fechaSesion))
-      if (this.idSesion === 0) {
-        // Tengo que dar de alta una nueva sesion
-        const nuevaSesion: session = {
-          observation: this.observation,
-          treatment: this.treatment,
-          date: formatearFechaDB(this.fechaSesion) as unknown as Date
-        }
-        console.log('[DAMIAN] Fecha a dar de alta', this.fechaSesion, formatearFechaDB(this.fechaSesion))
-        axios
-          .post(`${URL_PACIENTES}/${this.idPaciente}/${URI_SESIONES}`, nuevaSesion, {
-            headers: { 'Content-Type': 'application/json' }
-          })
-          .then(() => {
-            this.informaAltaSesion()
-            Loading.hide()
-            this.cerrarPopUp()
-          })
-          .catch(error => {
-            console.error('Ocurrio un error al intentar insertar la nueva sesion del paciente... ', error)
-            Loading.hide()
-          })
-      } else {
-        const nuevaSesion: session = {
-          id: this.idSesion,
-          observation: this.observation,
-          treatment: this.treatment,
-          date: formatearFechaDB(this.fechaSesion) as unknown as Date
-        }
-        console.log('[DAMIAN] Fecha a dar de alta', this.fechaSesion, formatearFechaDB(this.fechaSesion))
-        axios
-          .patch(`${URL_PACIENTES}/${this.idPaciente}/${URI_SESIONES}/${this.idSesion}`, nuevaSesion, {
-            headers: { 'Content-Type': 'application/json' }
-          })
-          .then(() => {
-            this.informaActualizaSesion()
-            Loading.hide()
-            this.cerrarPopUp()
-          })
-          .catch(error => {
-            console.error('Ocurrio un error al intentar insertar la nueva sesion del paciente... ', error)
-            Loading.hide()
-          })
+      const fecha = new Date(this.sessionDateStr)
+      console.log('[DAMIAN] Fecha a dar de alta', fecha, formatearFechaDB(fecha))
+
+      const nuevaSesion: session = {
+        id: this.idSession === 0 ? undefined : this.idSession,
+        observation: this.observation,
+        treatment: this.treatment,
+        date: fecha
       }
+
+      console.log('[DAMIAN] Nueva sesion', nuevaSesion)
+
+      const axiosCall = this.idSession === 0
+        ? axios.post(`${URL_PACIENTES}/${this.idPatient}/${URI_SESIONES}`, nuevaSesion, {
+          headers: { 'Content-Type': 'application/json' }
+        })
+        : axios.patch(`${URL_PACIENTES}/${this.idPatient}/${URI_SESIONES}/${this.idSession}`, nuevaSesion, {
+          headers: { 'Content-Type': 'application/json' }
+        })
+
+      axiosCall
+        .then(() => {
+          this.idSession === 0 ? this.informaAltaSesion() : this.informaActualizaSesion()
+          Loading.hide()
+          this.cerrarPopUp()
+        })
+        .catch(error => {
+          console.error('Ocurrió un error al guardar la sesión del paciente... ', error)
+          Loading.hide()
+        })
     },
     informaAltaSesion () {
       Notify.create({

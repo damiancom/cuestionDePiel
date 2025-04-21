@@ -28,7 +28,6 @@
         <observacion-diagnostico :id-cliente="id" />
       </q-tab-panel>
       <q-tab-panel name="sesiones">
-        <div class="text-h6">Sesiones</div>
         <sesiones :id-cliente="id" />
       </q-tab-panel>
     </q-tab-panels>
