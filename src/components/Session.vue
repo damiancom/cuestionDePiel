@@ -107,26 +107,19 @@ export default defineComponent({
     sessionDate: {
       immediate: true,
       handler (newVal) {
-        if (typeof newVal === 'string') {
-          this.sessionDateStr = newVal
-        } else {
-          const fecha = new Date(newVal)
-          this.sessionDateStr = fecha.toISOString().substring(0, 10) // Formato 'YYYY-MM-DD'
-        }
+        this.sessionDateStr = formatearFechaDB(newVal)
       }
     }
   },
   methods: {
     altaSesion () {
       Loading.show()
-      const fecha = new Date(this.sessionDateStr)
-      console.log('[DAMIAN] Fecha a dar de alta', fecha, formatearFechaDB(fecha))
 
       const nuevaSesion: session = {
         id: this.idSession === 0 ? undefined : this.idSession,
         observation: this.observation,
         treatment: this.treatment,
-        date: fecha
+        date: new Date(this.sessionDateStr)
       }
 
       console.log('[DAMIAN] Nueva sesion', nuevaSesion)

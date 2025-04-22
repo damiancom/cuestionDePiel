@@ -17,7 +17,7 @@ export function calcularEdad (fechaNac : Date) : number {
 export function formatearFecha (fecha : Date | string) : string {
   if (fecha !== null) {
     if (typeof fecha === 'string') {
-      fecha = fecha.toString() + 'T00:00'
+      fecha = fecha.toString() + 'T00:00:00'
     } else {
       fecha.setHours(0, 0, 0, 0)
     }
