@@ -30,16 +30,15 @@ export function formatearFecha (fecha : Date | string) : string {
 export function formatearFechaDB (fecha: Date | string): string {
   if (!fecha) return ''
 
-  let fechaObj: Date
-
   if (typeof fecha === 'string') {
-    fechaObj = new Date(fecha + 'T00:00:00')
-  } else {
-    fecha.setHours(0, 0, 0, 0)
-    fechaObj = fecha
+    return fecha
   }
 
-  return date.formatDate(fechaObj, 'YYYY-MM-DD')
+  const year = fecha.getFullYear()
+  const month = String(fecha.getMonth() + 1).padStart(2, '0')
+  const day = String(fecha.getDate()).padStart(2, '0')
+
+  return `${year}-${month}-${day}`
 }
 
 export function base64ToArrayBuffer (base64: string) {

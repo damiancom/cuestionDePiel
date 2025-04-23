@@ -36,7 +36,7 @@ export interface session {
   id?: number,
   observation: string,
   treatment: string,
-  date: Date
+  date: string
 }
 
 export interface skinLesion {

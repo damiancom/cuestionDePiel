@@ -12,9 +12,9 @@
             autogrow
             counter
             type="textarea"
-            label="Observaciones"
+            label="Tratamiento"
             maxlength="10000"
-            v-model="observation"
+            v-model="treatment"
           />
 
           <q-input
@@ -22,9 +22,9 @@
             autogrow
             counter
             type="textarea"
-            label="Tratamiento"
+            label="Observaciones"
             maxlength="10000"
-            v-model="treatment"
+            v-model="observation"
           />
 
           <q-input
@@ -119,10 +119,10 @@ export default defineComponent({
         id: this.idSession === 0 ? undefined : this.idSession,
         observation: this.observation,
         treatment: this.treatment,
-        date: new Date(this.sessionDateStr)
+        date: this.sessionDateStr
       }
 
-      console.log('[DAMIAN] Nueva sesion', nuevaSesion)
+      console.log(`[new session] ${JSON.stringify(nuevaSesion)}`)
 
       const axiosCall = this.idSession === 0
         ? axios.post(`${URL_PACIENTES}/${this.idPatient}/${URI_SESIONES}`, nuevaSesion, {
