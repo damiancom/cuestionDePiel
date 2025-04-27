@@ -1,4 +1,4 @@
-export const URL_API = 'http://ec2-204-236-209-243.compute-1.amazonaws.com:9090'
+export const URL_API = 'https://api.cuestiondepieltech.com.ar'
 // export const URL_API = 'http://localhost:9090'
 export const URL_PACIENTES = URL_API + '/patients'
 export const URI_ANTECEDENTES_MEDICOS = 'medical-history'
