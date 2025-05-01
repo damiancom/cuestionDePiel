@@ -82,3 +82,17 @@ export interface product {
   brand?: brand,
   purchasePrice: number
 }
+
+export interface marcaSelect {
+  label: string,
+  brand: marca
+}
+
+export interface product {
+  id?: number,
+  name: string,
+  codigo: string,
+  contenido: string,
+  marca?: marca,
+  precioCompra: number
+}

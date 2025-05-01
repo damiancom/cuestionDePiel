@@ -6,7 +6,7 @@
         :columns="columns"
         title="Productos"
         :rows-per-page-options="[]"
-        row-key="brand"
+        row-key="marca"
         wrap-cells
       >
         <template v-slot:body="props">
@@ -15,15 +15,15 @@
 <!--              <q-btn flat round text-color="brown" icon="r_delete_sweep" @click="showConfirm(props.row.id)"/>-->
 <!--            </q-td>-->
 
-            <q-td key="brand" :props="props">
-              {{ props.row.brand.name }}
+            <q-td key="marca" :props="props">
+              {{ props.row.marca.nombre }}
             </q-td>
 
-            <q-td key="code" :props="props">
-              <div v-html="props.row.code"></div>
+            <q-td key="codigo" :props="props">
+              <div v-html="props.row.codigo"></div>
               <q-popup-edit
                 buttons
-                v-model="props.row.code"
+                v-model="props.row.codigo"
                 v-slot="scope"
               >
                 <q-editor
@@ -37,21 +37,21 @@
 
             <q-td key="name" :props="props">
               {{ props.row.name }}
-              <q-popup-edit v-model="props.row.name" @save="editarProducto(props.row)" buttons label-set="Confirmar">
+              <q-popup-edit v-model="props.row.name" v-slot="scope" @save="editarProducto(props.row)" buttons label-set="Confirmar">
                 <q-input v-model="props.row.name" dense autofocus counter/>
               </q-popup-edit>
             </q-td>
 
             <q-td key="contenido" :props="props">
               {{ props.row.contenido }}
-              <q-popup-edit v-model="props.row.contenido" @cancel="notificaCancelaCambio" buttons label-set="Confirmar">
+              <q-popup-edit v-model="props.row.contenido" v-slot="scope" @cancel="notificaCancelaCambio" buttons label-set="Confirmar">
                 <q-input v-model="props.row.contenido" dense autofocus counter @keyup.enter="editarProducto(props.row)"/>
               </q-popup-edit>
             </q-td>
 
-            <q-td key="purchasePrice" :props="props">
-              $ {{ props.row.purchasePrice }}
-              <q-popup-edit v-model.number="props.row.purchasePrice" v-slot="scope" @cancel="notificaCancelaCambio" buttons label-set="Confirmar">
+            <q-td key="precioCompra" :props="props">
+              $ {{ props.row.precioCompra }}
+              <q-popup-edit v-model.number="props.row.precioCompra" v-slot="scope" @cancel="notificaCancelaCambio" buttons label-set="Confirmar">
                 <q-input type="number" v-model.number="scope.value" dense autofocus @keyup.enter="editarProducto(props.row)"/>
               </q-popup-edit>
             </q-td>
@@ -76,17 +76,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
-import axios, { AxiosResponse } from 'axios'
-import { Loading } from 'quasar'
-import { brand, brandSelect, product } from 'src/components/models'
-import { URI_PRODUCTS, URL_MARCAS, URL_PRODUCTS } from 'src/js/constants'
+import {defineComponent} from '@vue/composition-api'
 
 const columns = [
-  { name: 'brand', style: 'min-width: 160px; width: 160px', align: 'left', label: 'Marca', field: 'brand' },
-  { name: 'code', style: 'min-width: 200px; width: 200px', align: 'left', label: 'Código', field: 'code' },
+  { name: 'marca', style: 'min-width: 160px; width: 160px', align: 'left', label: 'Marca', field: 'marca' },
+  { name: 'codigo', style: 'min-width: 200px; width: 200px', align: 'left', label: 'Código', field: 'codigo' },
   { name: 'producto', style: 'min-width: 200px; width: 200px', align: 'left', label: 'Producto', field: 'producto' },
-  { name: 'content', style: 'min-width: 200px; width: 200px', align: 'left', label: 'Cont.', field: 'content' },
+  { name: 'contenido', style: 'min-width: 200px; width: 200px', align: 'left', label: 'Cont.', field: 'contenido' },
   { name: 'precio', align: 'center', label: 'Precio', field: 'precio' },
   { name: 'cantidad', align: 'center', label: 'Cantidad', field: 'cantidad' }
 ]
@@ -95,99 +91,92 @@ export default defineComponent({
   name: 'Productos',
   data () {
     return {
-      brands: <brandSelect[]>[],
-      products: <product[]>[],
-      productSelectBrand: <brandSelect> {},
-      productCode: '',
-      productName: '',
-      productContent: '',
-      productPrice: 0.0,
-      productIdDelete: 0,
-      confirm: true,
       columns,
       rows: [
         {
-          brand: 'Frozen Yogurt',
-          code: '<p>It\'s cold but great and tastes different than normal ice cream, but it\'s great too!</p><p><strong>Have a taste!</strong></p>',
+          marca: 'Frozen Yogurt',
+          codigo: '<p>It\'s cold but great and tastes different than normal ice cream, but it\'s great too!</p><p><strong>Have a taste!</strong></p>',
           producto: 'producto',
-          content: 'contenidoaasd',
+          contenido: 'contenidoaasd',
           precio: 6.0,
           cantidad: 2
         },
         {
-          brand: 'Ice cream sandwich',
-          code: '<p>It\'s also cold but great!</p><p><strong>Have a taste!</strong></p>',
+          marca: 'Ice cream sandwich',
+          codigo: '<p>It\'s also cold but great!</p><p><strong>Have a taste!</strong></p>',
           producto: 'producto',
-          content: 'contenidoaasd',
+          contenido: 'contenidoaasd',
           precio: 6.0,
           cantidad: 2
         },
         {
-          brand: 'Eclair',
-          code: '<p>It\'s not cold and also great!</p><p><strong>Have a taste!</strong></p>',
+          marca: 'Eclair',
+          codigo: '<p>It\'s not cold and also great!</p><p><strong>Have a taste!</strong></p>',
           producto: 'producto',
-          content: 'contenidoaasd',
+          contenido: 'contenidoaasd',
           precio: 6.0,
           cantidad: 2
         },
         {
-          brand: 'Cupcake',
-          code: '<p>It could be warm and it\'s great!</p><p><strong>Have a taste!</strong></p>',
+          marca: 'Cupcake',
+          codigo: '<p>It could be warm and it\'s great!</p><p><strong>Have a taste!</strong></p>',
           producto: 'producto',
-          content: 'contenidoaasd',
+          contenido: 'contenidoaasd',
           precio: 6.0,
           cantidad: 2
         },
         {
-          brand: 'Gingerbread',
-          code: '<p>It\'s spicy and great!</p><p><strong>Have a taste!</strong></p>',
+          marca: 'Gingerbread',
+          codigo: '<p>It\'s spicy and great!</p><p><strong>Have a taste!</strong></p>',
           producto: '',
-          content: '',
+          contenido: '',
           precio: 6.0,
           cantidad: 2
         },
         {
-          brand: 'Jelly bean',
-          code: '<p>It\'s neither cold or warm, but great!</p><p><strong>Have one or two or several, but not too many!</strong></p>',
+          marca: 'Jelly bean',
+          codigo: '<p>It\'s neither cold or warm, but great!</p><p><strong>Have one or two or several, but not too many!</strong></p>',
           producto: '',
-          content: '',
+          contenido: '',
           precio: 6.0,
           cantidad: 2
         },
         {
-          brand: 'Lollipop',
-          code: '<p>It\'s sticky and normally sweet!</p><p><strong>Have a lick!</strong></p>',
+          marca: 'Lollipop',
+          codigo: '<p>It\'s sticky and normally sweet!</p><p><strong>Have a lick!</strong></p>',
           producto: '',
-          content: '',
+          contenido: '',
           precio: 6.0,
           cantidad: 2
         },
         {
-          brand: 'Honeycomb',
-          code: '<p>It\'s special and sweet!</p><p><strong>Have a taste!</strong></p>',
+          marca: 'Honeycomb',
+          codigo: '<p>It\'s special and sweet!</p><p><strong>Have a taste!</strong></p>',
           producto: '',
-          content: '',
+          contenido: '',
           precio: 6.0,
           cantidad: 2
         },
         {
-          brand: 'Donut',
-          code: '<p>It\'s an American classic glazed!</p><p><strong>Have one with coffee!</strong></p>',
+          marca: 'Donut',
+          codigo: '<p>It\'s an American classic glazed!</p><p><strong>Have one with coffee!</strong></p>',
           producto: '',
-          content: '',
+          contenido: '',
           precio: 6.0,
           cantidad: 2
         },
         {
-          brand: 'KitKat',
-          code: '<p>It\'s good with a break!</p><p><strong>Have a section to perfection!</strong></p>',
+          marca: 'KitKat',
+          codigo: '<p>It\'s good with a break!</p><p><strong>Have a section to perfection!</strong></p>',
           producto: '',
-          content: '',
+          contenido: '',
           precio: 6.0,
           cantidad: 2
         }
       ]
     }
+  },
+  created () {
   },
   methods: {
     cargarMarcas () {
@@ -196,9 +185,9 @@ export default defineComponent({
         .get(URL_MARCAS, {
           headers: { 'Content-Type': 'application/json' }
         })
-        .then((response: AxiosResponse<brand[]>) => {
-          response.data.forEach((brand: brand) => {
-            const brandSelect = { label: brand.name, brand: brand }
+        .then((response: AxiosResponse<marca[]>) => {
+          response.data.forEach((brand: marca) => {
+            const brandSelect = { label: brand.nombre, brand: brand }
             this.brands.push(brandSelect)
           })
           Loading.hide()
@@ -228,16 +217,13 @@ export default defineComponent({
       Loading.show()
       const newProduct = {
         name: this.productName,
-        code: this.productCode,
-        content: this.productContent,
-        purchasePrice: this.productPrice / 100
+        codigo: this.productCode,
+        contenido: this.productContent,
+        precioCompra: this.productPrice / 100
       }
       console.log(this.productSelectBrand)
-
-      const brandId = this.productSelectBrand.brand.id ?? 0
-
       axios
-        .post(`${URL_MARCAS}/${brandId}/${URI_PRODUCTS}`, newProduct, {
+        .post(`${URL_MARCAS}/${this.productSelectBrand.brand.id}/${URI_PRODUCTS}`, newProduct, {
           headers: { 'Content-Type': 'application/json' }
         })
         .then((response: AxiosResponse<product>) => {
@@ -258,24 +244,20 @@ export default defineComponent({
       this.productName = ''
       this.productContent = ''
       this.productPrice = 0.0
-      this.productSelectBrand = { label: '', brand: { name: '' } }
+      this.productSelectBrand = { label: '', brand: { nombre: '' } }
     },
     editarProducto (product: product) {
-      if (product.brand) {
+      if (product.marca) {
         Loading.show()
         const editProduct = {
           name: product.name,
-          code: product.code,
-          content: product.content,
-          purchasePrice: product.purchasePrice
+          codigo: product.codigo,
+          contenido: product.contenido,
+          precioCompra: product.precioCompra
         }
-
-        const brandId = product.brand.id ?? 0
-        const productId = product.id ?? 0
-
         axios
-          .patch(`${URL_MARCAS}/${brandId}/${URI_PRODUCTS}/${productId}`, editProduct, {
-            headers: { 'Content-Type': 'application/json' }
+          .patch(`${URL_MARCAS}/${product.marca.id}/${URI_PRODUCTS}/${product.id}`, editProduct, {
+            headers: {'Content-Type': 'application/json'}
           })
           .then((response: AxiosResponse<product>) => {
             if (response.status === 201) {
