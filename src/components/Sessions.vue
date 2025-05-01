@@ -65,7 +65,7 @@ import { Loading } from 'quasar'
 import axios, { AxiosResponse } from 'axios'
 import { URI_SESIONES, URL_PACIENTES } from 'src/js/constants'
 import { formatearFecha } from 'src/js/utils'
-import Session from 'components/session.vue'
+import Session from 'components/Session.vue'
 
 export default defineComponent({
   name: 'Sesiones',

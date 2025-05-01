@@ -1,4 +1,4 @@
-import { RouteConfig } from 'vue-router'
+import type { RouteConfig } from 'vue-router'
 import MainLayout from 'layouts/MainLayout.vue'
 import Index from 'pages/Index.vue'
 import Pacientes from 'pages/Pacientes.vue'
@@ -10,7 +10,7 @@ import AltaPaciente from 'components/AltaPaciente.vue'
 import Productos from 'pages/Productos.vue'
 import Marcas from 'pages/Marcas.vue'
 
-const routes: RouteConfig[] = [
+const routes = [
   {
     path: '/',
     component: MainLayout,
@@ -21,43 +21,43 @@ const routes: RouteConfig[] = [
         component: Index
       },
       {
-        name: '/add-patient',
+        name: 'add-patient',
         path: 'add-patient',
         component: AltaPaciente
       },
       {
-        name: '/patients',
+        name: 'patients',
         path: 'patients',
         component: Pacientes
       },
       {
-        name: '/productos',
+        name: 'productos',
         path: 'productos',
         component: Productos
       },
       {
-        name: '/marcas',
+        name: 'marcas',
         path: 'marcas',
         component: Marcas
       },
       {
-        name: '/login',
+        name: 'login',
         path: 'login',
         component: Login
       },
       {
         name: 'paciente',
-        path: '/paciente/:idPaciente',
+        path: 'paciente/:idPaciente',
         component: Paciente
       },
       {
         name: 'apoyoDomiciliario',
-        path: '/apoyoDomiciliario',
+        path: 'apoyoDomiciliario',
         component: ApoyoDomiciliario
       },
       {
         name: 'observacionDiagnostico',
-        path: '/observacion-diagnostico',
+        path: 'observacion-diagnostico',
         component: ObservacionDiagnostico
       }
     ]
@@ -66,6 +66,6 @@ const routes: RouteConfig[] = [
     path: '*',
     component: () => import('pages/Error404.vue')
   }
-]
+] as RouteConfig[]
 
 export default routes

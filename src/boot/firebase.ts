@@ -1,4 +1,5 @@
-import * as firebase from 'firebase/app'
+/* eslint-disable import/no-duplicates */
+import firebase from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/analytics'
 import 'firebase/storage'

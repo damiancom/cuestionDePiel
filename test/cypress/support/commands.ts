@@ -58,40 +58,40 @@ declare namespace Cypress {
 Cypress.Commands.add(
   'dataCy',
   {
-    prevSubject: 'optional',
+    prevSubject: 'optional'
   },
   (subject: JQuery<HTMLElement> | undefined, value: string) => {
     return cy.get(`[data-cy=${value}]`, {
-      withinSubject: subject,
-    });
-  },
-);
+      withinSubject: subject
+    })
+  }
+)
 
 Cypress.Commands.add('testRoute', (route: string) => {
   cy.location().should((loc) => {
     if (loc.hash.length > 0) {
       // Vue-Router in hash mode
-      expect(loc.hash).to.contain(route);
+      expect(loc.hash).to.contain(route)
     } else {
       // Vue-Router in history mode
-      expect(loc.pathname).to.contain(route);
+      expect(loc.pathname).to.contain(route)
     }
-  });
-});
+  })
+})
 
 // these two commands let you persist local storage between tests
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const LOCAL_STORAGE_MEMORY: Record<string, any> = {};
+const LOCAL_STORAGE_MEMORY: Record<string, any> = {}
 
 Cypress.Commands.add('saveLocalStorage', () => {
   Object.keys(localStorage).forEach((key) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    LOCAL_STORAGE_MEMORY[key] = localStorage[key];
-  });
-});
+    LOCAL_STORAGE_MEMORY[key] = localStorage[key]
+  })
+})
 
 Cypress.Commands.add('restoreLocalStorage', () => {
   Object.keys(LOCAL_STORAGE_MEMORY).forEach((key) => {
-    localStorage.setItem(key, LOCAL_STORAGE_MEMORY[key]);
-  });
-});
+    localStorage.setItem(key, LOCAL_STORAGE_MEMORY[key])
+  })
+})
