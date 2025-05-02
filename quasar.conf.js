@@ -27,6 +27,7 @@ module.exports = configure(function (ctx) {
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
     boot: [
+      'vue-compat',
       'composition-api',
       'axios',
       'firebase'
@@ -93,11 +94,22 @@ module.exports = configure(function (ctx) {
       open: true // opens browser window automatically
     },
 
+    vueCompilerOptions: {
+      compatConfig: {
+        MODE: 3 // Habilita modo compatibilidad Vue 3
+      }
+    },
+
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
       iconSet: 'material-icons', // Quasar icon set
       lang: 'es', // 'en-us', // Quasar language pack
       config: {
+        vueCompilerOptions: {
+          compatConfig: {
+            MODE: 3
+          }
+        },
         notify: {
           timeout: 2500,
           position: 'bottom'
