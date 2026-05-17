@@ -1,25 +1,27 @@
-# cuestionDePiel
-Software para la gestión de pacientes de la empresa Cuestión de Piel
+# Sistema Médico Vue + Quasar
 
-## Install the dependencies
+Sistema médico moderno, minimalista y profesional, desarrollado con Vue 3 y Quasar 2.
+
+## Instalación
+
 ```bash
+npm install -g @quasar/cli # si no tienes Quasar CLI
 npm install
 ```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
-```bash
-quasar dev
-```
+## Scripts
+- `npm run dev` — desarrollo SPA
+- `npm run build` — build SPA
+- `npm run serve` — servir build
 
-### Lint the files
-```bash
-npm run lint
-```
+## Estructura
+- `/src/pages` — pantallas principales
+- `/src/components/ui` — componentes reutilizables
+- `/src/layouts` — layouts de app y login
+- `/src/router` — rutas
+- `/src/store` — estado global (Pinia)
+- `/src/services` — servicios API
 
-### Build the app for production
-```bash
-quasar build
-```
-
-### Customize the configuration
-See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
+## Más información
+- [Documentación Quasar](https://quasar.dev/components)
+- [Documentación Vue 3](https://vuejs.org/guide/introduction.html)
