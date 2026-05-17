@@ -1,12 +1,25 @@
 <template>
-  <div id="q-app">
+  <component :is="layout">
     <router-view />
-  </div>
+  </component>
 </template>
-<script lang="ts">
-import { defineComponent } from '@vue/composition-api'
 
-export default defineComponent({
-  name: 'App'
-})
+<script setup>
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+import MainLayout from './layouts/MainLayout.vue';
+import AuthLayout from './layouts/AuthLayout.vue';
+
+const route = useRoute();
+const layout = computed(() => {
+  if (route.meta && route.meta.layout === 'auth') return AuthLayout;
+  return MainLayout;
+});
 </script>
+
+<style>
+body {
+  font-family: 'Roboto', sans-serif;
+  background: #f8f9fa;
+}
+</style>
