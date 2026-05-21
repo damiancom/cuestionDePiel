@@ -243,13 +243,13 @@ function confirmCrop() {
 async function createPatient() {
   loading.value = true;
   try {
-    await axios.post(PATIENTS_URL, patient.value);
+    const response = await axios.post(PATIENTS_URL, patient.value);
     $q.notify({
       type: 'positive',
       message: 'Paciente creado',
       caption: 'Paciente creado exitosamente'
     });
-    router.push('/pacientes');
+    router.push(`/pacientes/${response.data.id}`);
   } catch (error) {
     console.error('Error creating patient:', error);
     $q.notify({
