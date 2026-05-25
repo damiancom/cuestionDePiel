@@ -46,7 +46,7 @@
       </template>
       <template #body-cell-name="props">
         <q-td>
-          <div class="text-weight-medium">{{ props.row.id }} - {{ props.row.fullName }}</div>
+          <div class="text-weight-medium">{{ props.row.fullName }}</div>
           <div class="text-caption text-grey-7">{{ props.row.email }}</div>
         </q-td>
       </template>
