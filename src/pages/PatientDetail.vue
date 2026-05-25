@@ -209,7 +209,7 @@
 
 <script setup>
 import { computed, nextTick, onMounted, reactive, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { PATIENTS_URL, MEDICAL_HISTORY_ENDPOINT, HOME_SUPPORTS_ENDPOINT, ROUTINES_ENDPOINT, DIAGNOSTICS_ENDPOINT, SessionsAPI } from "../services/api";
 import axios from "axios";
 import { useQuasar } from "quasar";
@@ -237,6 +237,7 @@ function handleFototipoChange(val) {
 
 const $q = useQuasar();
 const route = useRoute();
+const router = useRouter();
 const editing = ref(false);
 const patient = reactive({
   name: '',
@@ -529,7 +530,7 @@ function cargarDatosPaciente(data) {
 
 function findPatientById(id) {
   const patientUrl = `${PATIENTS_URL}/${id}`;
-  axios.get(patientUrl)
+  return axios.get(patientUrl)
     .then(response => {
       console.log(response.data);
       patient.name = response.data.name;
@@ -546,6 +547,13 @@ function findPatientById(id) {
     })
     .catch(error => {
       console.error('Error al buscar paciente:', error);
+      $q.notify({
+        type: 'negative',
+        message: 'El paciente no existe',
+        position: 'top'
+      });
+      router.push('/pacientes');
+      throw error;
     });
 }
 
