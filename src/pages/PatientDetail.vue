@@ -25,7 +25,6 @@
             <div class="q-mb-xs"><span class="text-weight-medium">Teléfono:</span><br>{{ patient.phone }}</div>
             <div class="q-mb-xs"><span class="text-weight-medium">Celular:</span><br>{{ patient.cellphone }}</div>
             <div class="q-mb-xs"><span class="text-weight-medium">E-mail:</span><br>{{ patient.email }}</div>
-            <q-btn label="Editar" color="primary" class="full-width q-mt-md" @click="editing = true" />
           </div>
           <div v-else class="full-width">
             <q-input v-model="patientEdit.name" label="Nombre" dense class="q-mb-xs" borderless />
@@ -36,10 +35,16 @@
             <q-input v-model="patientEdit.phone" label="Teléfono" dense class="q-mb-xs" borderless />
             <q-input v-model="patientEdit.cellphone" label="Celular" dense class="q-mb-xs" borderless />
             <q-input v-model="patientEdit.email" label="E-mail" dense class="q-mb-xs" borderless />
-            <div class="row q-mt-md q-gutter-sm">
-              <q-btn label="Confirmar" color="primary" @click="updatePatientData" />
-              <q-btn label="Cancelar" flat @click="cancelPatientEdit" />
-            </div>
+          </div>
+          
+          <div class="text-caption text-grey-6 q-mt-sm full-width text-left">ID: {{ patient.id }}</div>
+          
+          <div v-if="!editing" class="full-width">
+            <q-btn label="Editar" color="primary" class="full-width q-mt-md" @click="editing = true" />
+          </div>
+          <div v-else class="full-width row q-mt-md q-gutter-sm">
+            <q-btn label="Confirmar" color="primary" @click="updatePatientData" />
+            <q-btn label="Cancelar" flat @click="cancelPatientEdit" />
           </div>
         </q-card>
       </div>
@@ -239,6 +244,7 @@ const route = useRoute();
 const router = useRouter();
 const editing = ref(false);
 const patient = reactive({
+  id: '',
   name: '',
   last_name: '',
   birth_date: '',
@@ -532,6 +538,7 @@ function findPatientById(id) {
   return axios.get(patientUrl)
     .then(response => {
       console.log(response.data);
+      patient.id = response.data.id;
       patient.name = response.data.name;
       patient.last_name = response.data.last_name;
       patient.birth_date = response.data.birth_date || response.data.birthDate || response.data.fechaNacimiento || response.data.bith_date;
