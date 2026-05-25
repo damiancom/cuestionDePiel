@@ -120,7 +120,6 @@
                 <div class="row q-mt-md q-gutter-sm">
                   <q-btn flat label="Cancelar" @click="resetApoyo" class="minimal-btn" />
                   <q-btn label="Guardar" color="primary" @click="guardarApoyo" class="minimal-btn-save" />
-                  <q-btn color="primary" icon="cloud_upload" label="Subir routine PDF" class="minimal-btn" />
                 </div>
               </q-form>
             </q-tab-panel>
