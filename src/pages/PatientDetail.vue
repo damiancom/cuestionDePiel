@@ -138,7 +138,7 @@
                 <q-btn color="primary" icon="add" label="Nueva Sesión" @click="nuevaSesion" />
               </div>
               <q-table :rows="sesionesOrdenadas" :columns="columns" row-key="id" flat dense hide-bottom class="q-mb-md"
-                @row-click="verSesion">
+                @row-click="(evt, row) => verSesion(row)">
                 <template #body-cell-date="props">
                   <q-td>{{ formatDate(props.row.date) }}</q-td>
                 </template>
