@@ -29,7 +29,7 @@
           <div v-else class="full-width">
             <q-input v-model="patientEdit.name" label="Nombre" dense class="q-mb-xs" borderless />
             <q-input v-model="patientEdit.last_name" label="Apellido" dense class="q-mb-xs" borderless />
-            <q-input v-model="patientEdit.birth_date" label="Fecha de Nacimiento" dense class="q-mb-xs" borderless />
+            <q-input v-model="patientEdit.birth_date" label="Fecha de Nacimiento" dense class="q-mb-xs" borderless type="date" />
             <q-input v-model="patientEdit.address" label="Dirección" dense class="q-mb-xs" borderless />
             <q-input v-model="patientEdit.locality" label="Localidad" dense class="q-mb-xs" borderless />
             <q-input v-model="patientEdit.phone" label="Teléfono" dense class="q-mb-xs" borderless />
