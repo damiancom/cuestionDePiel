@@ -2,7 +2,7 @@
   <q-page padding>
     <div class="row q-col-gutter-xl">
       <div class="col-12 col-md-3">
-        <q-card class="q-pa-lg flex flex-column items-center shadow-2 patient-sidebar">
+        <q-card class="q-pa-lg flex column items-center shadow-2 patient-sidebar">
           <div class="text-h6 q-mb-md">Información del Paciente</div>
           <q-avatar size="100px" class="q-mb-md" :class="editing ? 'avatar-clickable' : 'bg-blue-1 text-primary'" @click="editing && seleccionarFoto()">
             <img v-if="patient.profile_picture" :src="patient.profile_picture" alt="Foto de perfil"/>
@@ -27,14 +27,14 @@
             <div class="q-mb-xs"><span class="text-weight-medium">E-mail:</span><br>{{ patient.email }}</div>
           </div>
           <div v-else class="full-width">
-            <q-input v-model="patientEdit.name" label="Nombre" dense class="q-mb-xs" borderless />
-            <q-input v-model="patientEdit.last_name" label="Apellido" dense class="q-mb-xs" borderless />
-            <q-input v-model="patientEdit.birth_date" label="Fecha de Nacimiento" dense class="q-mb-xs" borderless type="date" />
-            <q-input v-model="patientEdit.address" label="Dirección" dense class="q-mb-xs" borderless />
-            <q-input v-model="patientEdit.locality" label="Localidad" dense class="q-mb-xs" borderless />
-            <q-input v-model="patientEdit.phone" label="Teléfono" dense class="q-mb-xs" borderless />
-            <q-input v-model="patientEdit.cellphone" label="Celular" dense class="q-mb-xs" borderless />
-            <q-input v-model="patientEdit.email" label="E-mail" dense class="q-mb-xs" borderless />
+            <q-input v-model="patientEdit.name" label="Nombre" dense class="minimal-input q-mb-xs" borderless />
+            <q-input v-model="patientEdit.last_name" label="Apellido" dense class="minimal-input q-mb-xs" borderless />
+            <q-input v-model="patientEdit.birth_date" label="Fecha de Nacimiento" dense class="minimal-input q-mb-xs" borderless type="date" />
+            <q-input v-model="patientEdit.address" label="Dirección" dense class="minimal-input q-mb-xs" borderless />
+            <q-input v-model="patientEdit.locality" label="Localidad" dense class="minimal-input q-mb-xs" borderless />
+            <q-input v-model="patientEdit.phone" label="Teléfono" dense class="minimal-input q-mb-xs" borderless />
+            <q-input v-model="patientEdit.cellphone" label="Celular" dense class="minimal-input q-mb-xs" borderless />
+            <q-input v-model="patientEdit.email" label="E-mail" dense class="minimal-input q-mb-xs" borderless />
           </div>
           
           <div class="text-caption text-grey-6 q-mt-sm full-width text-left">ID: {{ patient.id }}</div>
