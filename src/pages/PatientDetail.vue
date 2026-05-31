@@ -147,6 +147,7 @@
                 </template>
                 <template #body-cell-acciones="props">
                   <q-btn flat dense icon="edit" @click.stop="verSesion(props.row)" />
+                  <q-btn flat dense icon="delete" color="negative" class="q-ml-sm" @click.stop="confirmarEliminarSesion(props.row)" />
                 </template>
               </q-table>
               <!-- MODAL MODERNO Y MINIMALISTA -->
@@ -434,6 +435,24 @@ async function guardarSesion() {
     console.error('Error saving session:', error);
     $q.notify({ type: 'negative', message: 'Error al guardar la sesión', position: 'top' });
   }
+}
+
+function confirmarEliminarSesion(row) {
+  $q.dialog({
+    title: 'Confirmar Eliminación',
+    message: `¿Estás seguro de que deseas eliminar la sesión del ${formatDate(row.date)}?`,
+    cancel: true,
+    persistent: true
+  }).onOk(async () => {
+    try {
+      await SessionsAPI.remove(route.params.id, row.id);
+      await fetchSessions(route.params.id);
+      $q.notify({ type: 'positive', message: 'Sesión eliminada correctamente', position: 'top' });
+    } catch (error) {
+      console.error('Error al eliminar la sesión:', error);
+      $q.notify({ type: 'negative', message: 'Error al eliminar la sesión', position: 'top' });
+    }
+  });
 }
 
 async function fetchSessions(id) {
