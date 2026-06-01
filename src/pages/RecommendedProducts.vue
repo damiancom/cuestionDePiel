@@ -45,6 +45,23 @@
             />
           </q-td>
         </template>
+        <template #body-cell-stock="props">
+          <q-td>
+            <q-btn flat dense icon="remove" size="sm" @click.stop="changeStock(props.row, -1)" :disable="!props.row.stock || props.row.stock <= 0" class="q-mr-xs minimal-stock-btn" />
+            <span class="q-px-sm">{{ props.row.stock || 0 }}</span>
+            <q-btn flat dense icon="add" size="sm" @click.stop="changeStock(props.row, 1)" class="q-ml-xs minimal-stock-btn" />
+          </q-td>
+        </template>
+        <template #body-cell-purchase_price="props">
+          <q-td>
+            {{ props.row.purchase_price != null ? '$' + props.row.purchase_price.toFixed(2) : '—' }}
+          </q-td>
+        </template>
+        <template #body-cell-selling_price="props">
+          <q-td>
+            {{ props.row.selling_price != null ? '$' + props.row.selling_price.toFixed(2) : '—' }}
+          </q-td>
+        </template>
         <template #body-cell-actions="props">
           <q-td class="text-right">
             <q-btn flat icon="edit" dense color="primary" @click.stop="openEdit(props.row)" />
@@ -57,28 +74,28 @@
     <!-- Diálogo Crear / Editar -->
     <q-dialog v-model="showDialog" persistent>
       <q-card class="q-pa-lg dialog-card">
-        <div class="text-h6 q-mb-md">{{ editing ? 'Editar Producto' : 'Agregar Producto' }}</div>
-        <q-form @submit.prevent="saveProduct" class="q-gutter-md">
+        <div class="text-h6 q-mb-lg">{{ editing ? 'Editar Producto' : 'Agregar Producto' }}</div>
+        <q-form @submit.prevent="saveProduct" class="q-gutter-y-md">
 
-          <!-- Tipo de Producto -->
+          <!-- Categoría -->
           <q-select
-            v-model="form.productTypeName"
-            :options="filteredProductTypes"
-            label="Tipo de Producto"
+            v-model="form.categoryName"
+            :options="filteredCategories"
+            label="Categoría"
             use-input
             input-debounce="0"
-            @filter="filterProductTypes"
-            @new-value="addNewProductType"
+            @filter="filterCategories"
+            @new-value="addNewCategory"
             new-value-mode="add"
-            hint="Ej: Limpieza, Tónico, Serum..."
             class="minimal-input"
             borderless
             dense
             :rules="[val => !!val || 'Requerido']"
+            hide-bottom-space
           >
             <template #no-option>
               <q-item>
-                <q-item-section class="text-grey">Escribí para crear uno nuevo</q-item-section>
+                <q-item-section class="text-grey">Escribí para crear una nueva</q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -93,11 +110,11 @@
             @filter="filterBrands"
             @new-value="addNewBrand"
             new-value-mode="add"
-            hint="Ej: CeraVe, La Roche-Posay, Avene..."
             class="minimal-input"
             borderless
             dense
             :rules="[val => !!val || 'Requerido']"
+            hide-bottom-space
           >
             <template #no-option>
               <q-item>
@@ -114,13 +131,37 @@
             borderless
             dense
             :rules="[val => !!val || 'Requerido']"
+            hide-bottom-space
           />
+
+          <!-- Función -->
+          <q-select
+            v-model="form.functionName"
+            :options="filteredFunctions"
+            label="Función"
+            use-input
+            input-debounce="0"
+            @filter="filterFunctions"
+            @new-value="addNewFunction"
+            new-value-mode="add"
+            class="minimal-input"
+            borderless
+            dense
+            clearable
+            maxlength="50"
+          >
+            <template #no-option>
+              <q-item>
+                <q-item-section class="text-grey">Escribí para crear una nueva</q-item-section>
+              </q-item>
+            </template>
+          </q-select>
 
           <!-- Tipo de Piel -->
           <q-select
             v-model="form.skinType"
             :options="skinTypeOptions"
-            label="Tipo de Piel"
+            label="Tipo de Piel / Uso"
             class="minimal-input"
             borderless
             dense
@@ -128,6 +169,84 @@
             map-options
             clearable
           />
+
+          <!-- Stock y Fecha de Vencimiento -->
+          <div class="row q-col-gutter-x-md">
+            <!-- Stock -->
+            <div class="col-6">
+              <q-input
+                v-model.number="form.stock"
+                label="Stock"
+                type="number"
+                min="0"
+                class="minimal-input"
+                borderless
+                dense
+              />
+            </div>
+            <!-- Fecha de Vencimiento -->
+            <div class="col-6">
+              <q-input
+                v-model="form.expirationDate"
+                label="Fecha de Vencimiento"
+                mask="##/####"
+                placeholder="MM/AAAA"
+                class="minimal-input"
+                borderless
+                dense
+                :rules="[val => !val || /^(0[1-9]|1[0-2])\/\d{4}$/.test(val) || 'Formato inválido (MM/AAAA)']"
+                hide-bottom-space
+              >
+                <template #append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy ref="qDateProxy" cover transition-show="scale" transition-hide="scale">
+                      <q-date
+                        v-model="form.expirationDate"
+                        mask="MM/YYYY"
+                        default-view="Months"
+                        :default-year-month="currentYearMonth"
+                        emit-immediately
+                        minimal
+                        @update:model-value="() => qDateProxy.hide()"
+                      />
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+            </div>
+          </div>
+
+          <!-- Precios -->
+          <div class="row q-col-gutter-x-md">
+            <!-- Precio de Costo -->
+            <div class="col-6">
+              <q-input
+                v-model.number="form.purchasePrice"
+                label="Precio de Costo"
+                type="number"
+                min="0"
+                step="0.01"
+                prefix="$"
+                class="minimal-input"
+                borderless
+                dense
+              />
+            </div>
+            <!-- Precio de Venta -->
+            <div class="col-6">
+              <q-input
+                v-model.number="form.sellingPrice"
+                label="Precio de Venta"
+                type="number"
+                min="0"
+                step="0.01"
+                prefix="$"
+                class="minimal-input"
+                borderless
+                dense
+              />
+            </div>
+          </div>
 
           <div class="row justify-end q-gutter-sm q-mt-lg">
             <q-btn flat label="Cancelar" @click="closeDialog" />
@@ -152,19 +271,27 @@ const saving = ref(false);
 const search = ref('');
 const products = ref([]);
 const brands = ref([]);
-const productTypes = ref([]);
+const categories = ref([]);
+const functions = ref([]);
 const filteredBrands = ref([]);
-const filteredProductTypes = ref([]);
+const filteredCategories = ref([]);
+const filteredFunctions = ref([]);
 const showDialog = ref(false);
 const editing = ref(false);
 const editId = ref(null);
+const qDateProxy = ref(null);
 const pagination = ref({ page: 1, rowsPerPage: 20 });
 
 const form = ref({
   name: '',
   brandName: '',
-  productTypeName: '',
+  categoryName: '',
+  functionName: null,
   skinType: null,
+  stock: 0,
+  expirationDate: '',
+  purchasePrice: null,
+  sellingPrice: null,
 });
 
 const skinTypeOptions = [
@@ -174,10 +301,15 @@ const skinTypeOptions = [
 ];
 
 const columns = [
-  { name: 'product_type_name', label: 'Tipo', field: 'product_type_name', align: 'left', sortable: true },
+  { name: 'category_name', label: 'Categoría', field: 'category_name', align: 'left', sortable: true },
   { name: 'brand_name', label: 'Marca', field: 'brand_name', align: 'left', sortable: true },
   { name: 'name', label: 'Producto', field: 'name', align: 'left', sortable: true },
+  { name: 'function_name', label: 'Función', field: 'function_name', align: 'left', sortable: true, format: val => val || '—' },
   { name: 'skin_type', label: 'Tipo de Piel', field: 'skin_type', align: 'left', sortable: true },
+  { name: 'stock', label: 'Stock', field: 'stock', align: 'center', sortable: true },
+  { name: 'expiration_date', label: 'Vcto.', field: 'expiration_date', align: 'left', sortable: true, format: val => val || '—' },
+  { name: 'purchase_price', label: 'P. Costo', field: 'purchase_price', align: 'right', sortable: true },
+  { name: 'selling_price', label: 'P. Venta', field: 'selling_price', align: 'right', sortable: true },
   { name: 'actions', label: '', field: 'actions', align: 'right' },
 ];
 
@@ -188,8 +320,15 @@ const filteredProducts = computed(() => {
   return products.value.filter(p =>
     p.name.toLowerCase().includes(q) ||
     p.brand_name.toLowerCase().includes(q) ||
-    p.product_type_name.toLowerCase().includes(q)
+    p.category_name.toLowerCase().includes(q) ||
+    (p.function_name && p.function_name.toLowerCase().includes(q))
   );
+});
+const currentYearMonth = computed(() => {
+  const now = new Date();
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  return `${yyyy}/${mm}`;
 });
 
 // Helpers
@@ -213,10 +352,17 @@ function filterBrands(val, update) {
   });
 }
 
-function filterProductTypes(val, update) {
+function filterCategories(val, update) {
   update(() => {
     const needle = val.toLowerCase();
-    filteredProductTypes.value = productTypes.value.filter(t => t.toLowerCase().includes(needle));
+    filteredCategories.value = categories.value.filter(c => c.toLowerCase().includes(needle));
+  });
+}
+
+function filterFunctions(val, update) {
+  update(() => {
+    const needle = val.toLowerCase();
+    filteredFunctions.value = functions.value.filter(f => f.toLowerCase().includes(needle));
   });
 }
 
@@ -229,10 +375,19 @@ function addNewBrand(val, done) {
   }
 }
 
-function addNewProductType(val, done) {
+function addNewCategory(val, done) {
   if (val.trim()) {
-    if (!productTypes.value.some(t => t.toLowerCase() === val.trim().toLowerCase())) {
-      productTypes.value.push(val.trim());
+    if (!categories.value.some(c => c.toLowerCase() === val.trim().toLowerCase())) {
+      categories.value.push(val.trim());
+    }
+    done(val.trim(), 'add');
+  }
+}
+
+function addNewFunction(val, done) {
+  if (val.trim() && val.trim().length <= 50) {
+    if (!functions.value.some(f => f.toLowerCase() === val.trim().toLowerCase())) {
+      functions.value.push(val.trim());
     }
     done(val.trim(), 'add');
   }
@@ -242,14 +397,16 @@ function addNewProductType(val, done) {
 async function loadData() {
   loading.value = true;
   try {
-    const [prodRes, brandsRes, typesRes] = await Promise.all([
+    const [prodRes, brandsRes, categoriesRes, functionsRes] = await Promise.all([
       RecommendedProductsAPI.list(),
       RecommendedProductsAPI.getBrands(),
-      RecommendedProductsAPI.getProductTypes(),
+      RecommendedProductsAPI.getCategories(),
+      RecommendedProductsAPI.getFunctions(),
     ]);
     products.value = prodRes.data;
     brands.value = brandsRes.data;
-    productTypes.value = typesRes.data;
+    categories.value = categoriesRes.data;
+    functions.value = functionsRes.data;
   } catch (e) {
     console.error('Error cargando datos:', e);
     $q.notify({ color: 'negative', message: 'Error al cargar productos', icon: 'error' });
@@ -258,10 +415,24 @@ async function loadData() {
   }
 }
 
+function getEmptyForm() {
+  return {
+    name: '',
+    brandName: '',
+    categoryName: '',
+    functionName: null,
+    skinType: null,
+    stock: 0,
+    expirationDate: '',
+    purchasePrice: null,
+    sellingPrice: null,
+  };
+}
+
 function openCreate() {
   editing.value = false;
   editId.value = null;
-  form.value = { name: '', brandName: '', productTypeName: '', skinType: null };
+  form.value = getEmptyForm();
   showDialog.value = true;
 }
 
@@ -271,8 +442,13 @@ function openEdit(row) {
   form.value = {
     name: row.name,
     brandName: row.brand_name,
-    productTypeName: row.product_type_name,
+    categoryName: row.category_name,
+    functionName: row.function_name || null,
     skinType: row.skin_type || null,
+    stock: row.stock || 0,
+    expirationDate: row.expiration_date || '',
+    purchasePrice: row.purchase_price,
+    sellingPrice: row.selling_price,
   };
   showDialog.value = true;
 }
@@ -288,8 +464,13 @@ async function saveProduct() {
   const payload = {
     name: form.value.name,
     brand_name: form.value.brandName,
-    product_type_name: form.value.productTypeName,
+    category_name: form.value.categoryName,
+    function_name: form.value.functionName || null,
     skin_type: form.value.skinType || null,
+    stock: form.value.stock || 0,
+    expiration_date: form.value.expirationDate || null,
+    purchase_price: form.value.purchasePrice,
+    selling_price: form.value.sellingPrice,
   };
   try {
     if (editing.value) {
@@ -306,6 +487,18 @@ async function saveProduct() {
     $q.notify({ color: 'negative', message: 'Error al guardar', icon: 'error' });
   } finally {
     saving.value = false;
+  }
+}
+
+async function changeStock(row, delta) {
+  const newStock = (row.stock || 0) + delta;
+  if (newStock < 0) return;
+  try {
+    await RecommendedProductsAPI.update(row.id, { stock: newStock });
+    row.stock = newStock;
+  } catch (e) {
+    console.error('Error actualizando stock:', e);
+    $q.notify({ color: 'negative', message: 'Error al actualizar stock', icon: 'error' });
   }
 }
 
@@ -336,23 +529,36 @@ onMounted(loadData);
   border-radius: 16px;
   background: #f9fafb;
   border: 1px solid #ececec;
-  max-width: 1000px;
+  max-width: 1200px;
   width: 100%;
   margin: auto;
 }
 .minimal-input {
   background: transparent !important;
-  border-radius: 10px;
-  border: none !important;
   box-shadow: none !important;
   font-size: 15px;
-  padding: 8px 12px;
-  transition: border-color 0.2s;
+}
+.minimal-input :deep(.q-field__control) {
   border-bottom: 1.5px solid #e0e4ea !important;
+  transition: border-color 0.2s;
+  padding: 0 12px !important; /* Margen horizontal premium de 12px */
+}
+.minimal-input:focus-within :deep(.q-field__control) {
+  border-color: #1976d2 !important;
+}
+.minimal-input :deep(.q-field__bottom) {
+  padding-top: 12px !important; /* 12px de separación con respecto a la línea inferior */
+  padding-left: 12px !important; /* Alineado exactamente a 12px */
 }
 .dialog-card {
-  min-width: 420px;
+  min-width: 520px;
   max-width: 98vw;
   border-radius: 16px;
+}
+.minimal-stock-btn {
+  min-width: 26px;
+  min-height: 26px;
+  border-radius: 50%;
+  color: #1976d2;
 }
 </style>
