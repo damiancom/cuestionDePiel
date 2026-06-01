@@ -54,12 +54,12 @@
         </template>
         <template #body-cell-purchase_price="props">
           <q-td>
-            {{ props.row.purchase_price != null ? '$' + props.row.purchase_price.toFixed(2) : '—' }}
+            {{ props.row.purchase_price != null ? '$' + props.row.purchase_price.toFixed(2).replace('.', ',') : '—' }}
           </q-td>
         </template>
         <template #body-cell-selling_price="props">
           <q-td>
-            {{ props.row.selling_price != null ? '$' + props.row.selling_price.toFixed(2) : '—' }}
+            {{ props.row.selling_price != null ? '$' + props.row.selling_price.toFixed(2).replace('.', ',') : '—' }}
           </q-td>
         </template>
         <template #body-cell-actions="props">
