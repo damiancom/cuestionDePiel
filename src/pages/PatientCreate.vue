@@ -53,6 +53,9 @@
                   <div class="col-12 col-md-6">
                     <q-input v-model="patient.email" label="E-Mail" class="minimal-input q-mb-md" borderless dense/>
                   </div>
+                  <div class="col-12">
+                    <q-input v-model="patient.additional_note" type="textarea" label="Nota adicional" class="minimal-input q-mb-md" borderless autogrow maxlength="200" counter/>
+                  </div>
                 </div>
               </div>
             </div>
@@ -112,6 +115,7 @@ const patient = ref({
   phone: '',
   cellphone: '',
   email: '',
+  additional_note: '',
   profile_picture: null
 });
 const inputFoto = ref(null);
