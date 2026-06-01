@@ -221,29 +221,31 @@
             <!-- Precio de Costo -->
             <div class="col-6">
               <q-input
-                v-model.number="form.purchasePrice"
+                v-model="form.purchasePrice"
                 label="Precio de Costo"
-                type="number"
-                min="0"
-                step="0.01"
+                type="text"
                 prefix="$"
+                inputmode="decimal"
                 class="minimal-input"
                 borderless
                 dense
+                :rules="[val => !val || /^[0-9]+(,[0-9]{1,2})?$/.test(String(val).trim()) || 'Formato inválido (Ej: 150,50)']"
+                hide-bottom-space
               />
             </div>
             <!-- Precio de Venta -->
             <div class="col-6">
               <q-input
-                v-model.number="form.sellingPrice"
+                v-model="form.sellingPrice"
                 label="Precio de Venta"
-                type="number"
-                min="0"
-                step="0.01"
+                type="text"
                 prefix="$"
+                inputmode="decimal"
                 class="minimal-input"
                 borderless
                 dense
+                :rules="[val => !val || /^[0-9]+(,[0-9]{1,2})?$/.test(String(val).trim()) || 'Formato inválido (Ej: 150,50)']"
+                hide-bottom-space
               />
             </div>
           </div>
@@ -344,6 +346,18 @@ function skinTypeBadgeColor(val) {
   return 'grey-5';
 }
 
+function formatPriceWithComma(val) {
+  if (val == null) return '';
+  return String(val).replace('.', ',');
+}
+
+function parsePrice(val) {
+  if (val == null || String(val).trim() === '') return null;
+  const cleanVal = String(val).replace(',', '.').trim();
+  const num = parseFloat(cleanVal);
+  return isNaN(num) ? null : num;
+}
+
 // Filter functions for q-select autocomplete
 function filterBrands(val, update) {
   update(() => {
@@ -424,8 +438,8 @@ function getEmptyForm() {
     skinType: null,
     stock: 0,
     expirationDate: '',
-    purchasePrice: null,
-    sellingPrice: null,
+    purchasePrice: '',
+    sellingPrice: '',
   };
 }
 
@@ -447,8 +461,8 @@ function openEdit(row) {
     skinType: row.skin_type || null,
     stock: row.stock || 0,
     expirationDate: row.expiration_date || '',
-    purchasePrice: row.purchase_price,
-    sellingPrice: row.selling_price,
+    purchasePrice: formatPriceWithComma(row.purchase_price),
+    sellingPrice: formatPriceWithComma(row.selling_price),
   };
   showDialog.value = true;
 }
@@ -469,8 +483,8 @@ async function saveProduct() {
     skin_type: form.value.skinType || null,
     stock: form.value.stock || 0,
     expiration_date: form.value.expirationDate || null,
-    purchase_price: form.value.purchasePrice,
-    selling_price: form.value.sellingPrice,
+    purchase_price: parsePrice(form.value.purchasePrice),
+    selling_price: parsePrice(form.value.sellingPrice),
   };
   try {
     if (editing.value) {
