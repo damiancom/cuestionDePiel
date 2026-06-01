@@ -25,6 +25,7 @@
             <div class="q-mb-xs"><span class="text-weight-medium">Teléfono:</span><br>{{ patient.phone }}</div>
             <div class="q-mb-xs"><span class="text-weight-medium">Celular:</span><br>{{ patient.cellphone }}</div>
             <div class="q-mb-xs"><span class="text-weight-medium">E-mail:</span><br>{{ patient.email }}</div>
+            <div class="q-mb-xs" v-if="patient.additional_note"><span class="text-weight-medium">Nota adicional:</span><br><span style="white-space: pre-wrap;">{{ patient.additional_note }}</span></div>
           </div>
           <div v-else class="full-width">
             <q-input v-model="patientEdit.name" label="Nombre" dense class="minimal-input q-mb-xs" borderless />
@@ -35,6 +36,7 @@
             <q-input v-model="patientEdit.phone" label="Teléfono" dense class="minimal-input q-mb-xs" borderless />
             <q-input v-model="patientEdit.cellphone" label="Celular" dense class="minimal-input q-mb-xs" borderless />
             <q-input v-model="patientEdit.email" label="E-mail" dense class="minimal-input q-mb-xs" borderless />
+            <q-input v-model="patientEdit.additional_note" label="Nota adicional" type="textarea" autogrow maxlength="200" counter class="minimal-input q-mb-xs" borderless />
           </div>
           
           <div class="text-caption text-grey-6 q-mt-sm full-width text-left">ID: {{ patient.id }}</div>
@@ -254,6 +256,7 @@ const patient = reactive({
   phone: '',
   cellphone: '',
   email: '',
+  additional_note: '',
   profile_picture: ''
 });
 const patientEdit = reactive({ ...patient });
@@ -566,6 +569,7 @@ function findPatientById(id) {
       patient.phone = response.data.phone;
       patient.cellphone = response.data.cellphone;
       patient.email = response.data.email;
+      patient.additional_note = response.data.additional_note || '';
       patient.profile_picture = response.data.profile_picture || '';
 
       Object.assign(patientEdit, patient);
