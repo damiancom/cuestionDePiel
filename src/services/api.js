@@ -68,8 +68,11 @@ export const RecommendedProductsAPI = {
   getBrands() {
     return axios.get(`${RECOMMENDED_PRODUCTS_URL}/brands`);
   },
-  getProductTypes() {
-    return axios.get(`${RECOMMENDED_PRODUCTS_URL}/product-types`);
+  getCategories() {
+    return axios.get(`${RECOMMENDED_PRODUCTS_URL}/categories`);
+  },
+  getFunctions() {
+    return axios.get(`${RECOMMENDED_PRODUCTS_URL}/functions`);
   },
   getSkinTypes() {
     return axios.get(`${RECOMMENDED_PRODUCTS_URL}/skin-types`);
