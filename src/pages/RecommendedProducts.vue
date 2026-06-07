@@ -46,19 +46,19 @@
           </q-td>
         </template>
         <template #body-cell-stock="props">
-          <q-td>
+          <q-td class="text-center">
             <q-btn flat dense icon="remove" size="sm" @click.stop="changeStock(props.row, -1)" :disable="!props.row.stock || props.row.stock <= 0" class="q-mr-xs minimal-stock-btn" />
             <span class="q-px-sm">{{ props.row.stock || 0 }}</span>
             <q-btn flat dense icon="add" size="sm" @click.stop="changeStock(props.row, 1)" class="q-ml-xs minimal-stock-btn" />
           </q-td>
         </template>
         <template #body-cell-purchase_price="props">
-          <q-td>
+          <q-td class="text-left">
             {{ props.row.purchase_price != null ? '$' + props.row.purchase_price.toFixed(2).replace('.', ',') : '—' }}
           </q-td>
         </template>
         <template #body-cell-selling_price="props">
-          <q-td>
+          <q-td class="text-left">
             {{ props.row.selling_price != null ? '$' + props.row.selling_price.toFixed(2).replace('.', ',') : '—' }}
           </q-td>
         </template>
@@ -306,13 +306,13 @@ const columns = [
   { name: 'category_name', label: 'Categoría', field: 'category_name', align: 'left', sortable: true },
   { name: 'brand_name', label: 'Marca', field: 'brand_name', align: 'left', sortable: true },
   { name: 'name', label: 'Producto', field: 'name', align: 'left', sortable: true },
-  { name: 'selling_price', label: 'P. Venta', field: 'selling_price', align: 'right', sortable: true },
+  { name: 'selling_price', label: 'P. Venta', field: 'selling_price', align: 'left', sortable: true },
   { name: 'function_name', label: 'Función', field: 'function_name', align: 'left', sortable: true, format: val => val || '—' },
   { name: 'skin_type', label: 'Tipo de Piel', field: 'skin_type', align: 'left', sortable: true },
   { name: 'stock', label: 'Stock', field: 'stock', align: 'center', sortable: true },
   { name: 'expiration_date', label: 'Vcto.', field: 'expiration_date', align: 'left', sortable: true, format: val => val || '—' },
-  { name: 'purchase_price', label: 'P. Costo', field: 'purchase_price', align: 'right', sortable: true },
-  { name: 'actions', label: '', field: 'actions', align: 'right' },
+  { name: 'purchase_price', label: 'P. Costo', field: 'purchase_price', align: 'left', sortable: true },
+  { name: 'actions', label: '', field: 'actions', align: 'left' },
 ];
 
 // Computed
