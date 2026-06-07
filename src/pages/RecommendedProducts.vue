@@ -53,12 +53,12 @@
           </q-td>
         </template>
         <template #body-cell-purchase_price="props">
-          <q-td class="text-right">
+          <q-td class="text-left">
             {{ props.row.purchase_price != null ? '$' + props.row.purchase_price.toFixed(2).replace('.', ',') : '—' }}
           </q-td>
         </template>
         <template #body-cell-selling_price="props">
-          <q-td class="text-right">
+          <q-td class="text-left">
             {{ props.row.selling_price != null ? '$' + props.row.selling_price.toFixed(2).replace('.', ',') : '—' }}
           </q-td>
         </template>
@@ -309,7 +309,7 @@ const columns = [
   { name: 'selling_price', label: 'P. Venta', field: 'selling_price', align: 'left', sortable: true },
   { name: 'function_name', label: 'Función', field: 'function_name', align: 'left', sortable: true, format: val => val || '—' },
   { name: 'skin_type', label: 'Tipo de Piel', field: 'skin_type', align: 'left', sortable: true },
-  { name: 'stock', label: 'Stock', field: 'stock', align: 'left', sortable: true },
+  { name: 'stock', label: 'Stock', field: 'stock', align: 'center', sortable: true },
   { name: 'expiration_date', label: 'Vcto.', field: 'expiration_date', align: 'left', sortable: true, format: val => val || '—' },
   { name: 'purchase_price', label: 'P. Costo', field: 'purchase_price', align: 'left', sortable: true },
   { name: 'actions', label: '', field: 'actions', align: 'left' },
