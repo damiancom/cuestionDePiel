@@ -303,16 +303,16 @@ const skinTypeOptions = [
 ];
 
 const columns = [
-  { name: 'category_name', label: 'Categoría', field: 'category_name', align: 'left', sortable: true },
-  { name: 'brand_name', label: 'Marca', field: 'brand_name', align: 'left', sortable: true },
-  { name: 'name', label: 'Producto', field: 'name', align: 'left', sortable: true },
-  { name: 'selling_price', label: 'P. Venta', field: 'selling_price', align: 'right', sortable: true },
-  { name: 'function_name', label: 'Función', field: 'function_name', align: 'left', sortable: true, format: val => val || '—' },
-  { name: 'skin_type', label: 'Tipo de Piel', field: 'skin_type', align: 'left', sortable: true },
-  { name: 'stock', label: 'Stock', field: 'stock', align: 'center', sortable: true },
-  { name: 'expiration_date', label: 'Vcto.', field: 'expiration_date', align: 'left', sortable: true, format: val => val || '—' },
-  { name: 'purchase_price', label: 'P. Costo', field: 'purchase_price', align: 'right', sortable: true },
-  { name: 'actions', label: '', field: 'actions', align: 'right' },
+  { name: 'category_name', label: 'Categoría', field: 'category_name', align: 'left', headerClasses: 'text-left', sortable: true },
+  { name: 'brand_name', label: 'Marca', field: 'brand_name', align: 'left', headerClasses: 'text-left', sortable: true },
+  { name: 'name', label: 'Producto', field: 'name', align: 'left', headerClasses: 'text-left', sortable: true },
+  { name: 'selling_price', label: 'P. Venta', field: 'selling_price', align: 'right', headerClasses: 'text-left', sortable: true },
+  { name: 'function_name', label: 'Función', field: 'function_name', align: 'left', headerClasses: 'text-left', sortable: true, format: val => val || '—' },
+  { name: 'skin_type', label: 'Tipo de Piel', field: 'skin_type', align: 'left', headerClasses: 'text-left', sortable: true },
+  { name: 'stock', label: 'Stock', field: 'stock', align: 'center', headerClasses: 'text-left', sortable: true },
+  { name: 'expiration_date', label: 'Vcto.', field: 'expiration_date', align: 'left', headerClasses: 'text-left', sortable: true, format: val => val || '—' },
+  { name: 'purchase_price', label: 'P. Costo', field: 'purchase_price', align: 'right', headerClasses: 'text-left', sortable: true },
+  { name: 'actions', label: '', field: 'actions', align: 'right', headerClasses: 'text-left' },
 ];
 
 // Computed
