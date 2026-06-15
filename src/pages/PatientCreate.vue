@@ -70,8 +70,8 @@
       <transition appear enter-active-class="animated fadeInUp" leave-active-class="animated fadeOutDown">
         <q-card class="bg-white shadow-up-3 q-pa-xs row items-center justify-between" 
                 style="border-radius: 30px; border: 1px solid #e0e4ea; min-width: 250px;">
-          <q-btn flat round dense icon="close" @click="cancel" color="grey-7" class="q-ml-xs" />
-          <q-btn label="Confirmar" rounded color="primary" @click="createPatient" class="q-px-md minimal-btn-save" />
+          <q-btn flat label="Cancelar" @click="cancel" color="grey-8" class="q-ml-sm minimal-btn" />
+          <q-btn label="Confirmar" color="primary" @click="createPatient" class="q-px-md minimal-btn-save" />
         </q-card>
       </transition>
     </q-page-sticky>

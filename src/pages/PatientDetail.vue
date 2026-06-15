@@ -206,23 +206,23 @@
                 style="border-radius: 30px; border: 1px solid #e0e4ea; min-width: 250px;">
           
           <template v-if="tab === 'perfil' && editing">
-            <q-btn flat round dense icon="close" @click="cancelPatientEdit" color="grey-7" class="q-ml-xs" />
-            <q-btn label="Guardar" rounded color="primary" @click="updatePatientData" class="q-px-md minimal-btn-save" />
+            <q-btn flat label="Cancelar" @click="cancelPatientEdit" color="grey-8" class="q-ml-sm minimal-btn" />
+            <q-btn label="Guardar" color="primary" @click="updatePatientData" class="q-px-md minimal-btn-save" />
           </template>
 
           <template v-if="tab === 'antecedentes'">
-            <q-btn flat round dense icon="close" @click="resetAntecedentes" color="grey-7" class="q-ml-xs" />
-            <q-btn label="Guardar" rounded color="primary" @click="guardarAntecedentes" class="q-px-md minimal-btn-save" />
+            <q-btn flat label="Cancelar" @click="resetAntecedentes" color="grey-8" class="q-ml-sm minimal-btn" />
+            <q-btn label="Guardar" color="primary" @click="guardarAntecedentes" class="q-px-md minimal-btn-save" />
           </template>
 
           <template v-if="tab === 'observaciones'">
-            <q-btn flat round dense icon="close" @click="resetObservaciones" color="grey-7" class="q-ml-xs" />
-            <q-btn label="Guardar" rounded color="primary" @click="guardarObservaciones" class="q-px-md minimal-btn-save" />
+            <q-btn flat label="Cancelar" @click="resetObservaciones" color="grey-8" class="q-ml-sm minimal-btn" />
+            <q-btn label="Guardar" color="primary" @click="guardarObservaciones" class="q-px-md minimal-btn-save" />
           </template>
 
           <template v-if="tab === 'apoyo'">
-            <q-btn flat round dense icon="close" @click="resetApoyo" color="grey-7" class="q-ml-xs" />
-            <q-btn label="Guardar" rounded color="primary" @click="guardarApoyo" class="q-px-md minimal-btn-save" />
+            <q-btn flat label="Cancelar" @click="resetApoyo" color="grey-8" class="q-ml-sm minimal-btn" />
+            <q-btn label="Guardar" color="primary" @click="guardarApoyo" class="q-px-md minimal-btn-save" />
           </template>
           
         </q-card>
