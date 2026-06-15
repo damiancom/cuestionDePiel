@@ -68,10 +68,10 @@
     <!-- Floating Save Buttons -->
     <q-page-sticky position="bottom" :offset="[0, 16]" style="z-index: 100;">
       <transition appear enter-active-class="animated fadeInUp" leave-active-class="animated fadeOutDown">
-        <q-card class="bg-white shadow-up-3 q-pa-xs row items-center justify-between" 
-                style="border-radius: 30px; border: 1px solid #e0e4ea; min-width: 250px;">
-          <q-btn flat label="Cancelar" @click="cancel" color="grey-8" class="q-ml-sm minimal-btn" />
-          <q-btn label="Confirmar" color="primary" @click="createPatient" class="q-px-md minimal-btn-save" />
+        <q-card class="bg-white shadow-up-3 q-pa-sm row no-wrap items-center justify-between" 
+                style="border-radius: 30px; border: 1px solid #e0e4ea; min-width: 280px; width: fit-content;">
+          <q-btn flat label="Cancelar" @click="cancel" color="grey-8" class="q-ml-xs minimal-btn" />
+          <q-btn label="Confirmar" rounded color="primary" @click="createPatient" class="q-mr-xs q-px-md minimal-btn-save" />
         </q-card>
       </transition>
     </q-page-sticky>
