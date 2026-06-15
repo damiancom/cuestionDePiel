@@ -83,9 +83,18 @@
                 <q-input v-model="observacion.motivo" label="Motivo de la consulta" class="minimal-input" borderless
                   dense />
                 <q-input v-model="observacion.biotipo" label="Biotipo" class="minimal-input" borderless dense />
-                <div class="q-mb-sm text-grey-8">Fototipo</div>
-                <q-option-group v-model="fototipoSelection" :options="fototipoOptions" type="checkbox" left-label dense
-                  class="q-mb-md" @update:model-value="handleFototipoChange" />
+                <div class="q-mb-md">
+                  <div class="q-mb-sm text-grey-8" style="padding-left: 4px;">Fototipo</div>
+                  <div class="row q-gutter-sm justify-start items-center q-pl-xs">
+                    <div v-for="n in 6" :key="n" 
+                         class="fototipo-circle cursor-pointer flex flex-center shadow-1"
+                         :class="{ 'fototipo-selected': observacion.fototipo == n }"
+                         :style="{ backgroundColor: getFototipoColor(n), color: n >= 5 ? '#fff' : '#333' }"
+                         @click="observacion.fototipo = (observacion.fototipo == n ? null : n)">
+                      {{ n }}
+                    </div>
+                  </div>
+                </div>
 
                 <q-input v-model="observacion.recomendaciones" label="Recomendaciones" class="minimal-input" borderless
                   dense />
@@ -239,24 +248,16 @@ import axios from "axios";
 import { useQuasar } from "quasar";
 import RoutineGenerator from '../components/RoutineGenerator.vue';
 
-const fototipoOptions = [
-  { label: '1', value: 1 },
-  { label: '2', value: 2 },
-  { label: '3', value: 3 },
-  { label: '4', value: 4 },
-  { label: '5', value: 5 },
-  { label: '6', value: 6 }
-];
-
-const fototipoSelection = ref([]);
-
-function handleFototipoChange(val) {
-  if (val.length > 1) {
-    // Keep only the last selected item
-    fototipoSelection.value = [val[val.length - 1]];
-  }
-  // Update the main model
-  observacion.fototipo = fototipoSelection.value.length > 0 ? fototipoSelection.value[0] : null;
+function getFototipoColor(n) {
+  const colors = {
+    1: '#f8dcd1',
+    2: '#f0c7b1',
+    3: '#e2b397',
+    4: '#c58e6e',
+    5: '#8c593d',
+    6: '#492f22'
+  };
+  return colors[n] || '#ccc';
 }
 
 const $q = useQuasar();
@@ -563,13 +564,6 @@ function cargarDatosPaciente(data) {
   Object.assign(lesionBackup, data.lesion);
   Object.assign(apoyo, data.apoyo);
   Object.assign(apoyoBackup, data.apoyo);
-
-  // Sync fototipo selection
-  if (observacion.fototipo) {
-    fototipoSelection.value = [observacion.fototipo];
-  } else {
-    fototipoSelection.value = [];
-  }
 }
 
 function findPatientById(id) {
@@ -720,12 +714,6 @@ async function guardarAntecedentes() {
 function resetObservaciones() {
   Object.assign(observacion, observacionBackup);
   Object.assign(lesion, lesionBackup);
-  // Sync fototipo selection from backup
-  if (observacionBackup.fototipo) {
-    fototipoSelection.value = [observacionBackup.fototipo];
-  } else {
-    fototipoSelection.value = [];
-  }
 }
 
 async function fetchDiagnostics(id) {
@@ -742,13 +730,6 @@ async function fetchDiagnostics(id) {
 
     Object.assign(observacion, mappedObservacion);
     Object.assign(observacionBackup, mappedObservacion);
-
-    // Sync fototipo selection
-    if (observacion.fototipo) {
-      fototipoSelection.value = [Number(observacion.fototipo)];
-    } else {
-      fototipoSelection.value = [];
-    }
 
     if (response.data.skinLesion) {
       const mappedLesion = {
@@ -1018,6 +999,24 @@ async function handleRoutineSave(routineData) {
 
 .minimal-btn-save:hover {
   background: #125ea7;
+}
+
+.fototipo-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  font-weight: bold;
+  font-size: 16px;
+  user-select: none;
+}
+
+.fototipo-selected {
+  transform: scale(1.15);
+  border-color: #1976d2 !important;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.2) !important;
+  z-index: 10;
 }
 
 .minimal-lesion-card {
