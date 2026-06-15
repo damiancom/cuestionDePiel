@@ -27,6 +27,7 @@
         row-key="nro"
         flat
         dense
+        :grid="$q.screen.lt.md"
         :pagination.sync="pagination"
         :rows-per-page-options="[10, 20, 50]"
         @row-click="editSale"
@@ -48,7 +49,7 @@
       </q-table>
     </q-card>
     <!-- Alta/Edición -->
-    <q-dialog v-model="showAdd">
+    <q-dialog v-model="showAdd" :maximized="$q.screen.lt.sm">
       <q-card class="q-pa-lg" style="min-width:340px;max-width:98vw;">
         <div class="text-h6 q-mb-md">{{ editing ? 'Editar venta' : 'Cargar venta' }}</div>
         <q-form @submit.prevent="saveSale">
@@ -230,13 +231,19 @@ function downloadSales() {
   margin: auto;
 }
 .minimal-input {
-  background: transparent !important;
-  border-radius: 10px;
-  border: none !important;
+  background: #f8fafc !important;
+  border-radius: 12px;
+  border: 1px solid #e0e4ea !important;
   box-shadow: none !important;
-  font-size: 15px;
-  padding: 8px 12px;
-  transition: border-color 0.2s;
-  border-bottom: 1.5px solid #e0e4ea !important;
+  font-size: 16px;
+  padding: 4px 12px;
+  transition: all 0.2s ease;
+  margin-bottom: 4px;
+}
+
+.minimal-input:focus-within {
+  border-color: #1976d2 !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1) !important;
 }
 </style>

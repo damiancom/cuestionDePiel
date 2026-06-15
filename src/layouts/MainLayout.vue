@@ -8,7 +8,9 @@
           </q-avatar>
           <div class="text-weight-medium text-primary">Cuestión de piel</div>
         </div>
-        <q-toolbar-title class="text-center q-pt-sm q-pl-none q-pr-none">
+        
+        <!-- Navegación Escritorio -->
+        <q-toolbar-title class="text-center q-pt-sm q-pl-none q-pr-none" v-if="$q.screen.gt.sm">
           <div class="row justify-center items-center q-gutter-md">
             <q-btn flat round dense icon="people" to="/pacientes">
               <div class="text-caption">Pacientes</div>
@@ -30,21 +32,42 @@
             </q-btn>
           </div>
         </q-toolbar-title>
-        <div class="q-toolbar-title q-pa-none q-ma-none"></div>
+        <div v-else class="q-toolbar-title q-pa-none q-ma-none"></div>
+
         <div class="row items-center q-gutter-sm q-mr-md">
-          <q-avatar size="32px" class="q-mr-xs">
+          <q-avatar size="32px" class="q-mr-xs" v-if="$q.screen.gt.xs">
             <img src="/user-avatar.png" alt="Usuario" />
           </q-avatar>
-          <div class="text-primary text-caption q-mr-xs">Damian Comba</div>
+          <div class="text-primary text-caption q-mr-xs" v-if="$q.screen.gt.xs">Damian Comba</div>
           <q-btn flat round dense icon="logout" @click="handleLogout">
-            <div class="text-caption">Salir</div>
+            <div class="text-caption" v-if="$q.screen.gt.xs">Salir</div>
           </q-btn>
         </div>
       </q-toolbar>
     </q-header>
+
     <q-page-container>
       <router-view />
     </q-page-container>
+
+    <!-- Navegación Móvil (Bottom Bar) -->
+    <q-footer v-if="$q.screen.lt.md" elevated class="bg-white text-primary minimal-footer">
+      <q-tabs
+        no-caps
+        active-color="primary"
+        indicator-color="transparent"
+        class="text-grey-6"
+        mobile-arrows
+        outside-arrows
+      >
+        <q-route-tab icon="people" label="Pacientes" to="/pacientes" />
+        <q-route-tab icon="person_add" label="Alta" to="/pacientes/nuevo" />
+        <q-route-tab icon="event" label="Agenda" to="/agenda" />
+        <q-route-tab icon="shopping_bag" label="Productos" to="/productos" />
+        <q-route-tab icon="auto_awesome" label="Catálogo" to="/catalogo" />
+        <q-route-tab icon="point_of_sale" label="Ventas" to="/ventas" />
+      </q-tabs>
+    </q-footer>
   </q-layout>
 </template>
 

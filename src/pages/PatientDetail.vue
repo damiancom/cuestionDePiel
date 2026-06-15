@@ -2,7 +2,7 @@
   <q-page padding>
     <div class="row q-col-gutter-xl">
       <div class="col-12 col-md-3">
-        <q-card class="q-pa-lg flex column items-center shadow-2 patient-sidebar">
+        <q-card class="q-pa-md q-pa-sm-lg flex column items-center shadow-2 patient-sidebar">
           <div class="text-h6 q-mb-md">Información del Paciente</div>
           <q-avatar size="100px" class="q-mb-md" :class="editing ? 'avatar-clickable' : 'bg-blue-1 text-primary'" @click="editing && seleccionarFoto()">
             <img v-if="patient.profile_picture" :src="patient.profile_picture" alt="Foto de perfil"/>
@@ -52,8 +52,8 @@
       </div>
       <!-- Panel derecho con tabs y sesiones -->
       <div class="col-12 col-md-9">
-        <q-card class="q-pa-lg">
-          <q-tabs v-model="tab" class="text-primary q-mb-md" align="left" dense>
+        <q-card class="q-pa-md q-pa-sm-lg">
+          <q-tabs v-model="tab" class="text-primary q-mb-md" align="left" dense mobile-arrows outside-arrows>
             <q-tab name="antecedentes" label="Antecedentes Médicos" />
             <q-tab name="observaciones" label="Observaciones y Diagnóstico" />
             <q-tab name="apoyo" label="Apoyo domiciliario" />
@@ -153,7 +153,7 @@
                 </template>
               </q-table>
               <!-- MODAL MODERNO Y MINIMALISTA -->
-              <q-dialog v-model="showSesionDialog">
+              <q-dialog v-model="showSesionDialog" :maximized="$q.screen.lt.sm">
                 <q-card class="modern-session-modal minimal-modal">
                   <q-card-section class="row items-center justify-between q-pb-none minimal-modal-header">
                     <div class="text-h5 text-primary minimal-title">
@@ -185,7 +185,7 @@
     </div>
 
     <!-- Diálogo de recorte de imagen -->
-    <q-dialog v-model="showCropDialog" persistent>
+    <q-dialog v-model="showCropDialog" persistent :maximized="$q.screen.lt.sm">
       <q-card class="crop-dialog-card">
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">Ajustar imagen</div>
@@ -962,19 +962,20 @@ async function handleRoutineSave(routineData) {
 }
 
 .minimal-input {
-  background: transparent !important;
-  border-radius: 10px;
-  border: none !important;
+  background: #f8fafc !important;
+  border-radius: 12px;
+  border: 1px solid #e0e4ea !important;
   box-shadow: none !important;
-  font-size: 15px;
-  padding: 8px 12px;
-  transition: border-color 0.2s;
-  border-bottom: 1.5px solid #e0e4ea !important;
-  margin-bottom: 8px;
+  font-size: 16px;
+  padding: 4px 12px;
+  transition: all 0.2s ease;
+  margin-bottom: 4px;
 }
 
 .minimal-input:focus-within {
-  border-bottom: 1.5px solid #1976d2 !important;
+  border-color: #1976d2 !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1) !important;
 }
 
 .minimal-actions {
