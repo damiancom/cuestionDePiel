@@ -1,60 +1,11 @@
 <template>
   <q-page padding>
-    <div class="row q-col-gutter-xl">
-      <div class="col-12 col-md-3">
-        <q-card class="q-pa-md q-pa-sm-lg flex column items-center shadow-2 patient-sidebar">
-          <div class="text-h6 q-mb-md">Información del Paciente</div>
-          <q-avatar size="100px" class="q-mb-md" :class="editing ? 'avatar-clickable' : 'bg-blue-1 text-primary'" @click="editing && seleccionarFoto()">
-            <img v-if="patient.profile_picture" :src="patient.profile_picture" alt="Foto de perfil"/>
-            <q-icon v-else name="person" size="60px" color="grey-5"/>
-            <div v-if="editing" class="avatar-overlay">
-              <q-icon name="photo_camera" size="24px" color="white"/>
-            </div>
-          </q-avatar>
-          <input ref="inputFoto" type="file" accept="image/*" class="hidden" @change="onFotoSelected"/>
-          <q-separator spaced />
-          <div v-if="!editing" class="full-width">
-            <div class="q-mb-xs"><span class="text-weight-medium">Nombre:</span><br>{{ patient.name }}</div>
-            <div class="q-mb-xs"><span class="text-weight-medium">Apellido:</span><br>{{ patient.last_name }}</div>
-            <div class="q-mb-xs"><span class="text-weight-medium">Fecha de Nacimiento:</span><br>{{
-              formatDate(patient.birth_date)
-              }}
-            </div>
-            <div class="q-mb-xs"><span class="text-weight-medium">Dirección:</span><br>{{ patient.address }}</div>
-            <div class="q-mb-xs"><span class="text-weight-medium">Localidad:</span><br>{{ patient.locality }}</div>
-            <div class="q-mb-xs"><span class="text-weight-medium">Teléfono:</span><br>{{ patient.phone }}</div>
-            <div class="q-mb-xs"><span class="text-weight-medium">Celular:</span><br>{{ patient.cellphone }}</div>
-            <div class="q-mb-xs"><span class="text-weight-medium">E-mail:</span><br>{{ patient.email }}</div>
-            <div class="q-mb-xs" v-if="patient.additional_note"><span class="text-weight-medium">Nota adicional:</span><br><span style="white-space: pre-wrap;">{{ patient.additional_note }}</span></div>
-          </div>
-          <div v-else class="full-width">
-            <q-input v-model="patientEdit.name" label="Nombre" dense class="minimal-input q-mb-xs" borderless />
-            <q-input v-model="patientEdit.last_name" label="Apellido" dense class="minimal-input q-mb-xs" borderless />
-            <q-input v-model="patientEdit.birth_date" label="Fecha de Nacimiento" dense class="minimal-input q-mb-xs" borderless type="date" />
-            <q-input v-model="patientEdit.address" label="Dirección" dense class="minimal-input q-mb-xs" borderless />
-            <q-input v-model="patientEdit.locality" label="Localidad" dense class="minimal-input q-mb-xs" borderless />
-            <q-input v-model="patientEdit.phone" label="Teléfono" dense class="minimal-input q-mb-xs" borderless />
-            <q-input v-model="patientEdit.cellphone" label="Celular" dense class="minimal-input q-mb-xs" borderless />
-            <q-input v-model="patientEdit.email" label="E-mail" dense class="minimal-input q-mb-xs" borderless />
-            <q-input v-model="patientEdit.additional_note" label="Nota adicional" type="textarea" autogrow maxlength="200" counter class="minimal-input q-mb-xs" borderless />
-          </div>
-          
-          <div class="text-caption text-grey-6 q-mt-sm full-width text-left">ID: {{ patient.id }}</div>
-          
-          <div v-if="!editing" class="full-width">
-            <q-btn label="Editar" color="primary" class="full-width q-mt-md" @click="editing = true" />
-          </div>
-          <div v-else class="full-width row q-mt-md q-gutter-sm">
-            <q-btn label="Confirmar" color="primary" @click="updatePatientData" />
-            <q-btn label="Cancelar" flat @click="cancelPatientEdit" />
-          </div>
-        </q-card>
-      </div>
-      <!-- Panel derecho con tabs y sesiones -->
-      <div class="col-12 col-md-9">
+    <div class="row justify-center">
+      <div class="col-12 col-lg-10">
         <q-card class="q-pa-md q-pa-sm-lg">
           <q-tabs v-model="tab" class="text-primary q-mb-md" align="left" dense mobile-arrows outside-arrows>
-            <q-tab name="antecedentes" label="Antecedentes Médicos" />
+            <q-tab name="perfil" label="Perfil del Paciente" />
+            <q-tab name="antecedentes" label="Datos Médicos" />
             <q-tab name="observaciones" label="Observaciones y Diagnóstico" />
             <q-tab name="apoyo" label="Apoyo domiciliario" />
             <q-tab name="rutina" label="Rutina" />
@@ -62,8 +13,56 @@
           </q-tabs>
           <q-separator />
           <q-tab-panels v-model="tab" animated>
+            <q-tab-panel name="perfil">
+              <div class="flex column items-center q-pa-md">
+                <q-avatar size="100px" class="q-mb-md" :class="editing ? 'avatar-clickable' : 'bg-blue-1 text-primary'" @click="editing && seleccionarFoto()">
+                  <img v-if="patient.profile_picture" :src="patient.profile_picture" alt="Foto de perfil"/>
+                  <q-icon v-else name="person" size="60px" color="grey-5"/>
+                  <div v-if="editing" class="avatar-overlay">
+                    <q-icon name="photo_camera" size="24px" color="white"/>
+                  </div>
+                </q-avatar>
+                <input ref="inputFoto" type="file" accept="image/*" class="hidden" @change="onFotoSelected"/>
+                
+                <div v-if="!editing" class="full-width" style="max-width: 600px;">
+                  <div class="row q-col-gutter-md q-mb-md">
+                    <div class="col-12 col-sm-6"><span class="text-weight-medium">Nombre:</span><br>{{ patient.name }}</div>
+                    <div class="col-12 col-sm-6"><span class="text-weight-medium">Apellido:</span><br>{{ patient.last_name }}</div>
+                    <div class="col-12 col-sm-6"><span class="text-weight-medium">Fecha de Nacimiento:</span><br>{{ formatDate(patient.birth_date) }}</div>
+                    <div class="col-12 col-sm-6"><span class="text-weight-medium">Dirección:</span><br>{{ patient.address }}</div>
+                    <div class="col-12 col-sm-6"><span class="text-weight-medium">Localidad:</span><br>{{ patient.locality }}</div>
+                    <div class="col-12 col-sm-6"><span class="text-weight-medium">Teléfono:</span><br>{{ patient.phone }}</div>
+                    <div class="col-12 col-sm-6"><span class="text-weight-medium">Celular:</span><br>{{ patient.cellphone }}</div>
+                    <div class="col-12 col-sm-6"><span class="text-weight-medium">E-mail:</span><br>{{ patient.email }}</div>
+                    <div class="col-12" v-if="patient.additional_note"><span class="text-weight-medium">Nota adicional:</span><br><span style="white-space: pre-wrap;">{{ patient.additional_note }}</span></div>
+                  </div>
+                  <div class="text-caption text-grey-6 text-center q-mb-md">ID: {{ patient.id }}</div>
+                  <div class="row justify-center">
+                    <q-btn label="Editar Perfil" color="primary" @click="editing = true" />
+                  </div>
+                </div>
+
+                <div v-else class="full-width" style="max-width: 600px;">
+                  <div class="row q-col-gutter-sm q-mb-md">
+                    <div class="col-12 col-sm-6"><q-input v-model="patientEdit.name" label="Nombre" dense class="minimal-input" borderless /></div>
+                    <div class="col-12 col-sm-6"><q-input v-model="patientEdit.last_name" label="Apellido" dense class="minimal-input" borderless /></div>
+                    <div class="col-12 col-sm-6"><q-input v-model="patientEdit.birth_date" label="Fecha de Nacimiento" dense class="minimal-input" borderless type="date" /></div>
+                    <div class="col-12 col-sm-6"><q-input v-model="patientEdit.address" label="Dirección" dense class="minimal-input" borderless /></div>
+                    <div class="col-12 col-sm-6"><q-input v-model="patientEdit.locality" label="Localidad" dense class="minimal-input" borderless /></div>
+                    <div class="col-12 col-sm-6"><q-input v-model="patientEdit.phone" label="Teléfono" dense class="minimal-input" borderless /></div>
+                    <div class="col-12 col-sm-6"><q-input v-model="patientEdit.cellphone" label="Celular" dense class="minimal-input" borderless /></div>
+                    <div class="col-12 col-sm-6"><q-input v-model="patientEdit.email" label="E-mail" dense class="minimal-input" borderless /></div>
+                    <div class="col-12"><q-input v-model="patientEdit.additional_note" label="Nota adicional" type="textarea" autogrow maxlength="200" counter class="minimal-input" borderless /></div>
+                  </div>
+                  <div class="row justify-center q-gutter-sm">
+                    <q-btn label="Cancelar" flat @click="cancelPatientEdit" />
+                    <q-btn label="Guardar" color="primary" @click="updatePatientData" />
+                  </div>
+                </div>
+              </div>
+            </q-tab-panel>
             <q-tab-panel name="antecedentes">
-              <div class="text-h6 q-mb-md">Antecedentes Médicos</div>
+              <div class="text-h6 q-mb-md">Datos Médicos</div>
               <q-form class="q-gutter-md">
                 <q-input v-model="antecedentes.intervenciones" label="Intervenciones quirúrgicas" class="minimal-input"
                   borderless dense />
@@ -272,7 +271,7 @@ const cropOffset = ref({x: 0, y: 0});
 const dragging = ref(false);
 const dragStart = ref({x: 0, y: 0});
 
-const tab = ref('sesiones');
+const tab = ref('perfil');
 const sesiones = ref([]);
 const columns = [
   { name: 'date', label: 'Fecha', field: 'date', align: 'left' },
