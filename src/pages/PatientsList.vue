@@ -31,6 +31,7 @@
         row-key="id"
         flat
         dense
+        :grid="$q.screen.lt.md"
         :pagination.sync="pagination"
         :rows-per-page-options="[20]"
         @row-click="goToDetail"
@@ -207,19 +208,20 @@ async function deletePatient() {
 </script>
 <style scoped>
 .minimal-input {
-  background: transparent !important;
-  border-radius: 10px;
-  border: none !important;
+  background: #f8fafc !important;
+  border-radius: 12px;
+  border: 1px solid #e0e4ea !important;
   box-shadow: none !important;
-  font-size: 15px;
-  padding: 8px 12px;
-  transition: border-color 0.2s;
-  border-bottom: 1.5px solid #e0e4ea !important;
-  margin-bottom: 8px;
+  font-size: 16px;
+  padding: 4px 12px;
+  transition: all 0.2s ease;
+  margin-bottom: 4px;
 }
 
 .minimal-input:focus-within {
-  border-bottom: 1.5px solid #1976d2 !important;
+  border-color: #1976d2 !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1) !important;
 }
 
 .minimal-table {

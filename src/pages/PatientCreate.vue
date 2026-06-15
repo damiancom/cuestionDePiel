@@ -7,7 +7,7 @@
     </div>
     <div class="row justify-center">
       <div class="col-12 col-md-10 col-lg-8">
-        <q-card class="q-pa-xl minimal-create-card">
+        <q-card class="q-pa-md q-pa-sm-xl minimal-create-card">
           <q-form @submit.prevent="createPatient">
             <div class="row q-col-gutter-xl">
               <div class="col-12 col-md-4 flex flex-center column">
@@ -59,17 +59,24 @@
                 </div>
               </div>
             </div>
-            <div class="row justify-center q-mt-xl q-gutter-sm">
-              <q-btn flat label="Cancelar" @click="cancel" class="minimal-btn q-mr-sm"/>
-              <q-btn label="Confirmar" color="primary" type="submit" class="minimal-btn-save" icon="check"/>
-            </div>
+            <div style="height: 60px;"></div>
           </q-form>
         </q-card>
       </div>
     </div>
 
+    <!-- Floating Save Buttons -->
+    <q-page-sticky position="bottom" :offset="[0, 16]" style="z-index: 100;">
+      <transition appear enter-active-class="animated fadeInUp" leave-active-class="animated fadeOutDown">
+        <q-card class="bg-white shadow-up-3 q-pa-sm row no-wrap items-center justify-between" 
+                style="border-radius: 30px; border: 1px solid #e0e4ea; min-width: 280px; width: fit-content;">
+          <q-btn flat label="Cancelar" @click="cancel" color="grey-8" class="q-ml-xs minimal-btn" />
+          <q-btn label="Confirmar" rounded color="primary" @click="createPatient" class="q-mr-xs q-px-md minimal-btn-save" />
+        </q-card>
+      </transition>
+    </q-page-sticky>
     <!-- Diálogo de recorte de imagen -->
-    <q-dialog v-model="showCropDialog" persistent>
+    <q-dialog v-model="showCropDialog" persistent :maximized="$q.screen.lt.sm">
       <q-card class="crop-dialog-card">
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">Ajustar imagen</div>
@@ -276,19 +283,26 @@ function cancel() {
   border-radius: 16px;
   background: #f9fafb;
   border: 1px solid #ececec;
-  max-width: 1000px;
+  max-width: 900px;
   width: 100%;
+  margin: auto;
 }
 
 .minimal-input {
-  background: transparent !important;
-  border-radius: 10px;
-  border: none !important;
+  background: #f8fafc !important;
+  border-radius: 12px;
+  border: 1px solid #e0e4ea !important;
   box-shadow: none !important;
-  font-size: 15px;
-  padding: 8px 12px;
-  transition: border-color 0.2s;
-  border-bottom: 1.5px solid #e0e4ea !important;
+  font-size: 16px;
+  padding: 4px 12px;
+  transition: all 0.2s ease;
+  margin-bottom: 4px;
+}
+
+.minimal-input:focus-within {
+  border-color: #1976d2 !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1) !important;
 }
 
 .hidden {
@@ -317,24 +331,24 @@ function cancel() {
 .avatar-clickable {
   cursor: pointer;
   position: relative;
-  transition: transform 0.15s;
+  overflow: hidden;
+  transition: transform 0.2s;
 }
 
 .avatar-clickable:hover {
-  transform: scale(1.05);
+  transform: scale(1.02);
 }
 
 .avatar-overlay {
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
   right: 0;
-  height: 36px;
-  background: rgba(0, 0, 0, 0.45);
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0 0 50% 50%;
   opacity: 0;
   transition: opacity 0.2s;
 }
@@ -344,17 +358,19 @@ function cancel() {
 }
 
 .crop-dialog-card {
-  border-radius: 16px;
-  min-width: 320px;
+  width: 100%;
   max-width: 400px;
+  border-radius: 16px;
 }
 
 .crop-container {
-  cursor: grab;
+  width: 250px;
+  height: 250px;
   border-radius: 50%;
   overflow: hidden;
-  display: inline-block;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  position: relative;
+  cursor: grab;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .crop-container:active {
