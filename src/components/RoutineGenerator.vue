@@ -1,30 +1,7 @@
 <template>
   <div class="routine-generator-container">
-    <div class="header q-mb-md">
-      <h1 class="text-h4 text-primary q-my-none">Editor de Rutina Facial</h1>
-      <div class="controls q-gutter-sm">
-        <q-btn
-          color="primary"
-          icon="auto_awesome"
-          label="Catálogo"
-          to="/catalogo"
-        />
-
-        <q-btn
-          color="secondary"
-          icon="save"
-          label="Guardar Rutina"
-          @click="saveRoutine"
-          id="saveRoutine"
-        />
-        <q-btn
-          color="primary"
-          icon="download"
-          label="Descargar PDF"
-          @click="downloadPDF"
-          id="downloadPDF"
-        />
-      </div>
+    <div class="row items-center q-mb-md">
+      <div class="col text-h6">Rutina Facial</div>
     </div>
 
     <div class="routine-card" id="routine-preview">
@@ -91,7 +68,7 @@
                     <q-item clickable v-ripple v-for="prod in filteredMentionProducts" :key="prod.id" @mousedown.prevent="selectMentionProduct(prod)">
                       <q-item-section>
                         <q-item-label>{{ prod.name }}</q-item-label>
-                        <q-item-label caption>{{ prod.brand_name }} - {{ prod.product_type_name }}</q-item-label>
+                        <q-item-label caption>{{ prod.brand_name }} - {{ prod.category_name }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-item v-if="filteredMentionProducts.length === 0">
@@ -159,7 +136,7 @@
                     <q-item clickable v-ripple v-for="prod in filteredMentionProducts" :key="prod.id" @mousedown.prevent="selectMentionProduct(prod)">
                       <q-item-section>
                         <q-item-label>{{ prod.name }}</q-item-label>
-                        <q-item-label caption>{{ prod.brand_name }} - {{ prod.product_type_name }}</q-item-label>
+                        <q-item-label caption>{{ prod.brand_name }} - {{ prod.category_name }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-item v-if="filteredMentionProducts.length === 0">
@@ -239,19 +216,19 @@ const isEditing = ref(true);
 // Datos de la rutina
 const routineData = reactive({
   day: [
-    { title: '1. Limpieza', description: '' },
-    { title: '2. Tónico', description: '' },
-    { title: '3. Contorno de ojos', description: '' },
-    { title: '4. Serum', description: '' },
-    { title: '5. Hidratante', description: '' },
-    { title: '6. Protector solar', description: '' }
+    { title: 'Limpieza', description: '' },
+    { title: 'Tónico', description: '' },
+    { title: 'Contorno de ojos', description: '' },
+    { title: 'Serum', description: '' },
+    { title: 'Hidratante', description: '' },
+    { title: 'Protector solar', description: '' }
   ],
   night: [
-    { title: '1. Limpieza', description: '' },
-    { title: '2. Tónico', description: '' },
-    { title: '3. Contorno de ojos', description: '' },
-    { title: '4. Serum', description: '' },
-    { title: '5. Hidratante', description: '' }
+    { title: 'Limpieza', description: '' },
+    { title: 'Tónico', description: '' },
+    { title: 'Contorno de ojos', description: '' },
+    { title: 'Serum', description: '' },
+    { title: 'Hidratante', description: '' }
   ],
   notes: '',
   patientName: ''
@@ -259,8 +236,12 @@ const routineData = reactive({
 
 watch(() => props.initialRoutine, (newVal) => {
   if (newVal) {
-    routineData.day = Array.isArray(newVal.day) ? [...newVal.day] : [];
-    routineData.night = Array.isArray(newVal.night) ? [...newVal.night] : [];
+    routineData.day = Array.isArray(newVal.day) 
+      ? newVal.day.map(step => ({ ...step, title: step.title ? step.title.replace(/^\d+\.\s*/, '') : '' })) 
+      : [];
+    routineData.night = Array.isArray(newVal.night) 
+      ? newVal.night.map(step => ({ ...step, title: step.title ? step.title.replace(/^\d+\.\s*/, '') : '' })) 
+      : [];
     routineData.notes = newVal.notes ?? '';
     if (newVal.patientName !== undefined) routineData.patientName = newVal.patientName;
   }
@@ -285,11 +266,13 @@ onMounted(async () => {
 const filteredMentionProducts = computed(() => {
   const q = mentionQuery.value.toLowerCase();
   if (!q) return availableProducts.value.slice(0, 8);
-  return availableProducts.value.filter(p => 
-    p.name.toLowerCase().includes(q) || 
-    p.brand_name.toLowerCase().includes(q) ||
-    p.product_type_name.toLowerCase().includes(q)
-  ).slice(0, 8);
+  return availableProducts.value.filter(p => {
+    const name = String(p.name || '').toLowerCase();
+    const brand = String(p.brand_name || '').toLowerCase();
+    const category = String(p.category_name || '').toLowerCase();
+    const func = String(p.function_name || '').toLowerCase();
+    return name.includes(q) || brand.includes(q) || category.includes(q) || func.includes(q);
+  }).slice(0, 8);
 });
 
 const handleTextareaInput = (event, period, index) => {
@@ -350,9 +333,8 @@ const saveRoutine = () => {
 };
 
 const addStep = (period) => {
-  const newIndex = routineData[period].length + 1;
   routineData[period].push({
-    title: `${newIndex}. Nuevo Paso`,
+    title: 'Nuevo Paso',
     description: ''
   });
 };
@@ -463,6 +445,43 @@ const downloadPDF = async () => {
     }
   }
 };
+
+function resetToInitial() {
+  if (props.initialRoutine) {
+    routineData.day = Array.isArray(props.initialRoutine.day) 
+      ? props.initialRoutine.day.map(step => ({ ...step, title: step.title ? step.title.replace(/^\d+\.\s*/, '') : '' })) 
+      : [];
+    routineData.night = Array.isArray(props.initialRoutine.night) 
+      ? props.initialRoutine.night.map(step => ({ ...step, title: step.title ? step.title.replace(/^\d+\.\s*/, '') : '' })) 
+      : [];
+    routineData.notes = props.initialRoutine.notes ?? '';
+    if (props.initialRoutine.patientName !== undefined) routineData.patientName = props.initialRoutine.patientName;
+  } else {
+    routineData.day = [
+      { title: 'Limpieza', description: '' },
+      { title: 'Tónico', description: '' },
+      { title: 'Contorno de ojos', description: '' },
+      { title: 'Serum', description: '' },
+      { title: 'Hidratante', description: '' },
+      { title: 'Protector solar', description: '' }
+    ];
+    routineData.night = [
+      { title: 'Limpieza', description: '' },
+      { title: 'Tónico', description: '' },
+      { title: 'Contorno de ojos', description: '' },
+      { title: 'Serum', description: '' },
+      { title: 'Hidratante', description: '' }
+    ];
+    routineData.notes = '';
+    routineData.patientName = '';
+  }
+}
+
+defineExpose({
+  saveRoutine,
+  downloadPDF,
+  resetToInitial
+});
 </script>
 
 <style scoped>
@@ -714,10 +733,33 @@ const downloadPDF = async () => {
         flex-direction: column;
         gap: 1rem;
     }
+
+    .step-card__delete {
+        opacity: 0.85 !important;
+    }
 }
 
 /* ─── PDF Only (ocultos en la UI, visibles solo al generar el PDF) ─── */
 .pdf-only {
     display: none;
+}
+
+.minimal-btn,
+.minimal-btn-save {
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  font-size: 15px !important;
+  box-shadow: none !important;
+  text-transform: none !important;
+}
+
+.minimal-btn-save {
+  background: #1976d2 !important;
+  color: #fff !important;
+  transition: background 0.15s;
+}
+
+.minimal-btn-save:hover {
+  background: #125ea7 !important;
 }
 </style>

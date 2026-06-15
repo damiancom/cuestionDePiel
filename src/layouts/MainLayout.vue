@@ -32,7 +32,7 @@
             </q-btn>
           </div>
         </q-toolbar-title>
-        <div v-else class="q-toolbar-title q-pa-none q-ma-none"></div>
+        <q-space v-else />
 
         <div class="row items-center q-gutter-sm q-mr-md">
           <q-avatar size="32px" class="q-mr-xs" v-if="$q.screen.gt.xs">
