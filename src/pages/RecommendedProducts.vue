@@ -35,6 +35,7 @@
         :rows-per-page-options="[10, 20, 50]"
         class="minimal-table"
         no-data-label="No hay productos cargados aún"
+        @row-click="handleRowClick"
       >
         <template #body-cell-skin_type="props">
           <q-td>
@@ -467,6 +468,13 @@ function openEdit(row) {
   showDialog.value = true;
 }
 
+function handleRowClick(evt, row) {
+  if (evt.target.closest('.q-btn') || evt.target.closest('.q-checkbox')) {
+    return;
+  }
+  openEdit(row);
+}
+
 function closeDialog() {
   showDialog.value = false;
   editing.value = false;
@@ -543,12 +551,11 @@ onMounted(loadData);
   border-radius: 16px;
   background: #f9fafb;
   border: 1px solid #ececec;
-  min-width: 100%;
-  width: max-content;
+  width: 100%;
   margin: auto;
 }
 .minimal-table :deep(.q-table__middle) {
-  overflow-x: visible !important;
+  overflow-x: auto !important;
 }
 .minimal-input {
   background: transparent !important;
@@ -577,5 +584,8 @@ onMounted(loadData);
   min-height: 26px;
   border-radius: 50%;
   color: #1976d2;
+}
+.minimal-table :deep(.q-table tbody tr) {
+  cursor: pointer;
 }
 </style>

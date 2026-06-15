@@ -1,10 +1,59 @@
 <template>
   <q-page padding>
-    <div class="row justify-center">
-      <div class="col-12 col-lg-10">
+    <input ref="inputFoto" type="file" accept="image/*" class="hidden" @change="onFotoSelected"/>
+
+    <div class="row q-col-gutter-lg justify-center">
+      <!-- Sidebar Perfil Fijo (solo en desktop) -->
+      <div class="col-12 col-md-4 col-lg-3 gt-sm">
+        <q-card class="q-pa-md minimal-card">
+          <div class="flex column items-center">
+            <q-avatar size="100px" class="q-mb-md" :class="editing ? 'avatar-clickable' : 'bg-blue-1 text-primary'" @click="editing && seleccionarFoto()">
+              <img v-if="patient.profile_picture" :src="patient.profile_picture" alt="Foto de perfil"/>
+              <q-icon v-else name="person" size="60px" color="grey-5"/>
+              <div v-if="editing" class="avatar-overlay">
+                <q-icon name="photo_camera" size="24px" color="white"/>
+              </div>
+            </q-avatar>
+            
+            <div v-if="!editing" class="full-width">
+              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Nombre:</span><br>{{ patient.name }}</div>
+              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Apellido:</span><br>{{ patient.last_name }}</div>
+              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Nacimiento:</span><br>{{ formatDate(patient.birth_date) }}</div>
+              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Dirección:</span><br>{{ patient.address }}</div>
+              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Localidad:</span><br>{{ patient.locality }}</div>
+              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Teléfono:</span><br>{{ patient.phone }}</div>
+              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Celular:</span><br>{{ patient.cellphone }}</div>
+              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">E-mail:</span><br>{{ patient.email }}</div>
+              <div class="q-mb-sm" v-if="patient.additional_note"><span class="text-weight-bold text-grey-8">Nota adicional:</span><br><span style="white-space: pre-wrap;">{{ patient.additional_note }}</span></div>
+              <div class="text-caption text-grey-6 text-center q-my-sm">ID: {{ patient.id }}</div>
+              <div class="row justify-center">
+                <q-btn label="Editar Perfil" color="primary" class="full-width minimal-btn-save" @click="editing = true" />
+              </div>
+            </div>
+
+            <div v-else class="full-width">
+              <div class="row q-col-gutter-xs q-mb-md">
+                <div class="col-12"><q-input v-model="patientEdit.name" label="Nombre" dense class="minimal-input" borderless /></div>
+                <div class="col-12"><q-input v-model="patientEdit.last_name" label="Apellido" dense class="minimal-input" borderless /></div>
+                <div class="col-12"><q-input v-model="patientEdit.birth_date" label="Fecha de Nacimiento" dense class="minimal-input" borderless type="date" /></div>
+                <div class="col-12"><q-input v-model="patientEdit.address" label="Dirección" dense class="minimal-input" borderless /></div>
+                <div class="col-12"><q-input v-model="patientEdit.locality" label="Localidad" dense class="minimal-input" borderless /></div>
+                <div class="col-12"><q-input v-model="patientEdit.phone" label="Teléfono" dense class="minimal-input" borderless /></div>
+                <div class="col-12"><q-input v-model="patientEdit.cellphone" label="Celular" dense class="minimal-input" borderless /></div>
+                <div class="col-12"><q-input v-model="patientEdit.email" label="E-mail" dense class="minimal-input" borderless /></div>
+                <div class="col-12"><q-input v-model="patientEdit.additional_note" label="Nota adicional" type="textarea" autogrow maxlength="200" counter class="minimal-input" borderless /></div>
+              </div>
+            </div>
+          </div>
+        </q-card>
+      </div>
+
+      <!-- Contenido Principal con Tabs -->
+      <div class="col-12 col-md-8 col-lg-7">
         <q-card class="q-pa-md q-pa-sm-lg">
           <q-tabs v-model="tab" class="text-primary q-mb-md" align="left" dense mobile-arrows outside-arrows>
-            <q-tab name="perfil" label="Perfil del Paciente" />
+            <!-- Tab Perfil: Sólo visible en mobile (lt-md) -->
+            <q-tab name="perfil" label="Perfil del Paciente" class="lt-md" />
             <q-tab name="antecedentes" label="Datos Médicos" />
             <q-tab name="observaciones" label="Observaciones y Diagnóstico" />
             <q-tab name="apoyo" label="Apoyo domiciliario" />
@@ -12,8 +61,10 @@
             <q-tab name="sesiones" label="Sesiones" />
           </q-tabs>
           <q-separator />
+          
           <q-tab-panels v-model="tab" animated>
-            <q-tab-panel name="perfil">
+            <!-- Tab Panel Perfil: Sólo visible en mobile (lt-md) -->
+            <q-tab-panel name="perfil" class="lt-md">
               <div class="flex column items-center q-pa-md">
                 <q-avatar size="100px" class="q-mb-md" :class="editing ? 'avatar-clickable' : 'bg-blue-1 text-primary'" @click="editing && seleccionarFoto()">
                   <img v-if="patient.profile_picture" :src="patient.profile_picture" alt="Foto de perfil"/>
@@ -22,7 +73,6 @@
                     <q-icon name="photo_camera" size="24px" color="white"/>
                   </div>
                 </q-avatar>
-                <input ref="inputFoto" type="file" accept="image/*" class="hidden" @change="onFotoSelected"/>
                 
                 <div v-if="!editing" class="full-width" style="max-width: 600px;">
                   <div class="row q-col-gutter-md q-mb-md">
@@ -38,7 +88,7 @@
                   </div>
                   <div class="text-caption text-grey-6 text-center q-mb-md">ID: {{ patient.id }}</div>
                   <div class="row justify-center">
-                    <q-btn label="Editar Perfil" color="primary" @click="editing = true" />
+                    <q-btn label="Editar Perfil" color="primary" class="minimal-btn-save" @click="editing = true" />
                   </div>
                 </div>
 
@@ -126,7 +176,7 @@
               </q-form>
             </q-tab-panel>
             <q-tab-panel name="rutina">
-              <RoutineGenerator :initialRoutine="mappedRoutine" @save="handleRoutineSave" />
+              <RoutineGenerator ref="routineEditor" :initialRoutine="mappedRoutine" @save="handleRoutineSave" />
             </q-tab-panel>
             <q-tab-panel name="sesiones">
               <div class="row items-center q-mb-md">
@@ -210,8 +260,8 @@
     <!-- Floating Save Buttons -->
     <q-page-sticky position="bottom" :offset="[0, 16]" style="z-index: 100;">
       <transition appear enter-active-class="animated fadeInUp" leave-active-class="animated fadeOutDown">
-        <q-card v-if="(tab === 'perfil' && editing) || ['antecedentes', 'observaciones', 'apoyo'].includes(tab)" 
-                class="bg-white shadow-up-3 q-pa-sm row no-wrap items-center justify-between" 
+        <q-card v-if="(tab === 'perfil' && editing) || ['antecedentes', 'observaciones', 'apoyo', 'rutina'].includes(tab)" 
+                class="bg-white shadow-up-3 q-pa-sm row no-wrap items-center justify-between q-gutter-x-sm" 
                 style="border-radius: 30px; border: 1px solid #e0e4ea; min-width: 280px; width: fit-content;">
           
           <template v-if="tab === 'perfil' && editing">
@@ -233,6 +283,12 @@
             <q-btn flat label="Cancelar" @click="resetApoyo" color="grey-8" class="q-ml-xs minimal-btn" />
             <q-btn label="Guardar" color="primary" @click="guardarApoyo" class="q-mr-xs q-px-md minimal-btn-save" rounded />
           </template>
+
+          <template v-if="tab === 'rutina'">
+            <q-btn flat label="Cancelar" @click="cancelarRutina" color="grey-8" class="q-ml-xs minimal-btn" />
+            <q-btn label="Guardar" color="primary" @click="guardarRutina" class="q-mr-xs q-px-md minimal-btn-save" rounded />
+            <q-btn outline :label="$q.screen.gt.xs ? 'Descargar' : ''" color="primary" icon="download" @click="descargarRutina" class="q-mr-xs q-px-md minimal-btn" rounded />
+          </template>
           
         </q-card>
       </transition>
@@ -241,7 +297,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, reactive, ref } from 'vue';
+import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { PATIENTS_URL, MEDICAL_HISTORY_ENDPOINT, HOME_SUPPORTS_ENDPOINT, ROUTINES_ENDPOINT, DIAGNOSTICS_ENDPOINT, SessionsAPI } from "../services/api";
 import axios from "axios";
@@ -287,10 +343,34 @@ const cropContainer = ref(null);
 const cropZoom = ref(1);
 const cropImage = ref(null);
 const cropOffset = ref({x: 0, y: 0});
-const dragging = ref(false);
-const dragStart = ref({x: 0, y: 0});
+const tab = ref($q.screen.gt.sm ? 'antecedentes' : 'perfil');
 
-const tab = ref('perfil');
+onMounted(() => {
+  if ($q.screen.gt.sm && tab.value === 'perfil') {
+    tab.value = 'antecedentes';
+  }
+});
+
+watch(() => $q.screen.gt.sm, (isDesktop) => {
+  if (isDesktop && tab.value === 'perfil') {
+    tab.value = 'antecedentes';
+  }
+});
+
+const routineEditor = ref(null);
+
+function guardarRutina() {
+  routineEditor.value && routineEditor.value.saveRoutine();
+}
+
+function cancelarRutina() {
+  routineEditor.value && routineEditor.value.resetToInitial();
+}
+
+function descargarRutina() {
+  routineEditor.value && routineEditor.value.downloadPDF();
+}
+
 const sesiones = ref([]);
 const columns = [
   { name: 'date', label: 'Fecha', field: 'date', align: 'left' },

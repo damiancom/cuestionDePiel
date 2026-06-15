@@ -37,6 +37,28 @@
         @row-click="goToDetail"
         class="q-mb-md minimal-table"
     >
+      <template v-slot:item="props">
+        <div class="q-pa-xs col-xs-12 col-sm-6">
+          <q-card @click="goToDetail(null, props.row)" class="cursor-pointer minimal-card q-py-sm">
+            <q-card-section class="row items-center no-wrap">
+              <q-avatar size="44px" class="q-mr-md">
+                <img v-if="props.row.photo" :src="props.row.photo" alt="avatar"/>
+                <q-icon v-else name="person"/>
+              </q-avatar>
+              <div class="col ellipsis">
+                <div class="text-weight-medium text-subtitle1 text-primary">{{ props.row.fullName }}</div>
+                <div class="text-caption text-grey-7">{{ props.row.email }}</div>
+                <div class="text-caption text-grey-7">
+                  {{ formatDate(props.row.birthDate) }} • {{ calculateAge(props.row.birthDate) }} años
+                </div>
+              </div>
+              <q-space />
+              <q-btn color="negative" icon="delete" flat dense @click.stop="confirmDelete(props.row)"/>
+            </q-card-section>
+          </q-card>
+        </div>
+      </template>
+
       <template #body-cell-avatar="props">
         <q-td>
           <q-avatar size="40px">
@@ -227,6 +249,19 @@ async function deletePatient() {
 .minimal-table {
   background: transparent;
   border-radius: 14px;
+}
+
+.minimal-card {
+  border-radius: 12px;
+  border: 1px solid #e0e4ea;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+  background: #ffffff;
+}
+
+.minimal-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .minimal-pagination {
