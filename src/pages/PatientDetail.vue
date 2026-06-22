@@ -108,6 +108,10 @@
                     <div class="col-12 col-sm-6"><q-input v-model="patientEdit.email" label="E-mail" dense class="minimal-input" borderless /></div>
                     <div class="col-12"><q-input v-model="patientEdit.additional_note" label="Nota adicional" type="textarea" autogrow maxlength="200" counter class="minimal-input" borderless /></div>
                   </div>
+                  <div class="row q-gutter-sm justify-center q-mt-sm">
+                    <q-btn flat label="Cancelar" @click="cancelPatientEdit" color="grey-8" class="minimal-btn" />
+                    <q-btn label="Guardar" color="primary" @click="updatePatientData" class="minimal-btn-save" />
+                  </div>
                 </div>
               </div>
             </q-tab-panel>
@@ -128,7 +132,10 @@
                   class="minimal-input" borderless dense />
                 <q-input v-model="antecedentes.familiares" label="Antecedentes familiares" class="minimal-input"
                   borderless dense />
-                <div style="height: 60px;"></div>
+                <div class="row q-gutter-sm justify-end q-mt-md">
+                  <q-btn flat label="Cancelar" @click="resetAntecedentes" color="grey-8" class="minimal-btn" />
+                  <q-btn label="Guardar" color="primary" @click="guardarAntecedentes" class="minimal-btn-save" />
+                </div>
               </q-form>
             </q-tab-panel>
             <q-tab-panel name="observaciones">
@@ -164,7 +171,10 @@
                   <q-input v-model="lesion.tratamientos" label="Tratamientos posteriores" class="minimal-input"
                     borderless dense />
                 </q-card>
-                <div style="height: 60px;"></div>
+                <div class="row q-gutter-sm justify-end q-mt-md">
+                  <q-btn flat label="Cancelar" @click="resetObservaciones" color="grey-8" class="minimal-btn" />
+                  <q-btn label="Guardar" color="primary" @click="guardarObservaciones" class="minimal-btn-save" />
+                </div>
               </q-form>
             </q-tab-panel>
             <q-tab-panel name="apoyo">
@@ -176,11 +186,19 @@
                   counter maxlength="10000" />
                 <q-input v-model="apoyo.recomendaciones" label="Recomendaciones" class="minimal-input" borderless dense
                   counter maxlength="10000" />
-                <div style="height: 60px;"></div>
+                <div class="row q-gutter-sm justify-end q-mt-md">
+                  <q-btn flat label="Cancelar" @click="resetApoyo" color="grey-8" class="minimal-btn" />
+                  <q-btn label="Guardar" color="primary" @click="guardarApoyo" class="minimal-btn-save" />
+                </div>
               </q-form>
             </q-tab-panel>
             <q-tab-panel name="rutina">
               <RoutineGenerator ref="routineEditor" :initialRoutine="mappedRoutine" @save="handleRoutineSave" />
+              <div class="row q-gutter-sm justify-end q-mt-md">
+                <q-btn flat label="Cancelar" @click="cancelarRutina" color="grey-8" class="minimal-btn" />
+                <q-btn label="Guardar" color="primary" @click="guardarRutina" class="minimal-btn-save" />
+                <q-btn outline :label="$q.screen.gt.xs ? 'Descargar' : ''" color="primary" icon="download" @click="descargarRutina" class="minimal-btn" />
+              </div>
             </q-tab-panel>
             <q-tab-panel name="sesiones">
               <div class="row items-center q-mb-md">
@@ -261,42 +279,6 @@
       </q-card>
     </q-dialog>
 
-    <!-- Floating Save Buttons -->
-    <q-page-sticky position="bottom" :offset="[0, 16]" style="z-index: 100;">
-      <transition appear enter-active-class="animated fadeInUp" leave-active-class="animated fadeOutDown">
-        <q-card v-if="(tab === 'perfil' && editing) || ['antecedentes', 'observaciones', 'apoyo', 'rutina'].includes(tab)" 
-                class="bg-white shadow-up-3 q-pa-sm row no-wrap items-center justify-between q-gutter-x-sm" 
-                style="border-radius: 30px; border: 1px solid #e0e4ea; min-width: 280px; width: fit-content;">
-          
-          <template v-if="tab === 'perfil' && editing">
-            <q-btn flat label="Cancelar" @click="cancelPatientEdit" color="grey-8" class="q-ml-xs minimal-btn" />
-            <q-btn label="Guardar" color="primary" @click="updatePatientData" class="q-mr-xs q-px-md minimal-btn-save" rounded />
-          </template>
-
-          <template v-if="tab === 'antecedentes'">
-            <q-btn flat label="Cancelar" @click="resetAntecedentes" color="grey-8" class="q-ml-xs minimal-btn" />
-            <q-btn label="Guardar" color="primary" @click="guardarAntecedentes" class="q-mr-xs q-px-md minimal-btn-save" rounded />
-          </template>
-
-          <template v-if="tab === 'observaciones'">
-            <q-btn flat label="Cancelar" @click="resetObservaciones" color="grey-8" class="q-ml-xs minimal-btn" />
-            <q-btn label="Guardar" color="primary" @click="guardarObservaciones" class="q-mr-xs q-px-md minimal-btn-save" rounded />
-          </template>
-
-          <template v-if="tab === 'apoyo'">
-            <q-btn flat label="Cancelar" @click="resetApoyo" color="grey-8" class="q-ml-xs minimal-btn" />
-            <q-btn label="Guardar" color="primary" @click="guardarApoyo" class="q-mr-xs q-px-md minimal-btn-save" rounded />
-          </template>
-
-          <template v-if="tab === 'rutina'">
-            <q-btn flat label="Cancelar" @click="cancelarRutina" color="grey-8" class="q-ml-xs minimal-btn" />
-            <q-btn label="Guardar" color="primary" @click="guardarRutina" class="q-mr-xs q-px-md minimal-btn-save" rounded />
-            <q-btn outline :label="$q.screen.gt.xs ? 'Descargar' : ''" color="primary" icon="download" @click="descargarRutina" class="q-mr-xs q-px-md minimal-btn" rounded />
-          </template>
-          
-        </q-card>
-      </transition>
-    </q-page-sticky>
   </q-page>
 </template>
 
