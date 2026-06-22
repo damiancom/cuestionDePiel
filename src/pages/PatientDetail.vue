@@ -43,6 +43,10 @@
                 <div class="col-12"><q-input v-model="patientEdit.email" label="E-mail" dense class="minimal-input" borderless /></div>
                 <div class="col-12"><q-input v-model="patientEdit.additional_note" label="Nota adicional" type="textarea" autogrow maxlength="200" counter class="minimal-input" borderless /></div>
               </div>
+              <div class="row q-gutter-sm justify-center q-mt-sm">
+                <q-btn flat label="Cancelar" @click="cancelPatientEdit" color="grey-8" class="minimal-btn" />
+                <q-btn label="Guardar" color="primary" @click="updatePatientData" class="minimal-btn-save" />
+              </div>
             </div>
           </div>
         </q-card>
