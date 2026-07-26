@@ -78,3 +78,24 @@ export const RecommendedProductsAPI = {
     return axios.get(`${RECOMMENDED_PRODUCTS_URL}/skin-types`);
   },
 };
+
+const SERVICES_URL = `${API_BASE_URL}/services`;
+
+export const ServicesAPI = {
+  list() {
+    return axios.get(SERVICES_URL);
+  },
+  get(id) {
+    return axios.get(`${SERVICES_URL}/${id}`);
+  },
+  create(payload) {
+    return axios.post(SERVICES_URL, payload);
+  },
+  update(id, payload) {
+    return axios.put(`${SERVICES_URL}/${id}`, payload);
+  },
+  remove(id) {
+    return axios.delete(`${SERVICES_URL}/${id}`);
+  },
+};
+
