@@ -302,7 +302,7 @@ const columns = [
   { name: 'name',              label: 'Nombre',           field: 'name',              align: 'left',  sortable: true },
   { name: 'description',       label: 'Descripción',      field: 'description',       align: 'left',  sortable: true, format: val => val || '—' },
   { name: 'price',             label: 'Precio',           field: 'price',             align: 'left',  sortable: true },
-  { name: 'estimatedDuration', label: 'Duración Estimada',field: 'estimatedDuration', align: 'left',  sortable: true },
+  { name: 'estimatedDuration', label: 'Duración',          field: 'estimatedDuration', align: 'left',  sortable: true },
   { name: 'actions',           label: '',                  field: 'actions',           align: 'right' },
 ];
 
@@ -615,20 +615,44 @@ onMounted(loadData);
   background: #f7faff;
 }
 
-/* Descripción: hasta 25%, con salto de línea */
+/* Nombre: hasta 30% de ancho, con salto de línea */
+.simple-table :deep(td:nth-child(1)),
+.simple-table :deep(th:nth-child(1)) {
+  width: 30%;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+/* Descripción: resto del espacio disponible, con salto de línea */
 .simple-table :deep(td:nth-child(2)),
 .simple-table :deep(th:nth-child(2)) {
-  width: 25%;
   white-space: normal;
   word-break: break-word;
   line-height: 1.5;
 }
 
-/* Duración estimada: columna angosta */
+/* Precio: ancho ajustado para no desperdiciar espacio */
+.simple-table :deep(td:nth-child(3)),
+.simple-table :deep(th:nth-child(3)) {
+  width: 120px;
+  white-space: nowrap;
+}
+
+/* Duración: ancho ajustado */
 .simple-table :deep(td:nth-child(4)),
 .simple-table :deep(th:nth-child(4)) {
-  width: 130px;
+  width: 110px;
+  white-space: nowrap;
 }
+
+/* Acciones (íconos): ancho ajustado */
+.simple-table :deep(td:nth-child(5)),
+.simple-table :deep(th:nth-child(5)) {
+  width: 125px;
+  white-space: nowrap;
+}
+
 .simple-price {
   font-size: 16px;
   font-weight: 700;
