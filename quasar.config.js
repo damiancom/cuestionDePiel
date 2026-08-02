@@ -9,6 +9,7 @@ export default function (ctx) {
     extras: [
       'roboto-font',
       'material-icons',
+      'fontawesome-v6',
     ],
     build: {
       vueRouterMode: 'history',
