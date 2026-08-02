@@ -615,10 +615,10 @@ onMounted(loadData);
   background: #f7faff;
 }
 
-/* Nombre: hasta 30% de ancho, con salto de línea */
+/* Nombre: hasta 25% de ancho, con salto de línea */
 .simple-table :deep(td:nth-child(1)),
 .simple-table :deep(th:nth-child(1)) {
-  width: 30%;
+  width: 25%;
   white-space: normal;
   word-break: break-word;
   line-height: 1.4;
