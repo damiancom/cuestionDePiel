@@ -1,17 +1,17 @@
 <template>
   <q-page padding>
-    <div class="row items-center q-mb-md">
-      <div class="col">
+    <div class="row items-center justify-between q-mb-md">
+      <div class="col-12 col-sm q-mb-sm q-mb-sm-none">
         <div class="text-h5">Servicios</div>
         <div class="text-caption text-grey-7">Gestión de servicios ofrecidos, precios y duración estimada</div>
       </div>
-      <div class="col-auto row items-center q-gutter-sm">
+      <div class="col-12 col-sm-auto row items-center q-gutter-sm">
         <q-input
           v-model="search"
           label="Buscar servicio"
           dense
           borderless
-          class="minimal-input"
+          class="minimal-input col col-sm-auto"
           :input-style="{ background: 'transparent' }"
           style="max-width: 220px;"
         >
@@ -23,7 +23,86 @@
       </div>
     </div>
 
-    <q-card flat class="q-pa-md minimal-create-card">
+    <!-- ─── Vista MÓVIL (Celulares): Estilo Mercado Libre con Swipe ─── -->
+    <div v-if="$q.screen.xs">
+      <q-card flat class="minimal-create-card q-pa-sm">
+        <q-list separator class="meli-list">
+          <q-slide-item
+            v-for="service in filteredServices"
+            :key="service.id"
+            @left="({ reset }) => handleSwipeWhatsApp(service, reset)"
+            @right="({ reset }) => handleSwipeDelete(service, reset)"
+            left-color="positive"
+            right-color="negative"
+            class="meli-slide-item"
+          >
+            <!-- Swipe Derecha (Izquierda a Derecha): WhatsApp -->
+            <template #left>
+              <div class="row items-center q-gutter-xs text-white q-px-md">
+                <q-icon name="fa-brands fa-whatsapp" size="22px" />
+                <span class="text-weight-bold">WhatsApp</span>
+              </div>
+            </template>
+
+            <!-- Swipe Izquierda (Derecha a Izquierda): Solo Eliminar -->
+            <template #right>
+              <div class="row items-center q-gutter-xs text-white q-px-md">
+                <span class="text-weight-bold">Eliminar</span>
+                <q-icon name="delete" size="22px" />
+              </div>
+            </template>
+
+            <q-item clickable @click="handleRowClick($event, service)" class="meli-item q-py-md q-px-sm">
+              <q-item-section>
+                <!-- Fila Superior: Título y Precio (estilo Mercado Libre) -->
+                <div class="row justify-between items-start no-wrap q-mb-xs">
+                  <div class="meli-title col q-pr-sm">
+                    {{ service.name }}
+                  </div>
+                  <div class="meli-price col-auto text-right">
+                    {{ service.price != null ? '$ ' + formatPrice(service.price) : '—' }}
+                  </div>
+                </div>
+
+                <!-- Fila Inferior: Duración (estilo Color: Negro) y Botones directos -->
+                <div class="row justify-between items-center no-wrap q-mt-xs">
+                  <div class="meli-subtitle col text-grey-7 text-caption row items-center">
+                    <q-icon name="schedule" size="14px" class="q-mr-xs" />
+                    <span>{{ service.estimatedDuration ? 'Duración: ' + service.estimatedDuration : 'Duración: —' }}</span>
+                  </div>
+                  <div class="col-auto row items-center q-gutter-xs">
+                    <q-btn
+                      flat
+                      round
+                      icon="fa-brands fa-whatsapp"
+                      size="sm"
+                      color="positive"
+                      @click.stop="openWhatsAppModal(service)"
+                    />
+                    <q-btn
+                      flat
+                      round
+                      icon="delete"
+                      size="sm"
+                      color="negative"
+                      @click.stop="confirmDelete(service)"
+                    />
+                  </div>
+                </div>
+              </q-item-section>
+            </q-item>
+          </q-slide-item>
+        </q-list>
+
+        <!-- Mensaje si no hay servicios -->
+        <div v-if="filteredServices.length === 0" class="text-center q-pa-xl text-grey-6">
+          No hay servicios registrados aún
+        </div>
+      </q-card>
+    </div>
+
+    <!-- ─── Vista ESCRITORIO / TABLET: Tabla original ─── -->
+    <q-card v-else flat class="q-pa-md minimal-create-card">
       <q-table
         :rows="filteredServices"
         :columns="columns"
@@ -370,7 +449,7 @@ function openEdit(row) {
 }
 
 function handleRowClick(evt, row) {
-  if (evt.target.closest('.q-btn') || evt.target.closest('.q-checkbox')) return;
+  if (evt && evt.target && (evt.target.closest('.q-btn') || evt.target.closest('.q-checkbox'))) return;
   openEdit(row);
 }
 
@@ -422,6 +501,16 @@ function confirmDelete(row) {
       $q.notify({ color: 'negative', message: 'Error al eliminar el servicio', icon: 'error' });
     }
   });
+}
+
+function handleSwipeWhatsApp(service, reset) {
+  reset();
+  openWhatsAppModal(service);
+}
+
+function handleSwipeDelete(service, reset) {
+  reset();
+  confirmDelete(service);
 }
 
 function getPatientPhone(p) {
@@ -577,8 +666,8 @@ onMounted(loadData);
   padding-left: 12px !important;
 }
 .dialog-card {
-  min-width: 480px;
-  max-width: 98vw;
+  width: 480px;
+  max-width: 95vw;
   border-radius: 16px;
 }
 
@@ -659,9 +748,62 @@ onMounted(loadData);
   color: #1976d2;
 }
 
+/* ─── Ajustes Responsive para Celulares (móvil) ──────────── */
+@media (max-width: 640px) {
+  /* En celulares se oculta la columna Descripción */
+  .simple-table :deep(td:nth-child(2)),
+  .simple-table :deep(th:nth-child(2)) {
+    display: none !important;
+  }
+
+  /* Nombre: toma todo el espacio restante disponible en celular */
+  .simple-table :deep(td:nth-child(1)),
+  .simple-table :deep(th:nth-child(1)) {
+    width: auto !important;
+    min-width: 95px;
+    font-size: 14px;
+    line-height: 1.35;
+  }
+
+  /* Precio: ancho compacto para celular */
+  .simple-table :deep(td:nth-child(3)),
+  .simple-table :deep(th:nth-child(3)) {
+    width: 90px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+
+  /* Duración: ancho compacto para celular */
+  .simple-table :deep(td:nth-child(4)),
+  .simple-table :deep(th:nth-child(4)) {
+    width: 75px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+
+  /* Acciones: ancho compacto optimizado para 3 íconos */
+  .simple-table :deep(td:nth-child(5)),
+  .simple-table :deep(th:nth-child(5)) {
+    width: 105px !important;
+    padding-left: 4px !important;
+    padding-right: 6px !important;
+  }
+
+  /* Alinear y compactar los bordes laterales y celdas en pantallas pequeñas */
+  .simple-table :deep(thead th),
+  .simple-table :deep(tbody td) {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .simple-price {
+    font-size: 14px;
+  }
+}
+
 /* ─── Diálogo WhatsApp ───────────────────────────────────── */
 .wa-dialog-card {
-  min-width: 540px;
+  width: 540px;
   max-width: 95vw;
 }
 .wa-patients-list {
@@ -674,5 +816,42 @@ onMounted(loadData);
 }
 .wa-patient-item:hover {
   background: #f0fdf4;
+}
+
+/* ─── Vista Móvil: Estilo Mercado Libre con Swipe ────────── */
+.meli-list {
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.meli-slide-item {
+  border-bottom: 1px solid #f0f4f8;
+}
+.meli-slide-item:last-child {
+  border-bottom: none;
+}
+.meli-item {
+  background: #ffffff;
+  transition: background 0.15s ease;
+}
+.meli-item:hover {
+  background: #f8fafc;
+}
+.meli-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: #1f2937;
+  line-height: 1.35;
+  word-break: break-word;
+}
+.meli-price {
+  font-size: 17px;
+  font-weight: 700;
+  color: #111827;
+  white-space: nowrap;
+}
+.meli-subtitle {
+  font-size: 13px;
+  color: #6b7280;
 }
 </style>
