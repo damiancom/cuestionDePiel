@@ -24,8 +24,8 @@
             <q-btn flat round dense icon="medical_services" to="/servicios">
               <div class="text-caption">Servicios</div>
             </q-btn>
-            <q-btn flat round dense icon="auto_awesome" to="/catalogo">
-              <div class="text-caption">Catálogo</div>
+            <q-btn flat round dense icon="inventory_2" to="/catalogo">
+              <div class="text-caption">Productos</div>
             </q-btn>
             <q-btn flat round dense icon="point_of_sale" to="/ventas">
               <div class="text-caption">Ventas</div>
@@ -64,7 +64,7 @@
         <q-route-tab icon="person_add" label="Alta" to="/pacientes/nuevo" />
         <q-route-tab icon="event" label="Agenda" to="/agenda" />
         <q-route-tab icon="medical_services" label="Servicios" to="/servicios" />
-        <q-route-tab icon="auto_awesome" label="Catálogo" to="/catalogo" />
+        <q-route-tab icon="inventory_2" label="Productos" to="/catalogo" />
         <q-route-tab icon="point_of_sale" label="Ventas" to="/ventas" />
       </q-tabs>
     </q-footer>

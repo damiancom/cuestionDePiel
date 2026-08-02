@@ -2,8 +2,8 @@
   <q-page padding>
     <div class="row items-center q-mb-md">
       <div class="col">
-        <div class="text-h5">Catálogo de Productos Recomendados</div>
-        <div class="text-caption text-grey-7">Productos que recomendás en las rutinas faciales</div>
+        <div class="text-h5">Productos</div>
+        <div class="text-caption text-grey-7">Catálogo de productos, precios y stock</div>
       </div>
       <div class="col-auto row items-center q-gutter-sm">
         <q-input
@@ -19,11 +19,31 @@
             <q-icon name="search" />
           </template>
         </q-input>
+
+        <!-- Toggle de vista -->
+        <q-btn-toggle
+          v-model="viewMode"
+          toggle-color="primary"
+          :options="[
+            { icon: 'table_view', value: 'simple', id: 'viewToggleSimple' },
+            { icon: 'view_list',  value: 'full',   id: 'viewToggleFull'   },
+          ]"
+          dense
+          flat
+          size="sm"
+          class="view-toggle"
+        >
+          <q-tooltip anchor="bottom middle" self="top middle">
+            {{ viewMode === 'full' ? 'Vista completa' : 'Vista simplificada' }}
+          </q-tooltip>
+        </q-btn-toggle>
+
         <q-btn color="primary" icon="add" label="Agregar producto" @click="openCreate" id="addRecommendedProduct" />
       </div>
     </div>
 
-    <q-card flat class="q-pa-md minimal-create-card">
+    <!-- VISTA TABLA (completa) -->
+    <q-card v-if="viewMode === 'full'" flat class="q-pa-md minimal-create-card">
       <q-table
         :rows="filteredProducts"
         :columns="columns"
@@ -55,12 +75,12 @@
         </template>
         <template #body-cell-purchase_price="props">
           <q-td class="text-left">
-            {{ props.row.purchase_price != null ? '$' + props.row.purchase_price.toFixed(2).replace('.', ',') : '—' }}
+            {{ props.row.purchase_price != null ? '$' + formatPrice(props.row.purchase_price) : '—' }}
           </q-td>
         </template>
         <template #body-cell-selling_price="props">
           <q-td class="text-left">
-            {{ props.row.selling_price != null ? '$' + props.row.selling_price.toFixed(2).replace('.', ',') : '—' }}
+            {{ props.row.selling_price != null ? '$' + formatPrice(props.row.selling_price) : '—' }}
           </q-td>
         </template>
         <template #body-cell-actions="props">
@@ -72,7 +92,38 @@
       </q-table>
     </q-card>
 
-    <!-- Diálogo Crear / Editar -->
+    <!-- VISTA SIMPLIFICADA (solo lectura) -->
+    <q-card v-else flat class="q-pa-md minimal-create-card">
+      <q-table
+        :rows="filteredProducts"
+        :columns="simpleColumns"
+        row-key="id"
+        flat
+        :loading="loading"
+        :pagination="pagination"
+        :rows-per-page-options="[10, 20, 50]"
+        class="simple-table"
+        no-data-label="No hay productos cargados aún"
+      >
+        <template #body-cell-selling_price="props">
+          <q-td class="text-left">
+            <span class="simple-price">{{ props.row.selling_price != null ? '$' + formatPrice(props.row.selling_price) : '—' }}</span>
+          </q-td>
+        </template>
+        <template #body-cell-stock="props">
+          <q-td class="text-center">
+            <span :class="stockBadgeClass(props.row.stock)" class="stock-badge">
+              {{ props.row.stock ?? '—' }}
+            </span>
+          </q-td>
+        </template>
+        <template #body-cell-expiration_date="props">
+          <q-td class="text-left">
+            <span :class="expClass(props.row.expiration_date)">{{ props.row.expiration_date || '—' }}</span>
+          </q-td>
+        </template>
+      </q-table>
+    </q-card>
     <q-dialog v-model="showDialog" persistent>
       <q-card class="q-pa-lg dialog-card">
         <div class="text-h6 q-mb-lg">{{ editing ? 'Editar Producto' : 'Agregar Producto' }}</div>
@@ -283,7 +334,8 @@ const showDialog = ref(false);
 const editing = ref(false);
 const editId = ref(null);
 const qDateProxy = ref(null);
-const pagination = ref({ page: 1, rowsPerPage: 20 });
+const pagination = ref({ page: 1, rowsPerPage: 50 });
+const viewMode = ref('simple'); // 'simple' | 'full'
 
 const form = ref({
   name: '',
@@ -316,6 +368,14 @@ const columns = [
   { name: 'actions', label: '', field: 'actions', align: 'left' },
 ];
 
+const simpleColumns = [
+  { name: 'brand_name',    label: 'Marca',      field: 'brand_name',    align: 'left',   sortable: true },
+  { name: 'name',          label: 'Producto',   field: 'name',          align: 'left',   sortable: true },
+  { name: 'selling_price', label: 'P. Venta',   field: 'selling_price', align: 'left',   sortable: true },
+  { name: 'stock',         label: 'Stock',      field: 'stock',         align: 'center', sortable: true },
+  { name: 'expiration_date', label: 'Vcto.',    field: 'expiration_date', align: 'left', sortable: true },
+];
+
 // Computed
 const filteredProducts = computed(() => {
   const q = search.value.toLowerCase();
@@ -345,6 +405,39 @@ function skinTypeBadgeColor(val) {
   if (val === 'PIEL_MIXTA') return 'teal-7';
   if (val === 'PIEL_SECA') return 'orange-7';
   return 'grey-5';
+}
+
+function stockClass(stock) {
+  if (stock == null) return 'stock--unknown';
+  if (stock === 0) return 'stock--empty';
+  if (stock <= 3) return 'stock--low';
+  return 'stock--ok';
+}
+
+function stockBadgeClass(stock) {
+  if (stock == null || stock === '') return 'badge-unknown';
+  if (stock === 0) return 'badge-empty';
+  if (stock <= 3) return 'badge-low';
+  return 'badge-ok';
+}
+
+function expClass(dateStr) {
+  if (!dateStr) return 'exp-unknown';
+  // formato MM/YYYY
+  const [mm, yyyy] = dateStr.split('/');
+  if (!mm || !yyyy) return '';
+  const exp = new Date(parseInt(yyyy), parseInt(mm) - 1, 1);
+  const now = new Date();
+  const diffMonths = (exp.getFullYear() - now.getFullYear()) * 12 + (exp.getMonth() - now.getMonth());
+  if (diffMonths < 0) return 'exp-expired';
+  if (diffMonths <= 2) return 'exp-soon';
+  return 'exp-ok';
+}
+
+function formatPrice(val) {
+  if (val == null) return '';
+  const num = typeof val === 'number' ? val : parseFloat(val);
+  return isNaN(num) ? '' : num.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function formatPriceWithComma(val) {
@@ -555,7 +648,11 @@ onMounted(loadData);
   margin: auto;
 }
 .minimal-table :deep(.q-table__middle) {
-  overflow-x: auto !important;
+  overflow-x: hidden !important;
+}
+.minimal-table :deep(table) {
+  table-layout: fixed;
+  width: 100%;
 }
 .minimal-input {
   background: transparent !important;
@@ -588,4 +685,69 @@ onMounted(loadData);
 .minimal-table :deep(.q-table tbody tr) {
   cursor: pointer;
 }
+
+/* ─── View toggle ─────────────────────────────────────────── */
+.view-toggle {
+  background: #f0f4fa;
+  border-radius: 8px;
+  border: 1px solid #dde3ed;
+}
+
+/* ─── Vista simplificada ──────────────────────────────────── */
+.simple-table :deep(.q-table__middle) {
+  overflow-x: hidden !important;
+}
+.simple-table :deep(table) {
+  table-layout: fixed;
+  width: 100%;
+}
+.simple-table :deep(thead th) {
+  font-size: 13px;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 12px 16px;
+  border-bottom: 2px solid #e8edf5;
+}
+.simple-table :deep(tbody td) {
+  font-size: 15px;
+  padding: 13px 16px;
+  border-bottom: 1px solid #f0f4f8;
+  color: #1f2937;
+}
+.simple-table :deep(tbody tr:last-child td) {
+  border-bottom: none;
+}
+.simple-table :deep(tbody tr:hover td) {
+  background: #f7faff;
+}
+
+/* Precio en vista simple */
+.simple-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1976d2;
+}
+
+/* Badge de stock */
+.stock-badge {
+  display: inline-block;
+  min-width: 36px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+}
+.badge-ok      { background: #dcfce7; color: #16a34a; }
+.badge-low     { background: #fef9c3; color: #b45309; }
+.badge-empty   { background: #fee2e2; color: #dc2626; }
+.badge-unknown { background: #f3f4f6; color: #9ca3af; }
+
+/* Semáforo de vencimiento */
+.exp-ok      { color: #16a34a; font-weight: 600; }
+.exp-soon    { color: #d97706; font-weight: 700; }
+.exp-expired { color: #dc2626; font-weight: 700; text-decoration: line-through; }
+.exp-unknown { color: #9ca3af; }
 </style>

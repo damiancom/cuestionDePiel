@@ -29,25 +29,29 @@
         :columns="columns"
         row-key="id"
         flat
-        dense
         :loading="loading"
         :pagination="pagination"
         :rows-per-page-options="[10, 20, 50]"
-        class="minimal-table"
+        class="simple-table"
         no-data-label="No hay servicios registrados aún"
         @row-click="handleRowClick"
       >
         <template #body-cell-price="props">
           <q-td class="text-left">
-            {{ props.row.price != null ? '$' + formatPrice(props.row.price) : '—' }}
+            <span class="simple-price">
+              {{ props.row.price != null ? '$' + formatPrice(props.row.price) : '—' }}
+            </span>
           </q-td>
         </template>
         <template #body-cell-estimatedDuration="props">
           <q-td class="text-left">
-            <q-chip dense outline color="primary" icon="schedule" size="sm" v-if="props.row.estimatedDuration">
+            <q-chip
+              v-if="props.row.estimatedDuration"
+              dense outline color="primary" icon="schedule" size="sm"
+            >
               {{ props.row.estimatedDuration }}
             </q-chip>
-            <span v-else class="text-grey-6">—</span>
+            <span v-else class="text-grey-5">—</span>
           </q-td>
         </template>
         <template #body-cell-actions="props">
@@ -145,7 +149,7 @@ const services = ref([]);
 const showDialog = ref(false);
 const editing = ref(false);
 const editId = ref(null);
-const pagination = ref({ page: 1, rowsPerPage: 15 });
+const pagination = ref({ page: 1, rowsPerPage: 50 });
 
 const form = ref({
   name: '',
@@ -155,11 +159,11 @@ const form = ref({
 });
 
 const columns = [
-  { name: 'name', label: 'Nombre', field: 'name', align: 'left', sortable: true },
-  { name: 'description', label: 'Descripción', field: 'description', align: 'left', sortable: true, format: val => val || '—' },
-  { name: 'price', label: 'Precio', field: 'price', align: 'left', sortable: true },
-  { name: 'estimatedDuration', label: 'Duración Estimada', field: 'estimatedDuration', align: 'left', sortable: true },
-  { name: 'actions', label: '', field: 'actions', align: 'right' },
+  { name: 'name',              label: 'Nombre',           field: 'name',              align: 'left',  sortable: true },
+  { name: 'description',       label: 'Descripción',      field: 'description',       align: 'left',  sortable: true, format: val => val || '—' },
+  { name: 'price',             label: 'Precio',           field: 'price',             align: 'left',  sortable: true },
+  { name: 'estimatedDuration', label: 'Duración Estimada',field: 'estimatedDuration', align: 'left',  sortable: true },
+  { name: 'actions',           label: '',                  field: 'actions',           align: 'right' },
 ];
 
 const filteredServices = computed(() => {
@@ -174,7 +178,7 @@ const filteredServices = computed(() => {
 function formatPrice(val) {
   if (val == null) return '';
   const num = typeof val === 'number' ? val : parseFloat(val);
-  return isNaN(num) ? '' : num.toFixed(2).replace('.', ',');
+  return isNaN(num) ? '' : num.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function formatPriceWithComma(val) {
@@ -203,12 +207,7 @@ async function loadData() {
 }
 
 function getEmptyForm() {
-  return {
-    name: '',
-    description: '',
-    price: '',
-    estimatedDuration: '',
-  };
+  return { name: '', description: '', price: '', estimatedDuration: '' };
 }
 
 function openCreate() {
@@ -231,9 +230,7 @@ function openEdit(row) {
 }
 
 function handleRowClick(evt, row) {
-  if (evt.target.closest('.q-btn') || evt.target.closest('.q-checkbox')) {
-    return;
-  }
+  if (evt.target.closest('.q-btn') || evt.target.closest('.q-checkbox')) return;
   openEdit(row);
 }
 
@@ -298,9 +295,7 @@ onMounted(loadData);
   width: 100%;
   margin: auto;
 }
-.minimal-table :deep(.q-table__middle) {
-  overflow-x: auto !important;
-}
+
 .minimal-input {
   background: transparent !important;
   box-shadow: none !important;
@@ -323,7 +318,57 @@ onMounted(loadData);
   max-width: 98vw;
   border-radius: 16px;
 }
-.minimal-table :deep(.q-table tbody tr) {
+
+/* ─── Tabla simplificada ──────────────────────────────────── */
+.simple-table :deep(.q-table__middle) {
+  overflow-x: hidden !important;
+}
+.simple-table :deep(table) {
+  table-layout: fixed;
+  width: 100%;
+}
+.simple-table :deep(thead th) {
+  font-size: 13px;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 12px 16px;
+  border-bottom: 2px solid #e8edf5;
+}
+.simple-table :deep(tbody td) {
+  font-size: 15px;
+  padding: 13px 16px;
+  border-bottom: 1px solid #f0f4f8;
+  color: #1f2937;
+}
+.simple-table :deep(tbody tr:last-child td) {
+  border-bottom: none;
+}
+.simple-table :deep(tbody tr) {
   cursor: pointer;
+}
+.simple-table :deep(tbody tr:hover td) {
+  background: #f7faff;
+}
+
+/* Descripción: hasta 25%, con salto de línea */
+.simple-table :deep(td:nth-child(2)),
+.simple-table :deep(th:nth-child(2)) {
+  width: 25%;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.5;
+}
+
+/* Duración estimada: columna angosta */
+.simple-table :deep(td:nth-child(4)),
+.simple-table :deep(th:nth-child(4)) {
+  width: 130px;
+}
+.simple-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1976d2;
 }
 </style>
