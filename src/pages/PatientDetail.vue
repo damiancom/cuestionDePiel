@@ -60,7 +60,6 @@
             <q-tab name="perfil" label="Perfil del Paciente" class="lt-md" />
             <q-tab name="antecedentes" label="Datos Médicos" />
             <q-tab name="observaciones" label="Observaciones y Diagnóstico" />
-            <q-tab name="apoyo" label="Apoyo domiciliario" />
             <q-tab name="rutina" label="Rutina" />
             <q-tab name="sesiones" label="Sesiones" />
           </q-tabs>
@@ -177,21 +176,6 @@
                 </div>
               </q-form>
             </q-tab-panel>
-            <q-tab-panel name="apoyo">
-              <div class="text-h6 q-mb-md">Apoyo Domiciliario Inicial</div>
-              <q-form class="q-gutter-md">
-                <q-input v-model="apoyo.rutinaActual" label="Rutina actual" class="minimal-input" borderless dense
-                  counter maxlength="10000" />
-                <q-input v-model="apoyo.rutinaSemanal" label="Rutina semanal" class="minimal-input" borderless dense
-                  counter maxlength="10000" />
-                <q-input v-model="apoyo.recomendaciones" label="Recomendaciones" class="minimal-input" borderless dense
-                  counter maxlength="10000" />
-                <div class="row q-gutter-sm justify-end q-mt-md">
-                  <q-btn flat label="Cancelar" @click="resetApoyo" color="grey-8" class="minimal-btn" />
-                  <q-btn label="Guardar" color="primary" @click="guardarApoyo" class="minimal-btn-save" />
-                </div>
-              </q-form>
-            </q-tab-panel>
             <q-tab-panel name="rutina">
               <RoutineGenerator ref="routineEditor" :initialRoutine="mappedRoutine" @save="handleRoutineSave" />
               <div class="row q-gutter-sm justify-end q-mt-md">
@@ -285,7 +269,7 @@
 <script setup>
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { PATIENTS_URL, MEDICAL_HISTORY_ENDPOINT, HOME_SUPPORTS_ENDPOINT, ROUTINES_ENDPOINT, DIAGNOSTICS_ENDPOINT, SessionsAPI } from "../services/api";
+import { PATIENTS_URL, MEDICAL_HISTORY_ENDPOINT, ROUTINES_ENDPOINT, DIAGNOSTICS_ENDPOINT, SessionsAPI } from "../services/api";
 import axios from "axios";
 import { useQuasar } from "quasar";
 import RoutineGenerator from '../components/RoutineGenerator.vue';
@@ -593,44 +577,22 @@ const datosOriginalesObservacion = {
 const datosOriginalesLesion = {
   inicio: '', lugar: '', sintomas: '', evolucion: '', cambios: '', factores: '', tratamientos: ''
 };
-const datosOriginalesApoyo = {
-  rutinaActual: '',
-  rutinaDia: '',
-  rutinaNoche: '',
-  rutinaSemanal: '',
-  recomendaciones: ''
-};
-
 const antecedentes = reactive({ ...datosOriginalesAntecedentes });
 const antecedentesBackup = reactive({ ...datosOriginalesAntecedentes });
 const observacion = reactive({ ...datosOriginalesObservacion });
 const observacionBackup = reactive({ ...datosOriginalesObservacion });
 const lesion = reactive({ ...datosOriginalesLesion });
 const lesionBackup = reactive({ ...datosOriginalesLesion });
-const apoyo = reactive({ ...datosOriginalesApoyo });
-const apoyoBackup = reactive({ ...datosOriginalesApoyo });
 
 onMounted(async () => {
   if (route.params.id) {
     await findPatientById(route.params.id);
     await fetchMedicalHistory(route.params.id);
     await fetchDiagnostics(route.params.id);
-    await fetchHomeSupports(route.params.id);
     await fetchRoutine(route.params.id);
     await fetchSessions(route.params.id);
   }
 });
-
-function cargarDatosPaciente(data) {
-  Object.assign(antecedentes, data.antecedentes);
-  Object.assign(antecedentesBackup, data.antecedentes);
-  Object.assign(observacion, data.observacion);
-  Object.assign(observacionBackup, data.observacion);
-  Object.assign(lesion, data.lesion);
-  Object.assign(lesionBackup, data.lesion);
-  Object.assign(apoyo, data.apoyo);
-  Object.assign(apoyoBackup, data.apoyo);
-}
 
 function findPatientById(id) {
   const patientUrl = `${PATIENTS_URL}/${id}`;
@@ -691,35 +653,6 @@ async function fetchMedicalHistory(id) {
     $q.notify({
       type: 'negative',
       message: 'Error al cargar antecedentes médicos',
-      position: 'top'
-    });
-  }
-}
-
-async function fetchHomeSupports(id) {
-  try {
-    const response = await axios.get(`${PATIENTS_URL}/${id}${HOME_SUPPORTS_ENDPOINT}`);
-    console.log('Home supports:', response.data);
-
-    const mappedData = {
-      rutinaActual: response.data.current_routine || '',
-      rutinaDia: response.data.day_routine || '',
-      rutinaNoche: response.data.night_routine || '',
-      rutinaSemanal: response.data.weekly_routine || '',
-      recomendaciones: response.data.recommendations || ''
-    };
-
-    Object.assign(apoyo, mappedData);
-    Object.assign(apoyoBackup, mappedData);
-  } catch (error) {
-    if (error.response && error.response.status === 404) {
-      console.log('Home supports not found (404), assuming empty.');
-      return;
-    }
-    console.error('Error fetching home supports:', error);
-    $q.notify({
-      type: 'negative',
-      message: 'Error al cargar apoyo domiciliario',
       position: 'top'
     });
   }
@@ -857,38 +790,6 @@ async function guardarObservaciones() {
     $q.notify({
       type: 'negative',
       message: 'Error al guardar observaciones',
-      position: 'top'
-    });
-  }
-}
-
-function resetApoyo() {
-  Object.assign(apoyo, apoyoBackup);
-}
-
-async function guardarApoyo() {
-  try {
-    const payload = {
-      current_routine: apoyo.rutinaActual,
-      day_routine: apoyo.rutinaDia,
-      night_routine: apoyo.rutinaNoche,
-      weekly_routine: apoyo.rutinaSemanal,
-      recommendations: apoyo.recomendaciones
-    };
-
-    await axios.patch(`${PATIENTS_URL}/${route.params.id}${HOME_SUPPORTS_ENDPOINT}`, payload);
-
-    Object.assign(apoyoBackup, apoyo);
-    $q.notify({
-      type: 'positive',
-      message: 'Apoyo domiciliario guardado correctamente',
-      position: 'top'
-    });
-  } catch (error) {
-    console.error('Error saving home supports:', error);
-    $q.notify({
-      type: 'negative',
-      message: 'Error al guardar apoyo domiciliario',
       position: 'top'
     });
   }
