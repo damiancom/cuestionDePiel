@@ -4,8 +4,20 @@
 
     <div class="row q-col-gutter-lg justify-center">
       <!-- Sidebar Perfil Fijo (solo en desktop) -->
-      <div class="col-12 col-md-4 col-lg-3 gt-sm">
-        <q-card class="q-pa-md minimal-card">
+      <div v-if="!isSidebarCollapsed" class="col-12 col-md-4 col-lg-3 gt-sm">
+        <q-card class="q-pa-md minimal-card patient-sidebar relative-position">
+          <q-btn
+            flat
+            round
+            dense
+            icon="chevron_left"
+            color="grey-6"
+            size="sm"
+            class="absolute-top-right q-ma-sm"
+            @click="toggleSidebar"
+          >
+            <q-tooltip>Colapsar detalle del paciente</q-tooltip>
+          </q-btn>
           <div class="flex column items-center">
             <q-avatar size="100px" class="q-mb-md" :class="editing ? 'avatar-clickable' : 'bg-blue-1 text-primary'" @click="editing && seleccionarFoto()">
               <img v-if="patient.profile_picture" :src="patient.profile_picture" alt="Foto de perfil"/>
@@ -59,16 +71,39 @@
       </div>
 
       <!-- Contenido Principal con Tabs -->
-      <div class="col-12 col-md-8 col-lg-7">
+      <div :class="isSidebarCollapsed ? 'col-12 col-md-12 col-lg-11' : 'col-12 col-md-8 col-lg-7'" class="transition-width">
         <q-card class="q-pa-md q-pa-sm-lg">
-          <q-tabs v-model="tab" class="text-primary q-mb-md" align="left" dense mobile-arrows outside-arrows>
-            <!-- Tab Perfil: Sólo visible en mobile (lt-md) -->
-            <q-tab name="perfil" label="Perfil del Paciente" class="lt-md" />
-            <q-tab name="antecedentes" label="Datos Médicos" />
-            <q-tab name="observaciones" label="Observaciones y Diagnóstico" />
-            <q-tab name="rutina" label="Rutina" />
-            <q-tab name="sesiones" label="Sesiones" />
-          </q-tabs>
+          <div class="row items-center no-wrap q-mb-md">
+            <!-- Botón para mostrar el detalle del paciente (solo en desktop cuando está colapsado) -->
+            <q-btn
+              v-if="isSidebarCollapsed"
+              flat
+              dense
+              no-caps
+              color="primary"
+              icon="chevron_right"
+              class="gt-sm q-mr-sm"
+              @click="toggleSidebar"
+            >
+              <q-avatar size="24px" class="q-mr-xs" color="blue-1" text-color="primary">
+                <img v-if="patient.profile_picture" :src="patient.profile_picture" />
+                <q-icon v-else name="person" size="16px" />
+              </q-avatar>
+              <span class="text-weight-medium gt-xs">
+                {{ patient.name ? `${patient.name} ${patient.last_name}` : 'Detalle del paciente' }}
+              </span>
+              <q-tooltip>Mostrar detalle del paciente</q-tooltip>
+            </q-btn>
+
+            <q-tabs v-model="tab" class="text-primary col" align="left" dense mobile-arrows outside-arrows>
+              <!-- Tab Perfil: Sólo visible en mobile (lt-md) -->
+              <q-tab name="perfil" label="Perfil del Paciente" class="lt-md" />
+              <q-tab name="antecedentes" label="Datos Médicos" />
+              <q-tab name="observaciones" label="Observaciones y Diagnóstico" />
+              <q-tab name="rutina" label="Rutina" />
+              <q-tab name="sesiones" label="Sesiones" />
+            </q-tabs>
+          </div>
           <q-separator />
           
           <q-tab-panels v-model="tab" animated>
@@ -327,8 +362,26 @@ const cropZoom = ref(1);
 const cropImage = ref(null);
 const cropOffset = ref({x: 0, y: 0});
 const tab = ref($q.screen.gt.sm ? 'antecedentes' : 'perfil');
+const isSidebarCollapsed = ref(false);
+
+function toggleSidebar() {
+  isSidebarCollapsed.value = !isSidebarCollapsed.value;
+  try {
+    localStorage.setItem('patient_sidebar_collapsed', isSidebarCollapsed.value ? 'true' : 'false');
+  } catch (e) {
+    // Ignore storage errors
+  }
+}
 
 onMounted(() => {
+  try {
+    const saved = localStorage.getItem('patient_sidebar_collapsed');
+    if (saved !== null) {
+      isSidebarCollapsed.value = saved === 'true';
+    }
+  } catch (e) {
+    // Ignore storage errors
+  }
   if ($q.screen.gt.sm && tab.value === 'perfil') {
     tab.value = 'antecedentes';
   }
@@ -913,6 +966,10 @@ async function handleRoutineSave(routineData) {
 <style scoped>
 .q-avatar {
   font-size: 48px;
+}
+
+.transition-width {
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), flex 0.3s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .q-card.patient-sidebar {
