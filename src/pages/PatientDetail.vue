@@ -18,7 +18,12 @@
             <div v-if="!editing" class="full-width">
               <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Nombre:</span><br>{{ patient.name }}</div>
               <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Apellido:</span><br>{{ patient.last_name }}</div>
-              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Nacimiento:</span><br>{{ formatDate(patient.birth_date) }}</div>
+              <div class="q-mb-sm">
+                <span class="text-weight-bold text-grey-8">Nacimiento:</span><br>
+                {{ formatDate(patient.birth_date) }}
+                <span v-if="calculateAge(patient.birth_date) !== ''" class="text-grey-7">({{ calculateAge(patient.birth_date) }} años)</span>
+              </div>
+              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Profesión:</span><br>{{ patient.profession || '-' }}</div>
               <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Dirección:</span><br>{{ patient.address }}</div>
               <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Localidad:</span><br>{{ patient.locality }}</div>
               <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Teléfono:</span><br>{{ patient.phone }}</div>
@@ -36,6 +41,7 @@
                 <div class="col-12"><q-input v-model="patientEdit.name" label="Nombre" dense class="minimal-input" borderless /></div>
                 <div class="col-12"><q-input v-model="patientEdit.last_name" label="Apellido" dense class="minimal-input" borderless /></div>
                 <div class="col-12"><q-input v-model="patientEdit.birth_date" label="Fecha de Nacimiento" dense class="minimal-input" borderless type="date" /></div>
+                <div class="col-12"><q-input v-model="patientEdit.profession" label="Profesión" dense class="minimal-input" borderless /></div>
                 <div class="col-12"><q-input v-model="patientEdit.address" label="Dirección" dense class="minimal-input" borderless /></div>
                 <div class="col-12"><q-input v-model="patientEdit.locality" label="Localidad" dense class="minimal-input" borderless /></div>
                 <div class="col-12"><q-input v-model="patientEdit.phone" label="Teléfono" dense class="minimal-input" borderless /></div>
@@ -81,7 +87,12 @@
                   <div class="row q-col-gutter-md q-mb-md">
                     <div class="col-12 col-sm-6"><span class="text-weight-medium">Nombre:</span><br>{{ patient.name }}</div>
                     <div class="col-12 col-sm-6"><span class="text-weight-medium">Apellido:</span><br>{{ patient.last_name }}</div>
-                    <div class="col-12 col-sm-6"><span class="text-weight-medium">Fecha de Nacimiento:</span><br>{{ formatDate(patient.birth_date) }}</div>
+                    <div class="col-12 col-sm-6">
+                      <span class="text-weight-medium">Fecha de Nacimiento:</span><br>
+                      {{ formatDate(patient.birth_date) }}
+                      <span v-if="calculateAge(patient.birth_date) !== ''" class="text-grey-7">({{ calculateAge(patient.birth_date) }} años)</span>
+                    </div>
+                    <div class="col-12 col-sm-6"><span class="text-weight-medium">Profesión:</span><br>{{ patient.profession || '-' }}</div>
                     <div class="col-12 col-sm-6"><span class="text-weight-medium">Dirección:</span><br>{{ patient.address }}</div>
                     <div class="col-12 col-sm-6"><span class="text-weight-medium">Localidad:</span><br>{{ patient.locality }}</div>
                     <div class="col-12 col-sm-6"><span class="text-weight-medium">Teléfono:</span><br>{{ patient.phone }}</div>
@@ -100,6 +111,7 @@
                     <div class="col-12 col-sm-6"><q-input v-model="patientEdit.name" label="Nombre" dense class="minimal-input" borderless /></div>
                     <div class="col-12 col-sm-6"><q-input v-model="patientEdit.last_name" label="Apellido" dense class="minimal-input" borderless /></div>
                     <div class="col-12 col-sm-6"><q-input v-model="patientEdit.birth_date" label="Fecha de Nacimiento" dense class="minimal-input" borderless type="date" /></div>
+                    <div class="col-12 col-sm-6"><q-input v-model="patientEdit.profession" label="Profesión" dense class="minimal-input" borderless /></div>
                     <div class="col-12 col-sm-6"><q-input v-model="patientEdit.address" label="Dirección" dense class="minimal-input" borderless /></div>
                     <div class="col-12 col-sm-6"><q-input v-model="patientEdit.locality" label="Localidad" dense class="minimal-input" borderless /></div>
                     <div class="col-12 col-sm-6"><q-input v-model="patientEdit.phone" label="Teléfono" dense class="minimal-input" borderless /></div>
@@ -295,6 +307,7 @@ const patient = reactive({
   name: '',
   last_name: '',
   birth_date: '',
+  profession: '',
   address: '',
   locality: '',
   phone: '',
@@ -603,6 +616,7 @@ function findPatientById(id) {
       patient.name = response.data.name;
       patient.last_name = response.data.last_name;
       patient.birth_date = response.data.birth_date || response.data.birthDate || response.data.fechaNacimiento || response.data.bith_date;
+      patient.profession = response.data.profession || '';
       patient.address = response.data.address;
       patient.locality = response.data.locality;
       patient.phone = response.data.phone;
@@ -672,6 +686,24 @@ function formatDate(dateString) {
   }
 
   return dateString;
+}
+
+function calculateAge(date) {
+  if (!date) return '';
+  const str = String(date).trim().substring(0, 10);
+  let birth;
+  if (str.match(/^\d{4}-\d{2}-\d{2}$/)) {
+    const [y, m, d] = str.split('-').map(Number);
+    birth = new Date(y, m - 1, d);
+  } else {
+    birth = new Date(date);
+  }
+  if (isNaN(birth.getTime())) return '';
+  const now = new Date();
+  let age = now.getFullYear() - birth.getFullYear();
+  const monthDiff = now.getMonth() - birth.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < birth.getDate())) age--;
+  return age >= 0 ? age : '';
 }
 
 function resetAntecedentes() {

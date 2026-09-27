@@ -138,6 +138,7 @@ async function fetchPatients() {
           locality: p.locality || '',
           phone: p.phone || '',
           cellphone: p.cellphone || '',
+          profession: p.profession || '',
         }))
         : [];
   } catch (e) {
