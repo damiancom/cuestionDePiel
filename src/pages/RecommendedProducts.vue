@@ -13,12 +13,28 @@
           borderless
           class="minimal-input"
           :input-style="{background: 'transparent'}"
-          style="max-width: 200px;"
+          style="max-width: 220px;"
         >
           <template #append>
+            <q-icon
+              name="photo_camera"
+              class="cursor-pointer text-primary q-mr-xs"
+              @click.stop="showCameraScanner = true"
+            >
+              <q-tooltip>Buscar con cámara (OCR)</q-tooltip>
+            </q-icon>
             <q-icon name="search" />
           </template>
         </q-input>
+
+        <q-btn
+          outline
+          color="primary"
+          icon="photo_camera"
+          label="Buscar con cámara"
+          @click="showCameraScanner = true"
+          id="btnCameraSearch"
+        />
 
         <!-- Toggle de vista -->
         <q-btn-toggle
@@ -327,6 +343,14 @@
         </q-form>
       </q-card>
     </q-dialog>
+
+    <!-- Modal de escaneo con cámara (OCR) -->
+    <ProductCameraScanner
+      v-model="showCameraScanner"
+      :products="products"
+      @edit-product="openEdit"
+      @stock-changed="onScannerStockChanged"
+    />
   </q-page>
 </template>
 
@@ -334,6 +358,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
 import { RecommendedProductsAPI } from '../services/api';
+import ProductCameraScanner from '../components/ProductCameraScanner.vue';
 
 const $q = useQuasar();
 
@@ -341,6 +366,7 @@ const $q = useQuasar();
 const loading = ref(false);
 const saving = ref(false);
 const search = ref('');
+const showCameraScanner = ref(false);
 const products = ref([]);
 const brands = ref([]);
 const categories = ref([]);
@@ -632,6 +658,13 @@ async function changeStock(row, delta) {
   } catch (e) {
     console.error('Error actualizando stock:', e);
     $q.notify({ color: 'negative', message: 'Error al actualizar stock', icon: 'error' });
+  }
+}
+
+function onScannerStockChanged({ id, stock }) {
+  const prod = products.value.find(p => p.id === id);
+  if (prod) {
+    prod.stock = stock;
   }
 }
 
