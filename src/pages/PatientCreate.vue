@@ -36,6 +36,10 @@
                              class="minimal-input q-mb-md" borderless dense type="date"/>
                   </div>
                   <div class="col-12 col-md-6">
+                    <q-input v-model="patient.profession" label="Profesión" class="minimal-input q-mb-md" borderless
+                             dense/>
+                  </div>
+                  <div class="col-12 col-md-6">
                     <q-input v-model="patient.address" label="Domicilio" class="minimal-input q-mb-md" borderless
                              dense/>
                   </div>
@@ -117,6 +121,7 @@ const patient = ref({
   name: '',
   last_name: '',
   birth_date: '',
+  profession: '',
   address: '',
   locality: '',
   phone: '',
