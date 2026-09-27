@@ -50,6 +50,7 @@
         row-key="id"
         flat
         dense
+        wrap-cells
         :loading="loading"
         :pagination="pagination"
         :rows-per-page-options="[10, 20, 50]"
@@ -57,8 +58,13 @@
         no-data-label="No hay productos cargados aún"
         @row-click="handleRowClick"
       >
+        <template #body-cell-name="props">
+          <q-td class="text-left">
+            <span class="text-weight-medium product-name-text">{{ props.row.name }}</span>
+          </q-td>
+        </template>
         <template #body-cell-skin_type="props">
-          <q-td>
+          <q-td class="no-wrap">
             <q-badge
               :color="skinTypeBadgeColor(props.row.skin_type)"
               :label="skinTypeLabel(props.row.skin_type)"
@@ -67,24 +73,29 @@
           </q-td>
         </template>
         <template #body-cell-stock="props">
-          <q-td class="text-center">
+          <q-td class="text-center no-wrap">
             <q-btn flat dense icon="remove" size="sm" @click.stop="changeStock(props.row, -1)" :disable="!props.row.stock || props.row.stock <= 0" class="q-mr-xs minimal-stock-btn" />
-            <span class="q-px-sm">{{ props.row.stock || 0 }}</span>
+            <span class="q-px-xs text-weight-medium">{{ props.row.stock || 0 }}</span>
             <q-btn flat dense icon="add" size="sm" @click.stop="changeStock(props.row, 1)" class="q-ml-xs minimal-stock-btn" />
           </q-td>
         </template>
         <template #body-cell-purchase_price="props">
-          <q-td class="text-left">
+          <q-td class="text-left no-wrap">
             {{ props.row.purchase_price != null ? '$' + formatPrice(props.row.purchase_price) : '—' }}
           </q-td>
         </template>
         <template #body-cell-selling_price="props">
-          <q-td class="text-left">
+          <q-td class="text-left no-wrap text-weight-medium">
             {{ props.row.selling_price != null ? '$' + formatPrice(props.row.selling_price) : '—' }}
           </q-td>
         </template>
+        <template #body-cell-expiration_date="props">
+          <q-td class="text-left no-wrap">
+            <span :class="expClass(props.row.expiration_date)">{{ props.row.expiration_date || '—' }}</span>
+          </q-td>
+        </template>
         <template #body-cell-actions="props">
-          <q-td class="text-right">
+          <q-td class="text-right no-wrap">
             <q-btn flat icon="edit" dense color="primary" @click.stop="openEdit(props.row)" />
             <q-btn flat icon="delete" dense color="negative" @click.stop="confirmDelete(props.row)" />
           </q-td>
@@ -92,33 +103,40 @@
       </q-table>
     </q-card>
 
-    <!-- VISTA SIMPLIFICADA (solo lectura) -->
+    <!-- VISTA SIMPLIFICADA -->
     <q-card v-else flat class="q-pa-md minimal-create-card">
       <q-table
         :rows="filteredProducts"
         :columns="simpleColumns"
         row-key="id"
         flat
+        wrap-cells
         :loading="loading"
         :pagination="pagination"
         :rows-per-page-options="[10, 20, 50]"
         class="simple-table"
         no-data-label="No hay productos cargados aún"
+        @row-click="handleRowClick"
       >
-        <template #body-cell-selling_price="props">
+        <template #body-cell-name="props">
           <q-td class="text-left">
+            <span class="text-weight-medium product-name-text">{{ props.row.name }}</span>
+          </q-td>
+        </template>
+        <template #body-cell-selling_price="props">
+          <q-td class="text-left no-wrap">
             <span class="simple-price">{{ props.row.selling_price != null ? '$' + formatPrice(props.row.selling_price) : '—' }}</span>
           </q-td>
         </template>
         <template #body-cell-stock="props">
-          <q-td class="text-center">
+          <q-td class="text-center no-wrap">
             <span :class="stockBadgeClass(props.row.stock)" class="stock-badge">
               {{ props.row.stock ?? '—' }}
             </span>
           </q-td>
         </template>
         <template #body-cell-expiration_date="props">
-          <q-td class="text-left">
+          <q-td class="text-left no-wrap">
             <span :class="expClass(props.row.expiration_date)">{{ props.row.expiration_date || '—' }}</span>
           </q-td>
         </template>
@@ -356,24 +374,24 @@ const skinTypeOptions = [
 ];
 
 const columns = [
-  { name: 'category_name', label: 'Categoría', field: 'category_name', align: 'left', sortable: true },
-  { name: 'brand_name', label: 'Marca', field: 'brand_name', align: 'left', sortable: true },
-  { name: 'name', label: 'Producto', field: 'name', align: 'left', sortable: true },
-  { name: 'selling_price', label: 'P. Venta', field: 'selling_price', align: 'left', sortable: true },
-  { name: 'function_name', label: 'Función', field: 'function_name', align: 'left', sortable: true, format: val => val || '—' },
-  { name: 'skin_type', label: 'Tipo de Piel', field: 'skin_type', align: 'left', sortable: true },
-  { name: 'stock', label: 'Stock', field: 'stock', align: 'center', sortable: true },
-  { name: 'expiration_date', label: 'Vcto.', field: 'expiration_date', align: 'left', sortable: true, format: val => val || '—' },
-  { name: 'purchase_price', label: 'P. Costo', field: 'purchase_price', align: 'left', sortable: true },
-  { name: 'actions', label: '', field: 'actions', align: 'left' },
+  { name: 'category_name', label: 'Categoría', field: 'category_name', align: 'left', sortable: true, style: 'width: 130px; min-width: 110px;', headerStyle: 'width: 130px; min-width: 110px;' },
+  { name: 'brand_name', label: 'Marca', field: 'brand_name', align: 'left', sortable: true, style: 'width: 130px; min-width: 110px;', headerStyle: 'width: 130px; min-width: 110px;' },
+  { name: 'name', label: 'Producto', field: 'name', align: 'left', sortable: true, style: 'min-width: 220px;', headerStyle: 'min-width: 220px;' },
+  { name: 'selling_price', label: 'P. Venta', field: 'selling_price', align: 'left', sortable: true, style: 'width: 110px; min-width: 95px;', headerStyle: 'width: 110px; min-width: 95px;' },
+  { name: 'function_name', label: 'Función', field: 'function_name', align: 'left', sortable: true, format: val => val || '—', style: 'width: 130px; min-width: 110px;', headerStyle: 'width: 130px; min-width: 110px;' },
+  { name: 'skin_type', label: 'Tipo de Piel', field: 'skin_type', align: 'left', sortable: true, style: 'width: 120px; min-width: 105px;', headerStyle: 'width: 120px; min-width: 105px;' },
+  { name: 'stock', label: 'Stock', field: 'stock', align: 'center', sortable: true, style: 'width: 115px; min-width: 105px;', headerStyle: 'width: 115px; min-width: 105px;' },
+  { name: 'expiration_date', label: 'Vcto.', field: 'expiration_date', align: 'left', sortable: true, format: val => val || '—', style: 'width: 95px; min-width: 85px;', headerStyle: 'width: 95px; min-width: 85px;' },
+  { name: 'purchase_price', label: 'P. Costo', field: 'purchase_price', align: 'left', sortable: true, style: 'width: 110px; min-width: 95px;', headerStyle: 'width: 110px; min-width: 95px;' },
+  { name: 'actions', label: '', field: 'actions', align: 'right', style: 'width: 90px; min-width: 90px;', headerStyle: 'width: 90px; min-width: 90px;' },
 ];
 
 const simpleColumns = [
-  { name: 'brand_name',    label: 'Marca',      field: 'brand_name',    align: 'left',   sortable: true },
-  { name: 'name',          label: 'Producto',   field: 'name',          align: 'left',   sortable: true },
-  { name: 'selling_price', label: 'P. Venta',   field: 'selling_price', align: 'left',   sortable: true },
-  { name: 'stock',         label: 'Stock',      field: 'stock',         align: 'center', sortable: true },
-  { name: 'expiration_date', label: 'Vcto.',    field: 'expiration_date', align: 'left', sortable: true },
+  { name: 'brand_name',    label: 'Marca',      field: 'brand_name',    align: 'left',   sortable: true, style: 'width: 180px; min-width: 130px;', headerStyle: 'width: 180px; min-width: 130px;' },
+  { name: 'name',          label: 'Producto',   field: 'name',          align: 'left',   sortable: true, style: 'min-width: 250px;', headerStyle: 'min-width: 250px;' },
+  { name: 'selling_price', label: 'P. Venta',   field: 'selling_price', align: 'left',   sortable: true, style: 'width: 130px; min-width: 110px;', headerStyle: 'width: 130px; min-width: 110px;' },
+  { name: 'stock',         label: 'Stock',      field: 'stock',         align: 'center', sortable: true, style: 'width: 95px; min-width: 80px;',   headerStyle: 'width: 95px; min-width: 80px;' },
+  { name: 'expiration_date', label: 'Vcto.',    field: 'expiration_date', align: 'left', sortable: true, style: 'width: 110px; min-width: 95px;', headerStyle: 'width: 110px; min-width: 95px;' },
 ];
 
 // Computed
@@ -647,12 +665,18 @@ onMounted(loadData);
   width: 100%;
   margin: auto;
 }
-.minimal-table :deep(.q-table__middle) {
-  overflow-x: hidden !important;
+.minimal-table :deep(.q-table__middle),
+.simple-table :deep(.q-table__middle) {
+  overflow-x: auto;
 }
-.minimal-table :deep(table) {
-  table-layout: fixed;
+.minimal-table :deep(table),
+.simple-table :deep(table) {
   width: 100%;
+}
+.minimal-table :deep(tbody td) {
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 .minimal-input {
   background: transparent !important;
@@ -682,7 +706,8 @@ onMounted(loadData);
   border-radius: 50%;
   color: #1976d2;
 }
-.minimal-table :deep(.q-table tbody tr) {
+.minimal-table :deep(.q-table tbody tr),
+.simple-table :deep(.q-table tbody tr) {
   cursor: pointer;
 }
 
@@ -694,27 +719,23 @@ onMounted(loadData);
 }
 
 /* ─── Vista simplificada ──────────────────────────────────── */
-.simple-table :deep(.q-table__middle) {
-  overflow-x: hidden !important;
-}
-.simple-table :deep(table) {
-  table-layout: fixed;
-  width: 100%;
-}
 .simple-table :deep(thead th) {
   font-size: 13px;
   font-weight: 700;
   color: #6b7280;
   text-transform: uppercase;
   letter-spacing: 0.4px;
-  padding: 12px 16px;
+  padding: 12px 14px;
   border-bottom: 2px solid #e8edf5;
 }
 .simple-table :deep(tbody td) {
   font-size: 15px;
-  padding: 13px 16px;
+  padding: 12px 14px;
   border-bottom: 1px solid #f0f4f8;
   color: #1f2937;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 .simple-table :deep(tbody tr:last-child td) {
   border-bottom: none;
@@ -723,11 +744,22 @@ onMounted(loadData);
   background: #f7faff;
 }
 
+.product-name-text {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.35;
+}
+
+.no-wrap {
+  white-space: nowrap !important;
+}
+
 /* Precio en vista simple */
 .simple-price {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: #1976d2;
+  white-space: nowrap;
 }
 
 /* Badge de stock */
@@ -746,8 +778,8 @@ onMounted(loadData);
 .badge-unknown { background: #f3f4f6; color: #9ca3af; }
 
 /* Semáforo de vencimiento */
-.exp-ok      { color: #16a34a; font-weight: 600; }
-.exp-soon    { color: #d97706; font-weight: 700; }
-.exp-expired { color: #dc2626; font-weight: 700; text-decoration: line-through; }
-.exp-unknown { color: #9ca3af; }
+.exp-ok      { color: #16a34a; font-weight: 600; white-space: nowrap; }
+.exp-soon    { color: #d97706; font-weight: 700; white-space: nowrap; }
+.exp-expired { color: #dc2626; font-weight: 700; text-decoration: line-through; white-space: nowrap; }
+.exp-unknown { color: #9ca3af; white-space: nowrap; }
 </style>
