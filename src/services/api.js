@@ -6,7 +6,6 @@ export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export const PATIENTS_ENDPOINT = '/patients';
 export const MEDICAL_HISTORY_ENDPOINT = '/medical-history';
 export const SESSIONS_ENDPOINT = '/sessions';
-export const HOME_SUPPORTS_ENDPOINT = '/home-supports';
 export const ROUTINES_ENDPOINT = '/routines';
 export const DIAGNOSTICS_ENDPOINT = '/diagnostics';
 export const PATIENTS_URL = `${API_BASE_URL}${PATIENTS_ENDPOINT}`;
