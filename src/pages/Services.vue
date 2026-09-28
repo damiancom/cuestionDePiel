@@ -1031,13 +1031,10 @@ const filteredPatientsForWa = computed(() => {
 });
 
 function getDefaultWhatsAppMessage(service) {
-  let text = `¡Hola {nombre}! Te compartimos información sobre nuestro tratamiento:\n\n`;
+  let text = `¡Hola {nombre}! Te comparto información sobre el tratamiento:\n\n`;
   text += `✨ *${service.name}*\n`;
-  if (service.category_name || service.category) {
-    text += `🏷️ Categoría: ${service.category_name || service.category}\n`;
-  }
   if (service.description) {
-    text += `${service.description}\n`;
+    text += `${service.description}\n\n`;
   }
   if (service.estimatedDuration) {
     text += `⏱️ Duración estimada: ${service.estimatedDuration}\n`;
@@ -1045,7 +1042,7 @@ function getDefaultWhatsAppMessage(service) {
   if (service.price != null) {
     text += `💰 Valor: $${formatPrice(service.price)}\n`;
   }
-  text += `\n¿Te gustaría agendar un turno o hacernos alguna consulta?`;
+  text += `\n¿Te gustaría agendar un turno o haceme alguna consulta?`;
   return text;
 }
 
