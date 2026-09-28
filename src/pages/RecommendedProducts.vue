@@ -19,12 +19,11 @@
               flat
               round
               dense
-              size="sm"
-              icon="photo_camera"
               color="primary"
               @click.stop="showCameraScanner = true"
               id="btnCameraSearch"
             >
+              <q-icon name="photo_camera" size="22px" />
               <q-tooltip>Escanear con cámara (OCR)</q-tooltip>
             </q-btn>
           </template>
