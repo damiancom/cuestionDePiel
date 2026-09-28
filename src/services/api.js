@@ -84,6 +84,9 @@ export const ServicesAPI = {
   list() {
     return axios.get(SERVICES_URL);
   },
+  getCategories() {
+    return axios.get(`${SERVICES_URL}/categories`);
+  },
   get(id) {
     return axios.get(`${SERVICES_URL}/${id}`);
   },
@@ -95,6 +98,12 @@ export const ServicesAPI = {
   },
   remove(id) {
     return axios.delete(`${SERVICES_URL}/${id}`);
+  },
+  reorderCategories(categoryNames) {
+    return axios.put(`${SERVICES_URL}/categories/reorder`, categoryNames);
+  },
+  deleteCategory(name) {
+    return axios.delete(`${SERVICES_URL}/categories`, { params: { name } });
   },
 };
 
