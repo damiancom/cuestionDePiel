@@ -1,28 +1,35 @@
 <template>
   <q-page padding>
-    <div class="row items-center q-mb-md">
-      <div class="col">
+    <div class="row items-center justify-between q-mb-md q-col-gutter-sm">
+      <div class="col-12 col-sm">
         <div class="text-h5">Pacientes ({{ filteredPatients.length }})</div>
         <div class="text-caption text-grey-7">Mostrando {{ paginatedPatients.length }} de {{
             filteredPatients.length
           }}
         </div>
       </div>
-      <div class="col-auto row items-center q-gutter-sm">
+      <div class="col-12 col-sm-auto row items-center q-gutter-sm">
         <q-input
-            v-model="search"
-            label="Buscar por nombre"
-            dense
-            borderless
-            class="minimal-input"
-            :input-style="{background: 'transparent'}"
-            style="max-width: 200px;"
+          v-model="search"
+          label="Buscar"
+          dense
+          borderless
+          class="minimal-search-input"
+          :input-style="{ background: 'transparent' }"
         >
           <template #append>
-            <q-icon name="search"/>
+            <q-icon name="search" />
           </template>
         </q-input>
-        <q-btn color="primary" label="Agregar paciente" to="/pacientes/nuevo"/>
+        <q-btn
+          color="primary"
+          icon="add"
+          :label="$q.screen.gt.xs ? 'Agregar' : ''"
+          to="/pacientes/nuevo"
+          class="minimal-btn-save"
+        >
+          <q-tooltip>Agregar paciente</q-tooltip>
+        </q-btn>
       </div>
     </div>
     <q-table
@@ -96,11 +103,11 @@
         class="q-mt-md minimal-pagination"
     />
     <q-dialog v-model="showConfirm">
-      <q-card>
-        <q-card-section>¿Eliminar paciente?</q-card-section>
-        <q-card-actions align="right">
-          <q-btn flat label="Cancelar" v-close-popup/>
-          <q-btn flat label="Eliminar" color="negative" @click="deletePatient"/>
+      <q-card style="min-width: 320px; border-radius: 12px;">
+        <q-card-section class="text-subtitle1 q-pb-none">¿Eliminar paciente?</q-card-section>
+        <q-card-actions align="right" class="q-pa-md">
+          <q-btn flat label="Cancelar" color="grey-8" class="minimal-btn" v-close-popup/>
+          <q-btn label="Eliminar" color="negative" class="minimal-btn-delete" @click="deletePatient"/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -230,22 +237,6 @@ async function deletePatient() {
 }
 </script>
 <style scoped>
-.minimal-input {
-  background: #f8fafc !important;
-  border-radius: 12px;
-  border: 1px solid #e0e4ea !important;
-  box-shadow: none !important;
-  font-size: 16px;
-  padding: 4px 12px;
-  transition: all 0.2s ease;
-  margin-bottom: 4px;
-}
-
-.minimal-input:focus-within {
-  border-color: #1976d2 !important;
-  background: #ffffff !important;
-  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1) !important;
-}
 
 .minimal-table {
   background: transparent;

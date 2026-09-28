@@ -8,18 +8,26 @@
       <div class="col-12 col-sm-auto row items-center q-gutter-sm">
         <q-input
           v-model="search"
-          label="Buscar servicio"
+          label="Buscar"
           dense
           borderless
-          class="minimal-input col col-sm-auto"
+          class="minimal-search-input"
           :input-style="{ background: 'transparent' }"
-          style="max-width: 220px;"
         >
           <template #append>
             <q-icon name="search" />
           </template>
         </q-input>
-        <q-btn color="primary" icon="add" label="Agregar servicio" @click="openCreate" id="addServiceBtn" />
+        <q-btn
+          color="primary"
+          icon="add"
+          :label="$q.screen.gt.xs ? 'Agregar' : ''"
+          @click="openCreate"
+          id="addServiceBtn"
+          class="minimal-btn-save"
+        >
+          <q-tooltip>Agregar servicio</q-tooltip>
+        </q-btn>
       </div>
     </div>
 
@@ -215,8 +223,8 @@
           </div>
 
           <div class="row justify-end q-gutter-sm q-mt-lg">
-            <q-btn flat label="Cancelar" @click="closeDialog" />
-            <q-btn label="Guardar" color="primary" type="submit" icon="check" :loading="saving" />
+            <q-btn flat label="Cancelar" @click="closeDialog" color="grey-8" class="minimal-btn" />
+            <q-btn label="Guardar" color="primary" type="submit" :loading="saving" class="minimal-btn-save" />
           </div>
         </q-form>
       </q-card>
@@ -489,7 +497,17 @@ function confirmDelete(row) {
   $q.dialog({
     title: 'Eliminar Servicio',
     message: `¿Seguro que querés eliminar el servicio "${row.name}"?`,
-    cancel: true,
+    cancel: {
+      label: 'Cancelar',
+      flat: true,
+      color: 'grey-8',
+      class: 'minimal-btn'
+    },
+    ok: {
+      label: 'Eliminar',
+      color: 'negative',
+      class: 'minimal-btn-delete'
+    },
     persistent: true,
   }).onOk(async () => {
     try {
@@ -618,11 +636,13 @@ function sendWhatsAppToPatient(patient) {
     cancel: {
       label: 'Cancelar',
       flat: true,
-      color: 'grey-8'
+      color: 'grey-8',
+      class: 'minimal-btn'
     },
     ok: {
-      label: 'Sí, abrir WhatsApp',
-      color: 'positive',
+      label: 'Confirmar y abrir WhatsApp',
+      color: 'primary',
+      class: 'minimal-btn-save',
       icon: 'fa-brands fa-whatsapp'
     },
     persistent: true

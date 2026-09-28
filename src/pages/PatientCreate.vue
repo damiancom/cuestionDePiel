@@ -63,22 +63,14 @@
                 </div>
               </div>
             </div>
-            <div style="height: 60px;"></div>
+            <div class="row q-gutter-sm justify-end q-mt-md">
+              <q-btn flat label="Cancelar" @click="cancel" color="grey-8" class="minimal-btn" />
+              <q-btn label="Guardar" color="primary" type="submit" :loading="loading" class="minimal-btn-save" />
+            </div>
           </q-form>
         </q-card>
       </div>
     </div>
-
-    <!-- Floating Save Buttons -->
-    <q-page-sticky position="bottom" :offset="[0, 16]" style="z-index: 100;">
-      <transition appear enter-active-class="animated fadeInUp" leave-active-class="animated fadeOutDown">
-        <q-card class="bg-white shadow-up-3 q-pa-sm row no-wrap items-center justify-between" 
-                style="border-radius: 30px; border: 1px solid #e0e4ea; min-width: 280px; width: fit-content;">
-          <q-btn flat label="Cancelar" @click="cancel" color="grey-8" class="q-ml-xs minimal-btn" />
-          <q-btn label="Confirmar" rounded color="primary" @click="createPatient" class="q-mr-xs q-px-md minimal-btn-save" />
-        </q-card>
-      </transition>
-    </q-page-sticky>
     <!-- Diálogo de recorte de imagen -->
     <q-dialog v-model="showCropDialog" persistent :maximized="$q.screen.lt.sm">
       <q-card class="crop-dialog-card">
@@ -101,7 +93,7 @@
                     :label-value="'Zoom ' + cropZoom.toFixed(1) + 'x'" color="primary" @update:model-value="drawCrop"/>
         </q-card-section>
         <q-card-actions align="right" class="q-pa-md">
-          <q-btn flat label="Cancelar" @click="cancelCrop" class="minimal-btn"/>
+          <q-btn flat label="Cancelar" @click="cancelCrop" color="grey-8" class="minimal-btn"/>
           <q-btn label="Confirmar" color="primary" @click="confirmCrop" class="minimal-btn-save"/>
         </q-card-actions>
       </q-card>

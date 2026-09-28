@@ -235,7 +235,15 @@
               <div class="row items-center q-mb-md">
                 <div class="col text-h6">Sesiones ({{ sesionesOrdenadas.length }})</div>
                 <q-space />
-                <q-btn color="primary" icon="add" label="Nueva Sesión" @click="nuevaSesion" />
+                <q-btn
+                  color="primary"
+                  icon="add"
+                  :label="$q.screen.gt.xs ? 'Nueva Sesión' : ''"
+                  @click="nuevaSesion"
+                  class="minimal-btn-save"
+                >
+                  <q-tooltip>Nueva Sesión</q-tooltip>
+                </q-btn>
               </div>
               <q-table :rows="sesionesOrdenadas" :columns="columns" row-key="id" flat dense hide-bottom class="q-mb-md"
                 @row-click="(evt, row) => verSesion(row)">
@@ -271,7 +279,7 @@
                   </q-card-section>
                   <q-separator />
                   <q-card-actions align="right" class="q-pa-md minimal-actions">
-                    <q-btn flat label="Cancelar" @click="cancelarSesion" class="minimal-btn" />
+                    <q-btn flat label="Cancelar" @click="cancelarSesion" color="grey-8" class="minimal-btn" />
                     <q-btn label="Guardar" color="primary" @click="guardarSesion" class="minimal-btn-save" />
                   </q-card-actions>
                 </q-card>
@@ -304,7 +312,7 @@
                     :label-value="'Zoom ' + cropZoom.toFixed(1) + 'x'" color="primary" @update:model-value="drawCrop"/>
         </q-card-section>
         <q-card-actions align="right" class="q-pa-md">
-          <q-btn flat label="Cancelar" @click="cancelCrop" class="minimal-btn"/>
+          <q-btn flat label="Cancelar" @click="cancelCrop" color="grey-8" class="minimal-btn"/>
           <q-btn label="Confirmar" color="primary" @click="confirmCrop" class="minimal-btn-save"/>
         </q-card-actions>
       </q-card>
@@ -578,7 +586,17 @@ function confirmarEliminarSesion(row) {
   $q.dialog({
     title: 'Confirmar Eliminación',
     message: `¿Estás seguro de que deseas eliminar la sesión del ${formatDate(row.date)}?`,
-    cancel: true,
+    cancel: {
+      label: 'Cancelar',
+      flat: true,
+      color: 'grey-8',
+      class: 'minimal-btn'
+    },
+    ok: {
+      label: 'Eliminar',
+      color: 'negative',
+      class: 'minimal-btn-delete'
+    },
     persistent: true
   }).onOk(async () => {
     try {

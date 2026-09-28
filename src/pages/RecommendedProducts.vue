@@ -1,41 +1,55 @@
 <template>
   <q-page padding>
-    <div class="row items-center q-mb-md">
-      <div class="col">
+    <div class="row items-center justify-between q-mb-md q-col-gutter-sm">
+      <div class="col-12 col-md">
         <div class="text-h5">Productos</div>
         <div class="text-caption text-grey-7">Catálogo de productos, precios y stock</div>
       </div>
-      <div class="col-auto row items-center q-gutter-sm">
+      <div class="col-12 col-md-auto row items-center q-gutter-sm">
         <q-input
           v-model="search"
           label="Buscar"
           dense
           borderless
-          class="minimal-input"
-          :input-style="{background: 'transparent'}"
-          style="max-width: 220px;"
+          class="minimal-search-input"
+          :input-style="{ background: 'transparent' }"
         >
           <template #append>
-            <q-icon
-              name="photo_camera"
-              class="cursor-pointer text-primary q-mr-xs"
+            <q-btn
+              flat
+              round
+              dense
+              size="sm"
+              icon="photo_camera"
+              color="primary"
               @click.stop="showCameraScanner = true"
+              id="btnCameraSearch"
             >
-              <q-tooltip>Buscar con cámara (OCR)</q-tooltip>
-            </q-icon>
+              <q-tooltip>Escanear con cámara (OCR)</q-tooltip>
+            </q-btn>
             <q-icon name="search" />
           </template>
         </q-input>
 
         <q-btn
-          outline
           color="primary"
-          icon="photo_camera"
-          label="Buscar con cámara"
-          @click="showCameraScanner = true"
-          id="btnCameraSearch"
-        />
+          icon="add"
+          :label="$q.screen.gt.xs ? 'Agregar' : ''"
+          @click="openCreate"
+          id="addRecommendedProduct"
+          class="minimal-btn-save"
+        >
+          <q-tooltip>Agregar producto</q-tooltip>
+        </q-btn>
+      </div>
+    </div>
 
+    <!-- TABLA DE PRODUCTOS (VISTA COMPLETA / SIMPLIFICADA) -->
+    <q-card flat class="q-pa-md minimal-create-card">
+      <div class="row items-center justify-between q-mb-sm">
+        <div class="text-caption text-grey-7">
+          Mostrando {{ filteredProducts.length }} de {{ products.length }} productos
+        </div>
         <!-- Toggle de vista -->
         <q-btn-toggle
           v-model="viewMode"
@@ -53,14 +67,11 @@
             {{ viewMode === 'full' ? 'Vista completa' : 'Vista simplificada' }}
           </q-tooltip>
         </q-btn-toggle>
-
-        <q-btn color="primary" icon="add" label="Agregar producto" @click="openCreate" id="addRecommendedProduct" />
       </div>
-    </div>
 
-    <!-- VISTA TABLA (completa) -->
-    <q-card v-if="viewMode === 'full'" flat class="q-pa-md minimal-create-card">
+      <!-- VISTA COMPLETA -->
       <q-table
+        v-if="viewMode === 'full'"
         :rows="filteredProducts"
         :columns="columns"
         row-key="id"
@@ -117,11 +128,10 @@
           </q-td>
         </template>
       </q-table>
-    </q-card>
 
-    <!-- VISTA SIMPLIFICADA -->
-    <q-card v-else flat class="q-pa-md minimal-create-card">
+      <!-- VISTA SIMPLIFICADA -->
       <q-table
+        v-else
         :rows="filteredProducts"
         :columns="simpleColumns"
         row-key="id"
@@ -337,8 +347,8 @@
           </div>
 
           <div class="row justify-end q-gutter-sm q-mt-lg">
-            <q-btn flat label="Cancelar" @click="closeDialog" />
-            <q-btn label="Guardar" color="primary" type="submit" icon="check" :loading="saving" />
+            <q-btn flat label="Cancelar" @click="closeDialog" color="grey-8" class="minimal-btn" />
+            <q-btn label="Guardar" color="primary" type="submit" :loading="saving" class="minimal-btn-save" />
           </div>
         </q-form>
       </q-card>
@@ -672,7 +682,17 @@ function confirmDelete(row) {
   $q.dialog({
     title: 'Eliminar producto',
     message: `¿Seguro que querés eliminar "${row.name}"?`,
-    cancel: true,
+    cancel: {
+      label: 'Cancelar',
+      flat: true,
+      color: 'grey-8',
+      class: 'minimal-btn'
+    },
+    ok: {
+      label: 'Eliminar',
+      color: 'negative',
+      class: 'minimal-btn-delete'
+    },
     persistent: true,
   }).onOk(async () => {
     try {

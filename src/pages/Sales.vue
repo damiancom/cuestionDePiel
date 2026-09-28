@@ -1,23 +1,50 @@
 <template>
   <q-page padding>
-    <div class="row items-center q-mb-md">
-      <div class="col">
+    <div class="row items-center justify-between q-mb-md q-col-gutter-sm">
+      <div class="col-12 col-md">
         <div class="text-h5">Ventas</div>
       </div>
-      <div class="col-auto row items-center q-gutter-sm">
-        <q-input v-model="searchVenta" label="Filtrar por N° de venta" dense borderless class="minimal-input" style="max-width: 160px;" />
+      <div class="col-12 col-md-auto row items-center q-gutter-sm">
+        <q-input
+          v-model="searchVenta"
+          label="Buscar"
+          dense
+          borderless
+          class="minimal-search-input"
+          :input-style="{ background: 'transparent' }"
+        >
+          <template #append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
         <q-select
           v-model="selectedMonthYear"
           :options="monthYearOptions"
           label="Mes y año"
-          dense borderless
+          dense
+          borderless
           emit-value
           map-options
-          class="q-ml-sm minimal-input"
-          style="min-width: 170px;"
+          class="minimal-search-input"
         />
-        <q-btn color="primary" icon="add" label="Cargar venta" @click="showAdd = true" />
-        <q-btn color="secondary" icon="download" label="Descargar" @click="downloadSales" />
+        <q-btn
+          color="primary"
+          icon="add"
+          :label="$q.screen.gt.xs ? 'Cargar venta' : ''"
+          @click="showAdd = true"
+          class="minimal-btn-save"
+        >
+          <q-tooltip>Cargar venta</q-tooltip>
+        </q-btn>
+        <q-btn
+          color="secondary"
+          icon="download"
+          :label="$q.screen.gt.xs ? 'Descargar' : ''"
+          @click="downloadSales"
+          class="minimal-btn"
+        >
+          <q-tooltip>Descargar</q-tooltip>
+        </q-btn>
       </div>
     </div>
     <q-card flat class="q-pa-md minimal-create-card">
@@ -78,8 +105,8 @@
           </div>
           <q-input v-model.number="form.valor" label="Valor total de la venta" prefix="$" type="number" min="0" class="minimal-input q-mb-md" borderless dense />
           <div class="row justify-end q-gutter-sm q-mt-lg">
-            <q-btn flat label="Cancelar" @click="cancel" />
-            <q-btn label="Guardar" color="primary" type="submit" icon="check" />
+            <q-btn flat label="Cancelar" @click="cancel" color="grey-8" class="minimal-btn" />
+            <q-btn label="Guardar" color="primary" type="submit" class="minimal-btn-save" />
           </div>
         </q-form>
       </q-card>
