@@ -1032,7 +1032,7 @@ const filteredPatientsForWa = computed(() => {
 
 function getDefaultWhatsAppMessage(service) {
   let text = `¡Hola {nombre}! Te comparto información sobre el tratamiento:\n\n`;
-  text += `✨ *${service.name}*\n`;
+  text += `${service.name}\n`;
   if (service.description) {
     text += `${service.description}\n\n`;
   }
