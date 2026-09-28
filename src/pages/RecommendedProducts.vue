@@ -1,11 +1,11 @@
 <template>
   <q-page padding>
-    <div class="row items-center q-mb-md">
-      <div class="col">
+    <div class="row items-center justify-between q-mb-md q-col-gutter-sm">
+      <div class="col-12 col-md">
         <div class="text-h5">Productos</div>
         <div class="text-caption text-grey-7">Catálogo de productos, precios y stock</div>
       </div>
-      <div class="col-auto row items-center q-gutter-sm">
+      <div class="col-12 col-md-auto row items-center q-gutter-sm">
         <q-input
           v-model="search"
           label="Buscar"
@@ -13,7 +13,7 @@
           borderless
           class="minimal-input"
           :input-style="{background: 'transparent'}"
-          style="max-width: 220px;"
+          style="min-width: 140px; max-width: 220px;"
         >
           <template #append>
             <q-icon
@@ -31,11 +31,13 @@
           outline
           color="primary"
           icon="photo_camera"
-          label="Buscar con cámara"
+          :label="$q.screen.gt.xs ? 'Buscar con cámara' : ''"
           @click="showCameraScanner = true"
           id="btnCameraSearch"
           class="minimal-btn"
-        />
+        >
+          <q-tooltip>Buscar con cámara (OCR)</q-tooltip>
+        </q-btn>
 
         <!-- Toggle de vista -->
         <q-btn-toggle

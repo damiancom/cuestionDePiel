@@ -1,14 +1,14 @@
 <template>
   <q-page padding>
-    <div class="row items-center q-mb-md">
-      <div class="col">
+    <div class="row items-center justify-between q-mb-md q-col-gutter-sm">
+      <div class="col-12 col-sm">
         <div class="text-h5">Pacientes ({{ filteredPatients.length }})</div>
         <div class="text-caption text-grey-7">Mostrando {{ paginatedPatients.length }} de {{
             filteredPatients.length
           }}
         </div>
       </div>
-      <div class="col-auto row items-center q-gutter-sm">
+      <div class="col-12 col-sm-auto row items-center q-gutter-sm">
         <q-input
             v-model="search"
             label="Buscar por nombre"

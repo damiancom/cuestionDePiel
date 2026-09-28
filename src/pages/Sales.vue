@@ -1,10 +1,10 @@
 <template>
   <q-page padding>
-    <div class="row items-center q-mb-md">
-      <div class="col">
+    <div class="row items-center justify-between q-mb-md q-col-gutter-sm">
+      <div class="col-12 col-md">
         <div class="text-h5">Ventas</div>
       </div>
-      <div class="col-auto row items-center q-gutter-sm">
+      <div class="col-12 col-md-auto row items-center q-gutter-sm">
         <q-input v-model="searchVenta" label="Filtrar por N° de venta" dense borderless class="minimal-input" style="max-width: 160px;" />
         <q-select
           v-model="selectedMonthYear"
