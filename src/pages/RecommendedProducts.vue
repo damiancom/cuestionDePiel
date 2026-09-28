@@ -16,13 +16,6 @@
           style="min-width: 140px; max-width: 220px;"
         >
           <template #append>
-            <q-icon
-              name="photo_camera"
-              class="cursor-pointer text-primary q-mr-xs"
-              @click.stop="showCameraScanner = true"
-            >
-              <q-tooltip>Buscar con cámara (OCR)</q-tooltip>
-            </q-icon>
             <q-icon name="search" />
           </template>
         </q-input>
@@ -31,7 +24,7 @@
           outline
           color="primary"
           icon="photo_camera"
-          :label="$q.screen.gt.xs ? 'Buscar con cámara' : ''"
+          label="Buscar con cámara"
           @click="showCameraScanner = true"
           id="btnCameraSearch"
           class="minimal-btn"
