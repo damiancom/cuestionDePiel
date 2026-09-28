@@ -8,7 +8,7 @@
       <div class="col-12 col-sm-auto row items-center q-gutter-sm">
         <q-input
           v-model="search"
-          label="Buscar servicio"
+          label="Buscar"
           dense
           borderless
           class="minimal-input col col-sm-auto"

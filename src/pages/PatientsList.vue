@@ -11,7 +11,7 @@
       <div class="col-12 col-sm-auto row items-center q-gutter-sm">
         <q-input
             v-model="search"
-            label="Buscar por nombre"
+            label="Buscar"
             dense
             borderless
             class="minimal-input"
