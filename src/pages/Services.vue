@@ -19,7 +19,7 @@
             <q-icon name="search" />
           </template>
         </q-input>
-        <q-btn color="primary" icon="add" label="Agregar servicio" @click="openCreate" id="addServiceBtn" />
+        <q-btn color="primary" icon="add" label="Agregar servicio" @click="openCreate" id="addServiceBtn" class="minimal-btn-save" />
       </div>
     </div>
 
@@ -489,7 +489,17 @@ function confirmDelete(row) {
   $q.dialog({
     title: 'Eliminar Servicio',
     message: `¿Seguro que querés eliminar el servicio "${row.name}"?`,
-    cancel: true,
+    cancel: {
+      label: 'Cancelar',
+      flat: true,
+      color: 'grey-8',
+      class: 'minimal-btn'
+    },
+    ok: {
+      label: 'Confirmar',
+      color: 'primary',
+      class: 'minimal-btn-save'
+    },
     persistent: true,
   }).onOk(async () => {
     try {
@@ -618,11 +628,13 @@ function sendWhatsAppToPatient(patient) {
     cancel: {
       label: 'Cancelar',
       flat: true,
-      color: 'grey-8'
+      color: 'grey-8',
+      class: 'minimal-btn'
     },
     ok: {
-      label: 'Sí, abrir WhatsApp',
-      color: 'positive',
+      label: 'Confirmar y abrir WhatsApp',
+      color: 'primary',
+      class: 'minimal-btn-save',
       icon: 'fa-brands fa-whatsapp'
     },
     persistent: true

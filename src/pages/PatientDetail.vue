@@ -235,7 +235,7 @@
               <div class="row items-center q-mb-md">
                 <div class="col text-h6">Sesiones ({{ sesionesOrdenadas.length }})</div>
                 <q-space />
-                <q-btn color="primary" icon="add" label="Nueva Sesión" @click="nuevaSesion" />
+                <q-btn color="primary" icon="add" label="Nueva Sesión" @click="nuevaSesion" class="minimal-btn-save" />
               </div>
               <q-table :rows="sesionesOrdenadas" :columns="columns" row-key="id" flat dense hide-bottom class="q-mb-md"
                 @row-click="(evt, row) => verSesion(row)">
@@ -578,7 +578,17 @@ function confirmarEliminarSesion(row) {
   $q.dialog({
     title: 'Confirmar Eliminación',
     message: `¿Estás seguro de que deseas eliminar la sesión del ${formatDate(row.date)}?`,
-    cancel: true,
+    cancel: {
+      label: 'Cancelar',
+      flat: true,
+      color: 'grey-8',
+      class: 'minimal-btn'
+    },
+    ok: {
+      label: 'Confirmar',
+      color: 'primary',
+      class: 'minimal-btn-save'
+    },
     persistent: true
   }).onOk(async () => {
     try {

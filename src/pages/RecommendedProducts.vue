@@ -54,7 +54,7 @@
           </q-tooltip>
         </q-btn-toggle>
 
-        <q-btn color="primary" icon="add" label="Agregar producto" @click="openCreate" id="addRecommendedProduct" />
+        <q-btn color="primary" icon="add" label="Agregar producto" @click="openCreate" id="addRecommendedProduct" class="minimal-btn-save" />
       </div>
     </div>
 
@@ -672,7 +672,17 @@ function confirmDelete(row) {
   $q.dialog({
     title: 'Eliminar producto',
     message: `¿Seguro que querés eliminar "${row.name}"?`,
-    cancel: true,
+    cancel: {
+      label: 'Cancelar',
+      flat: true,
+      color: 'grey-8',
+      class: 'minimal-btn'
+    },
+    ok: {
+      label: 'Confirmar',
+      color: 'primary',
+      class: 'minimal-btn-save'
+    },
     persistent: true,
   }).onOk(async () => {
     try {

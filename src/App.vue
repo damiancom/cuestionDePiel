@@ -62,4 +62,29 @@ body {
   padding: 12px 24px 16px 24px !important;
   background: transparent;
 }
+
+/* Quasar Dialog Plugin: asegurar que botones de diálogos tengan formato minimal */
+.q-dialog-plugin .q-card__actions {
+  padding: 12px 20px 16px 20px !important;
+  gap: 8px;
+}
+
+.q-dialog-plugin .q-btn {
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  font-size: 15px !important;
+  min-width: 90px !important;
+  box-shadow: none !important;
+  text-transform: none !important;
+}
+
+.q-dialog-plugin .q-card__actions .q-btn--flat.text-primary {
+  background: #1976d2 !important;
+  color: #fff !important;
+  transition: background 0.15s;
+}
+
+.q-dialog-plugin .q-card__actions .q-btn--flat.text-primary:hover {
+  background: #125ea7 !important;
+}
 </style>

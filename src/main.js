@@ -10,6 +10,11 @@ import 'quasar/dist/quasar.css';
 import '@quasar/extras/material-icons/material-icons.css';
 import '@quasar/extras/roboto-font/roboto-font.css';
 
+if (quasarLang && quasarLang.label) {
+  quasarLang.label.ok = 'Confirmar';
+  quasarLang.label.cancel = 'Cancelar';
+}
+
 const app = createApp(App);
 
 app.use(Quasar, {

@@ -16,7 +16,7 @@
           class="q-ml-sm minimal-input"
           style="min-width: 170px;"
         />
-        <q-btn color="primary" icon="add" label="Cargar venta" @click="showAdd = true" />
+        <q-btn color="primary" icon="add" label="Cargar venta" @click="showAdd = true" class="minimal-btn-save" />
         <q-btn color="secondary" icon="download" label="Descargar" @click="downloadSales" />
       </div>
     </div>
