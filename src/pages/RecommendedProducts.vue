@@ -24,12 +24,12 @@
           outline
           color="primary"
           icon="photo_camera"
-          label="Buscar con cámara"
+          label="Escanear"
           @click="showCameraScanner = true"
           id="btnCameraSearch"
           class="minimal-btn"
         >
-          <q-tooltip>Buscar con cámara (OCR)</q-tooltip>
+          <q-tooltip>Escanear con cámara (OCR)</q-tooltip>
         </q-btn>
 
         <!-- Toggle de vista -->
