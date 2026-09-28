@@ -96,4 +96,32 @@ body {
 .q-dialog-plugin .q-card__actions .q-btn--flat.text-primary:hover {
   background: #125ea7 !important;
 }
+
+/* Campo de búsqueda de cabecera unificado */
+.minimal-search-input {
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 15px;
+  min-width: 140px;
+  max-width: 220px;
+}
+
+.minimal-search-input .q-field__control {
+  border-bottom: 1.5px solid #e0e4ea !important;
+  border-radius: 0 !important;
+  transition: border-color 0.2s;
+  padding: 0 12px !important;
+}
+
+.minimal-search-input:focus-within .q-field__control {
+  border-color: #1976d2 !important;
+}
+
+@media (max-width: 599px) {
+  .minimal-search-input {
+    flex: 1;
+    min-width: 0;
+    max-width: none;
+  }
+}
 </style>

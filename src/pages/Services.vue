@@ -11,9 +11,8 @@
           label="Buscar"
           dense
           borderless
-          class="minimal-input col col-sm-auto"
+          class="minimal-search-input"
           :input-style="{ background: 'transparent' }"
-          style="max-width: 220px;"
         >
           <template #append>
             <q-icon name="search" />

@@ -10,16 +10,15 @@
       </div>
       <div class="col-12 col-sm-auto row items-center q-gutter-sm">
         <q-input
-            v-model="search"
-            label="Buscar"
-            dense
-            borderless
-            class="minimal-input"
-            :input-style="{background: 'transparent'}"
-            style="max-width: 200px;"
+          v-model="search"
+          label="Buscar"
+          dense
+          borderless
+          class="minimal-search-input"
+          :input-style="{ background: 'transparent' }"
         >
           <template #append>
-            <q-icon name="search"/>
+            <q-icon name="search" />
           </template>
         </q-input>
         <q-btn
@@ -238,22 +237,6 @@ async function deletePatient() {
 }
 </script>
 <style scoped>
-.minimal-input {
-  background: #f8fafc !important;
-  border-radius: 12px;
-  border: 1px solid #e0e4ea !important;
-  box-shadow: none !important;
-  font-size: 16px;
-  padding: 4px 12px;
-  transition: all 0.2s ease;
-  margin-bottom: 4px;
-}
-
-.minimal-input:focus-within {
-  border-color: #1976d2 !important;
-  background: #ffffff !important;
-  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1) !important;
-}
 
 .minimal-table {
   background: transparent;

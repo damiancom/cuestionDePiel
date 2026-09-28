@@ -5,16 +5,27 @@
         <div class="text-h5">Ventas</div>
       </div>
       <div class="col-12 col-md-auto row items-center q-gutter-sm">
-        <q-input v-model="searchVenta" label="Filtrar por N° de venta" dense borderless class="minimal-input" style="max-width: 160px;" />
+        <q-input
+          v-model="searchVenta"
+          label="Buscar"
+          dense
+          borderless
+          class="minimal-search-input"
+          :input-style="{ background: 'transparent' }"
+        >
+          <template #append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
         <q-select
           v-model="selectedMonthYear"
           :options="monthYearOptions"
           label="Mes y año"
-          dense borderless
+          dense
+          borderless
           emit-value
           map-options
-          class="q-ml-sm minimal-input"
-          style="min-width: 170px;"
+          class="minimal-search-input"
         />
         <q-btn
           color="primary"
