@@ -49,13 +49,13 @@ body {
 }
 
 .minimal-btn-delete {
-  background: #c10015;
-  color: #fff;
+  background: #c10015 !important;
+  color: #fff !important;
   transition: background 0.15s;
 }
 
 .minimal-btn-delete:hover {
-  background: #9a0011;
+  background: #9a0011 !important;
 }
 
 .minimal-actions {

@@ -496,9 +496,9 @@ function confirmDelete(row) {
       class: 'minimal-btn'
     },
     ok: {
-      label: 'Confirmar',
-      color: 'primary',
-      class: 'minimal-btn-save'
+      label: 'Eliminar',
+      color: 'negative',
+      class: 'minimal-btn-delete'
     },
     persistent: true,
   }).onOk(async () => {
