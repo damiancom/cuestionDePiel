@@ -19,7 +19,16 @@
             <q-icon name="search" />
           </template>
         </q-input>
-        <q-btn color="primary" icon="add" label="Agregar" @click="openCreate" id="addServiceBtn" class="minimal-btn-save" />
+        <q-btn
+          color="primary"
+          icon="add"
+          :label="$q.screen.gt.xs ? 'Agregar' : ''"
+          @click="openCreate"
+          id="addServiceBtn"
+          class="minimal-btn-save"
+        >
+          <q-tooltip>Agregar servicio</q-tooltip>
+        </q-btn>
       </div>
     </div>
 

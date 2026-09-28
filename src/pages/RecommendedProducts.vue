@@ -24,7 +24,7 @@
           outline
           color="primary"
           icon="photo_camera"
-          label="Escanear"
+          :label="$q.screen.gt.xs ? 'Escanear' : ''"
           @click="showCameraScanner = true"
           id="btnCameraSearch"
           class="minimal-btn"
@@ -50,7 +50,16 @@
           </q-tooltip>
         </q-btn-toggle>
 
-        <q-btn color="primary" icon="add" label="Agregar" @click="openCreate" id="addRecommendedProduct" class="minimal-btn-save" />
+        <q-btn
+          color="primary"
+          icon="add"
+          :label="$q.screen.gt.xs ? 'Agregar' : ''"
+          @click="openCreate"
+          id="addRecommendedProduct"
+          class="minimal-btn-save"
+        >
+          <q-tooltip>Agregar producto</q-tooltip>
+        </q-btn>
       </div>
     </div>
 

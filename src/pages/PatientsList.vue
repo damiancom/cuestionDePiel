@@ -22,7 +22,15 @@
             <q-icon name="search"/>
           </template>
         </q-input>
-        <q-btn color="primary" icon="add" label="Agregar" to="/pacientes/nuevo" class="minimal-btn-save"/>
+        <q-btn
+          color="primary"
+          icon="add"
+          :label="$q.screen.gt.xs ? 'Agregar' : ''"
+          to="/pacientes/nuevo"
+          class="minimal-btn-save"
+        >
+          <q-tooltip>Agregar paciente</q-tooltip>
+        </q-btn>
       </div>
     </div>
     <q-table

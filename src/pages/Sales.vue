@@ -16,8 +16,24 @@
           class="q-ml-sm minimal-input"
           style="min-width: 170px;"
         />
-        <q-btn color="primary" icon="add" label="Cargar venta" @click="showAdd = true" class="minimal-btn-save" />
-        <q-btn color="secondary" icon="download" label="Descargar" @click="downloadSales" class="minimal-btn" />
+        <q-btn
+          color="primary"
+          icon="add"
+          :label="$q.screen.gt.xs ? 'Cargar venta' : ''"
+          @click="showAdd = true"
+          class="minimal-btn-save"
+        >
+          <q-tooltip>Cargar venta</q-tooltip>
+        </q-btn>
+        <q-btn
+          color="secondary"
+          icon="download"
+          :label="$q.screen.gt.xs ? 'Descargar' : ''"
+          @click="downloadSales"
+          class="minimal-btn"
+        >
+          <q-tooltip>Descargar</q-tooltip>
+        </q-btn>
       </div>
     </div>
     <q-card flat class="q-pa-md minimal-create-card">

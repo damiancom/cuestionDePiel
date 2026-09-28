@@ -235,7 +235,15 @@
               <div class="row items-center q-mb-md">
                 <div class="col text-h6">Sesiones ({{ sesionesOrdenadas.length }})</div>
                 <q-space />
-                <q-btn color="primary" icon="add" label="Nueva Sesión" @click="nuevaSesion" class="minimal-btn-save" />
+                <q-btn
+                  color="primary"
+                  icon="add"
+                  :label="$q.screen.gt.xs ? 'Nueva Sesión' : ''"
+                  @click="nuevaSesion"
+                  class="minimal-btn-save"
+                >
+                  <q-tooltip>Nueva Sesión</q-tooltip>
+                </q-btn>
               </div>
               <q-table :rows="sesionesOrdenadas" :columns="columns" row-key="id" flat dense hide-bottom class="q-mb-md"
                 @row-click="(evt, row) => verSesion(row)">

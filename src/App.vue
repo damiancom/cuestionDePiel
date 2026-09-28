@@ -38,6 +38,15 @@ body {
   text-transform: none;
 }
 
+@media (max-width: 599px) {
+  .minimal-btn,
+  .minimal-btn-save,
+  .minimal-btn-delete {
+    min-width: auto;
+    padding: 6px 12px;
+  }
+}
+
 .minimal-btn-save {
   background: #1976d2;
   color: #fff;
