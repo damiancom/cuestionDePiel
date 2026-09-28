@@ -34,6 +34,7 @@
           label="Buscar con cámara"
           @click="showCameraScanner = true"
           id="btnCameraSearch"
+          class="minimal-btn"
         />
 
         <!-- Toggle de vista -->
