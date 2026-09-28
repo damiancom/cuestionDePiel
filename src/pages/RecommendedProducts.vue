@@ -50,7 +50,7 @@
           </q-tooltip>
         </q-btn-toggle>
 
-        <q-btn color="primary" icon="add" label="Agregar producto" @click="openCreate" id="addRecommendedProduct" class="minimal-btn-save" />
+        <q-btn color="primary" icon="add" label="Agregar" @click="openCreate" id="addRecommendedProduct" class="minimal-btn-save" />
       </div>
     </div>
 
