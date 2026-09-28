@@ -96,11 +96,11 @@
         class="q-mt-md minimal-pagination"
     />
     <q-dialog v-model="showConfirm">
-      <q-card>
-        <q-card-section>¿Eliminar paciente?</q-card-section>
-        <q-card-actions align="right">
-          <q-btn flat label="Cancelar" v-close-popup/>
-          <q-btn flat label="Eliminar" color="negative" @click="deletePatient"/>
+      <q-card style="min-width: 320px; border-radius: 12px;">
+        <q-card-section class="text-subtitle1 q-pb-none">¿Eliminar paciente?</q-card-section>
+        <q-card-actions align="right" class="q-pa-md">
+          <q-btn flat label="Cancelar" color="grey-8" class="minimal-btn" v-close-popup/>
+          <q-btn label="Eliminar" color="negative" class="minimal-btn-delete" @click="deletePatient"/>
         </q-card-actions>
       </q-card>
     </q-dialog>

@@ -78,8 +78,8 @@
           </div>
           <q-input v-model.number="form.valor" label="Valor total de la venta" prefix="$" type="number" min="0" class="minimal-input q-mb-md" borderless dense />
           <div class="row justify-end q-gutter-sm q-mt-lg">
-            <q-btn flat label="Cancelar" @click="cancel" />
-            <q-btn label="Guardar" color="primary" type="submit" icon="check" />
+            <q-btn flat label="Cancelar" @click="cancel" color="grey-8" class="minimal-btn" />
+            <q-btn label="Guardar" color="primary" type="submit" class="minimal-btn-save" />
           </div>
         </q-form>
       </q-card>

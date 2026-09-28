@@ -337,8 +337,8 @@
           </div>
 
           <div class="row justify-end q-gutter-sm q-mt-lg">
-            <q-btn flat label="Cancelar" @click="closeDialog" />
-            <q-btn label="Guardar" color="primary" type="submit" icon="check" :loading="saving" />
+            <q-btn flat label="Cancelar" @click="closeDialog" color="grey-8" class="minimal-btn" />
+            <q-btn label="Guardar" color="primary" type="submit" :loading="saving" class="minimal-btn-save" />
           </div>
         </q-form>
       </q-card>

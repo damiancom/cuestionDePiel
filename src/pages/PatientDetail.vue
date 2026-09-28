@@ -271,7 +271,7 @@
                   </q-card-section>
                   <q-separator />
                   <q-card-actions align="right" class="q-pa-md minimal-actions">
-                    <q-btn flat label="Cancelar" @click="cancelarSesion" class="minimal-btn" />
+                    <q-btn flat label="Cancelar" @click="cancelarSesion" color="grey-8" class="minimal-btn" />
                     <q-btn label="Guardar" color="primary" @click="guardarSesion" class="minimal-btn-save" />
                   </q-card-actions>
                 </q-card>
@@ -304,7 +304,7 @@
                     :label-value="'Zoom ' + cropZoom.toFixed(1) + 'x'" color="primary" @update:model-value="drawCrop"/>
         </q-card-section>
         <q-card-actions align="right" class="q-pa-md">
-          <q-btn flat label="Cancelar" @click="cancelCrop" class="minimal-btn"/>
+          <q-btn flat label="Cancelar" @click="cancelCrop" color="grey-8" class="minimal-btn"/>
           <q-btn label="Confirmar" color="primary" @click="confirmCrop" class="minimal-btn-save"/>
         </q-card-actions>
       </q-card>
