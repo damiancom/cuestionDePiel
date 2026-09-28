@@ -12,25 +12,44 @@
           dense
           borderless
           class="minimal-search-input"
-          :input-style="{background: 'transparent'}"
+          :input-style="{ background: 'transparent' }"
         >
           <template #append>
+            <q-btn
+              flat
+              round
+              dense
+              size="sm"
+              icon="photo_camera"
+              color="primary"
+              @click.stop="showCameraScanner = true"
+              id="btnCameraSearch"
+            >
+              <q-tooltip>Escanear con cámara (OCR)</q-tooltip>
+            </q-btn>
             <q-icon name="search" />
           </template>
         </q-input>
 
         <q-btn
-          outline
           color="primary"
-          icon="photo_camera"
-          :label="$q.screen.gt.xs ? 'Escanear' : ''"
-          @click="showCameraScanner = true"
-          id="btnCameraSearch"
-          class="minimal-btn"
+          icon="add"
+          :label="$q.screen.gt.xs ? 'Agregar' : ''"
+          @click="openCreate"
+          id="addRecommendedProduct"
+          class="minimal-btn-save"
         >
-          <q-tooltip>Escanear con cámara (OCR)</q-tooltip>
+          <q-tooltip>Agregar producto</q-tooltip>
         </q-btn>
+      </div>
+    </div>
 
+    <!-- TABLA DE PRODUCTOS (VISTA COMPLETA / SIMPLIFICADA) -->
+    <q-card flat class="q-pa-md minimal-create-card">
+      <div class="row items-center justify-between q-mb-sm">
+        <div class="text-caption text-grey-7">
+          Mostrando {{ filteredProducts.length }} de {{ products.length }} productos
+        </div>
         <!-- Toggle de vista -->
         <q-btn-toggle
           v-model="viewMode"
@@ -48,23 +67,11 @@
             {{ viewMode === 'full' ? 'Vista completa' : 'Vista simplificada' }}
           </q-tooltip>
         </q-btn-toggle>
-
-        <q-btn
-          color="primary"
-          icon="add"
-          :label="$q.screen.gt.xs ? 'Agregar' : ''"
-          @click="openCreate"
-          id="addRecommendedProduct"
-          class="minimal-btn-save"
-        >
-          <q-tooltip>Agregar producto</q-tooltip>
-        </q-btn>
       </div>
-    </div>
 
-    <!-- VISTA TABLA (completa) -->
-    <q-card v-if="viewMode === 'full'" flat class="q-pa-md minimal-create-card">
+      <!-- VISTA COMPLETA -->
       <q-table
+        v-if="viewMode === 'full'"
         :rows="filteredProducts"
         :columns="columns"
         row-key="id"
@@ -121,11 +128,10 @@
           </q-td>
         </template>
       </q-table>
-    </q-card>
 
-    <!-- VISTA SIMPLIFICADA -->
-    <q-card v-else flat class="q-pa-md minimal-create-card">
+      <!-- VISTA SIMPLIFICADA -->
       <q-table
+        v-else
         :rows="filteredProducts"
         :columns="simpleColumns"
         row-key="id"

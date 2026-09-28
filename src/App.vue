@@ -103,7 +103,7 @@ body {
   box-shadow: none !important;
   font-size: 15px;
   min-width: 140px;
-  max-width: 220px;
+  max-width: 240px;
 }
 
 .minimal-search-input .q-field__control {
