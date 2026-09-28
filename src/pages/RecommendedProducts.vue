@@ -27,7 +27,6 @@
             >
               <q-tooltip>Escanear con cámara (OCR)</q-tooltip>
             </q-btn>
-            <q-icon name="search" />
           </template>
         </q-input>
 
