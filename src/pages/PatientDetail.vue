@@ -140,6 +140,7 @@
               <q-tab name="perfil" label="Perfil del Paciente" class="lt-md" />
               <q-tab name="antecedentes" label="Datos Médicos" />
               <q-tab name="observaciones" label="Observaciones y Diagnóstico" />
+              <q-tab name="exploracion-optica" label="Ficha de exploración óptica" />
               <q-tab name="rutina" label="Rutina" />
               <q-tab name="sesiones" label="Sesiones" />
               <q-tab name="consentimiento" label="Consentimiento" />
@@ -273,6 +274,9 @@
                   <q-btn label="Guardar" color="primary" @click="guardarObservaciones" class="minimal-btn-save" />
                 </div>
               </q-form>
+            </q-tab-panel>
+            <q-tab-panel name="exploracion-optica">
+              <OpticalExploration :patientId="patient.id" :patientName="`${patient.name} ${patient.last_name}`" />
             </q-tab-panel>
             <q-tab-panel name="rutina">
               <RoutineGenerator ref="routineEditor" :initialRoutine="mappedRoutine" @save="handleRoutineSave" />
@@ -559,6 +563,7 @@ import { PATIENTS_URL, MEDICAL_HISTORY_ENDPOINT, ROUTINES_ENDPOINT, DIAGNOSTICS_
 import axios from "axios";
 import { useQuasar } from "quasar";
 import RoutineGenerator from '../components/RoutineGenerator.vue';
+import OpticalExploration from '../components/OpticalExploration.vue';
 
 function getFototipoColor(n) {
   const colors = {
