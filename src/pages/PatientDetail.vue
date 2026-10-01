@@ -137,7 +137,47 @@
 
             <q-tabs v-model="tab" class="text-primary col" align="left" dense mobile-arrows outside-arrows>
               <!-- Tab Perfil: Sólo visible en mobile (lt-md) -->
-              <q-tab name="perfil" label="Perfil del Paciente" class="lt-md" />
+              <q-tab name="perfil" class="lt-md" no-caps>
+                <div class="row items-center no-wrap">
+                  <q-avatar size="24px" class="q-mr-xs" color="blue-1" text-color="primary">
+                    <img v-if="patient.profile_picture" :src="patient.profile_picture" />
+                    <q-icon v-else name="person" size="16px" />
+                  </q-avatar>
+                  <span class="text-weight-medium">
+                    {{ patient.name ? `${patient.name} ${patient.last_name}` : 'Perfil del Paciente' }}
+                  </span>
+                  <q-icon
+                    v-if="consentStatus?.is_signed"
+                    name="check_circle"
+                    color="positive"
+                    size="18px"
+                    class="q-ml-xs cursor-pointer"
+                    @click.stop="tab = 'consentimiento'"
+                  >
+                    <q-tooltip>Consentimiento firmado (v{{ consentStatus.signed_version }})</q-tooltip>
+                  </q-icon>
+                  <q-icon
+                    v-else-if="consentStatus?.signed_version"
+                    name="warning"
+                    color="warning"
+                    size="18px"
+                    class="q-ml-xs cursor-pointer"
+                    @click.stop="tab = 'consentimiento'"
+                  >
+                    <q-tooltip>Consentimiento desactualizado (pendiente v{{ consentStatus.current_version }})</q-tooltip>
+                  </q-icon>
+                  <q-icon
+                    v-else-if="consentStatus"
+                    name="cancel"
+                    color="negative"
+                    size="18px"
+                    class="q-ml-xs cursor-pointer"
+                    @click.stop="tab = 'consentimiento'"
+                  >
+                    <q-tooltip>Falta consentimiento informado</q-tooltip>
+                  </q-icon>
+                </div>
+              </q-tab>
               <q-tab name="antecedentes" label="Datos Médicos" />
               <q-tab name="observaciones" label="Observaciones y Diagnóstico" />
               <q-tab name="rutina" label="Rutina" />
