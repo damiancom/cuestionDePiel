@@ -30,6 +30,9 @@
             <q-btn flat round dense icon="point_of_sale" to="/ventas">
               <div class="text-caption">Ventas</div>
             </q-btn>
+            <q-btn flat round dense icon="gavel" to="/consentimiento">
+              <div class="text-caption">Consentimiento</div>
+            </q-btn>
           </div>
         </q-toolbar-title>
         <q-space v-else />
@@ -66,6 +69,7 @@
         <q-route-tab icon="medical_services" label="Servicios" to="/servicios" />
         <q-route-tab icon="inventory_2" label="Productos" to="/catalogo" />
         <q-route-tab icon="point_of_sale" label="Ventas" to="/ventas" />
+        <q-route-tab icon="gavel" label="Consentimiento" to="/consentimiento" />
       </q-tabs>
     </q-footer>
   </q-layout>

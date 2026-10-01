@@ -107,3 +107,26 @@ export const ServicesAPI = {
   },
 };
 
+const CONSENTS_URL = `${API_BASE_URL}/consents`;
+
+export const ConsentsAPI = {
+  getActiveTemplate() {
+    return axios.get(`${CONSENTS_URL}/template/active`);
+  },
+  getTemplateHistory() {
+    return axios.get(`${CONSENTS_URL}/template/history`);
+  },
+  createTemplateVersion(payload) {
+    return axios.post(`${CONSENTS_URL}/template`, payload);
+  },
+  getPatientConsentStatus(patientId) {
+    return axios.get(`${PATIENTS_URL}/${patientId}/consent`);
+  },
+  signPatientConsent(patientId, payload) {
+    return axios.post(`${PATIENTS_URL}/${patientId}/consent`, payload);
+  },
+  getPatientConsentHistory(patientId) {
+    return axios.get(`${PATIENTS_URL}/${patientId}/consent/history`);
+  },
+};
+
