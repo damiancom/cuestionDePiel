@@ -1,16 +1,9 @@
 <template>
-  <div class="anamnesis-container q-gutter-y-lg">
+  <div class="anamnesis-container q-gutter-y-md">
     <!-- Encabezado de la Ficha -->
-    <div class="row items-center justify-between q-pb-sm border-bottom">
-      <div>
-        <div class="text-h6 text-weight-bold text-primary">
-          Ficha de Anamnesis Dermatocosmiátrica
-        </div>
-        <div class="text-caption text-grey-7">
-          Cuestión de Piel — Registro clínico pre-procedimiento
-        </div>
-      </div>
-      <q-badge color="primary" outline label="Ficha Activa" class="q-pa-xs" />
+    <div class="row items-center justify-between q-mb-md">
+      <div class="text-h6">Anamnesis Dermatocosmiátrica</div>
+      <q-badge color="primary" outline label="Ficha Clínica" class="q-pa-xs" />
     </div>
 
     <!-- 1. ANTECEDENTES PERSONALES Y HEREDITARIOS -->
@@ -831,8 +824,7 @@ defineExpose({
 
 <style scoped>
 .anamnesis-container {
-  max-width: 950px;
-  margin: 0 auto;
+  width: 100%;
 }
 
 .section-card {

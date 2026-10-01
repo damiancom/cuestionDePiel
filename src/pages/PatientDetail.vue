@@ -278,8 +278,9 @@
               </q-form>
             </q-tab-panel>
             <q-tab-panel name="observaciones">
-              <!-- Card colapsable para campos anteriores (sin tocar) -->
+              <!-- Card colapsable para campos anteriores (Oculta temporalmente) -->
               <q-expansion-item
+                v-if="false"
                 icon="history"
                 label="Campos Anteriores de Observación y Lesión (en transición)"
                 caption="Hacé clic para ver u ocultar los campos previos del sistema"
