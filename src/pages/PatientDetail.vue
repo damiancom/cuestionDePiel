@@ -178,8 +178,9 @@
                   </q-icon>
                 </div>
               </q-tab>
-              <q-tab name="antecedentes" label="Datos Médicos" />
-              <q-tab name="observaciones" label="Observaciones y Diagnóstico" />
+              <!-- Tab Datos Médicos: Oculto temporalmente (pendiente de eliminación junto con sus endpoints) -->
+              <!-- <q-tab name="antecedentes" label="Datos Médicos" /> -->
+              <q-tab name="observaciones" label="Anamnesis Dermatocosmiátrica" />
               <q-tab name="rutina" label="Rutina" />
               <q-tab name="sesiones" label="Sesiones" />
               <q-tab name="consentimiento" label="Consentimiento" />
@@ -252,7 +253,8 @@
                 </div>
               </div>
             </q-tab-panel>
-            <q-tab-panel name="antecedentes">
+            <!-- Tab Panel Datos Médicos: Oculto temporalmente (pendiente de eliminación definitiva junto con sus endpoints) -->
+            <q-tab-panel name="antecedentes" v-if="false">
               <div class="text-h6 q-mb-md">Datos Médicos</div>
               <q-form class="q-gutter-md">
                 <q-input v-model="antecedentes.intervenciones" label="Intervenciones quirúrgicas" class="minimal-input"
@@ -276,43 +278,62 @@
               </q-form>
             </q-tab-panel>
             <q-tab-panel name="observaciones">
-              <div class="text-h6 q-mb-md">Observación y Diagnóstico</div>
-              <q-form class="q-gutter-md">
-                <q-input v-model="observacion.motivo" label="Motivo de la consulta" class="minimal-input" borderless
-                  dense />
-                <q-input v-model="observacion.biotipo" label="Biotipo" class="minimal-input" borderless dense />
-                <div class="q-mb-md">
-                  <div class="q-mb-sm text-grey-8" style="padding-left: 4px;">Fototipo</div>
-                  <div class="row q-gutter-sm justify-start items-center q-pl-xs">
-                    <div v-for="n in 6" :key="n" 
-                         class="fototipo-circle cursor-pointer flex flex-center shadow-1"
-                         :class="{ 'fototipo-selected': observacion.fototipo == n }"
-                         :style="{ backgroundColor: getFototipoColor(n), color: n >= 5 ? '#fff' : '#333' }"
-                         @click="observacion.fototipo = (observacion.fototipo == n ? null : n)">
-                      {{ n }}
+              <!-- Card colapsable para campos anteriores (sin tocar) -->
+              <q-expansion-item
+                icon="history"
+                label="Campos Anteriores de Observación y Lesión (en transición)"
+                caption="Hacé clic para ver u ocultar los campos previos del sistema"
+                header-class="bg-grey-2 text-primary text-weight-bold"
+                class="q-mb-lg rounded-borders shadow-1"
+                v-model="expandedLegacyObservaciones"
+              >
+                <q-card class="q-pa-md bg-grey-1">
+                  <div class="text-subtitle2 text-grey-8 q-mb-sm">Datos de diagnóstico y lesión anteriores</div>
+                  <q-form class="q-gutter-md">
+                    <q-input v-model="observacion.motivo" label="Motivo de la consulta" class="minimal-input" borderless
+                      dense />
+                    <q-input v-model="observacion.biotipo" label="Biotipo" class="minimal-input" borderless dense />
+                    <div class="q-mb-md">
+                      <div class="q-mb-sm text-grey-8" style="padding-left: 4px;">Fototipo</div>
+                      <div class="row q-gutter-sm justify-start items-center q-pl-xs">
+                        <div v-for="n in 6" :key="n" 
+                             class="fototipo-circle cursor-pointer flex flex-center shadow-1"
+                             :class="{ 'fototipo-selected': observacion.fototipo == n }"
+                             :style="{ backgroundColor: getFototipoColor(n), color: n >= 5 ? '#fff' : '#333' }"
+                             @click="observacion.fototipo = (observacion.fototipo == n ? null : n)">
+                          {{ n }}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                <q-input v-model="observacion.recomendaciones" label="Recomendaciones" class="minimal-input" borderless
-                  dense />
-                <q-card class="q-mt-lg q-pa-lg bg-grey-2 shadow-1 minimal-lesion-card">
-                  <div class="text-h6 q-mb-md">Lesión</div>
-                  <q-input v-model="lesion.inicio" label="Inicio" class="minimal-input" borderless dense />
-                  <q-input v-model="lesion.lugar" label="Lugar de inicio" class="minimal-input" borderless dense />
-                  <q-input v-model="lesion.sintomas" label="Síntomas" class="minimal-input" borderless dense />
-                  <q-input v-model="lesion.evolucion" label="Evolución" class="minimal-input" borderless dense />
-                  <q-input v-model="lesion.cambios" label="Cambios" class="minimal-input" borderless dense />
-                  <q-input v-model="lesion.factores" label="Factores que incrementan riesgo" class="minimal-input"
-                    borderless dense />
-                  <q-input v-model="lesion.tratamientos" label="Tratamientos posteriores" class="minimal-input"
-                    borderless dense />
+                    <q-input v-model="observacion.recomendaciones" label="Recomendaciones" class="minimal-input" borderless
+                      dense />
+                    <q-card class="q-mt-lg q-pa-lg bg-grey-2 shadow-1 minimal-lesion-card">
+                      <div class="text-h6 q-mb-md">Lesión</div>
+                      <q-input v-model="lesion.inicio" label="Inicio" class="minimal-input" borderless dense />
+                      <q-input v-model="lesion.lugar" label="Lugar de inicio" class="minimal-input" borderless dense />
+                      <q-input v-model="lesion.sintomas" label="Síntomas" class="minimal-input" borderless dense />
+                      <q-input v-model="lesion.evolucion" label="Evolución" class="minimal-input" borderless dense />
+                      <q-input v-model="lesion.cambios" label="Cambios" class="minimal-input" borderless dense />
+                      <q-input v-model="lesion.factores" label="Factores que incrementan riesgo" class="minimal-input"
+                        borderless dense />
+                      <q-input v-model="lesion.tratamientos" label="Tratamientos posteriores" class="minimal-input"
+                        borderless dense />
+                    </q-card>
+                    <div class="row q-gutter-sm justify-end q-mt-md">
+                      <q-btn flat label="Cancelar" @click="resetObservaciones" color="grey-8" class="minimal-btn" />
+                      <q-btn label="Guardar (Campos Anteriores)" color="primary" @click="guardarObservaciones" class="minimal-btn-save" />
+                    </div>
+                  </q-form>
                 </q-card>
-                <div class="row q-gutter-sm justify-end q-mt-md">
-                  <q-btn flat label="Cancelar" @click="resetObservaciones" color="grey-8" class="minimal-btn" />
-                  <q-btn label="Guardar" color="primary" @click="guardarObservaciones" class="minimal-btn-save" />
-                </div>
-              </q-form>
+              </q-expansion-item>
+
+              <!-- Nueva Ficha de Anamnesis Dermatocosmiátrica según el MD -->
+              <AnamnesisForm
+                ref="anamnesisFormRef"
+                :patient="patient"
+                :observacion="observacion"
+              />
             </q-tab-panel>
             <q-tab-panel name="rutina">
               <RoutineGenerator ref="routineEditor" :initialRoutine="mappedRoutine" @save="handleRoutineSave" />
@@ -599,6 +620,10 @@ import { PATIENTS_URL, MEDICAL_HISTORY_ENDPOINT, ROUTINES_ENDPOINT, DIAGNOSTICS_
 import axios from "axios";
 import { useQuasar } from "quasar";
 import RoutineGenerator from '../components/RoutineGenerator.vue';
+import AnamnesisForm from '../components/AnamnesisForm.vue';
+
+const expandedLegacyObservaciones = ref(false);
+const anamnesisFormRef = ref(null);
 
 function getFototipoColor(n) {
   const colors = {
@@ -640,7 +665,7 @@ const cropContainer = ref(null);
 const cropZoom = ref(1);
 const cropImage = ref(null);
 const cropOffset = ref({x: 0, y: 0});
-const tab = ref($q.screen.gt.sm ? 'antecedentes' : 'perfil');
+const tab = ref($q.screen.gt.sm ? 'observaciones' : 'perfil');
 const isSidebarCollapsed = ref(false);
 
 function toggleSidebar() {
@@ -662,13 +687,13 @@ onMounted(() => {
     // Ignore storage errors
   }
   if ($q.screen.gt.sm && tab.value === 'perfil') {
-    tab.value = 'antecedentes';
+    tab.value = 'observaciones';
   }
 });
 
 watch(() => $q.screen.gt.sm, (isDesktop) => {
   if (isDesktop && tab.value === 'perfil') {
-    tab.value = 'antecedentes';
+    tab.value = 'observaciones';
   }
 });
 
