@@ -42,6 +42,16 @@
               <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Celular:</span><br>{{ patient.cellphone }}</div>
               <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">E-mail:</span><br>{{ patient.email }}</div>
               <div class="q-mb-sm" v-if="patient.additional_note"><span class="text-weight-bold text-grey-8">Nota adicional:</span><br><span style="white-space: pre-wrap;">{{ patient.additional_note }}</span></div>
+              <div class="q-my-sm text-center" v-if="consentStatus">
+                <q-badge
+                  :color="consentStatus.is_signed ? 'positive' : (consentStatus.signed_version ? 'warning' : 'negative')"
+                  class="q-pa-xs cursor-pointer text-caption text-weight-bold"
+                  @click="tab = 'consentimiento'"
+                >
+                  <q-icon :name="consentStatus.is_signed ? 'verified' : (consentStatus.signed_version ? 'update' : 'draw')" class="q-mr-xs" />
+                  {{ consentStatus.is_signed ? `Consentimiento OK (v${consentStatus.signed_version})` : (consentStatus.signed_version ? 'Consentimiento Desactualizado' : 'Falta Consentimiento') }}
+                </q-badge>
+              </div>
               <div class="text-caption text-grey-6 text-center q-my-sm">ID: {{ patient.id }}</div>
               <div class="row justify-center">
                 <q-btn label="Editar Perfil" color="primary" class="full-width minimal-btn-save" @click="editing = true" />
@@ -92,6 +102,36 @@
               <span class="text-weight-medium gt-xs">
                 {{ patient.name ? `${patient.name} ${patient.last_name}` : 'Detalle del paciente' }}
               </span>
+              <q-icon
+                v-if="consentStatus?.is_signed"
+                name="check_circle"
+                color="positive"
+                size="18px"
+                class="q-ml-xs cursor-pointer"
+                @click.stop="tab = 'consentimiento'"
+              >
+                <q-tooltip>Consentimiento firmado (v{{ consentStatus.signed_version }})</q-tooltip>
+              </q-icon>
+              <q-icon
+                v-else-if="consentStatus?.signed_version"
+                name="warning"
+                color="warning"
+                size="18px"
+                class="q-ml-xs cursor-pointer"
+                @click.stop="tab = 'consentimiento'"
+              >
+                <q-tooltip>Consentimiento desactualizado (pendiente v{{ consentStatus.current_version }})</q-tooltip>
+              </q-icon>
+              <q-icon
+                v-else-if="consentStatus"
+                name="cancel"
+                color="negative"
+                size="18px"
+                class="q-ml-xs cursor-pointer"
+                @click.stop="tab = 'consentimiento'"
+              >
+                <q-tooltip>Falta consentimiento informado</q-tooltip>
+              </q-icon>
               <q-tooltip>Mostrar detalle del paciente</q-tooltip>
             </q-btn>
 
@@ -102,6 +142,7 @@
               <q-tab name="observaciones" label="Observaciones y Diagnóstico" />
               <q-tab name="rutina" label="Rutina" />
               <q-tab name="sesiones" label="Sesiones" />
+              <q-tab name="consentimiento" label="Consentimiento" />
             </q-tabs>
           </div>
           <q-separator />
@@ -134,6 +175,16 @@
                     <div class="col-12 col-sm-6"><span class="text-weight-medium">Celular:</span><br>{{ patient.cellphone }}</div>
                     <div class="col-12 col-sm-6"><span class="text-weight-medium">E-mail:</span><br>{{ patient.email }}</div>
                     <div class="col-12" v-if="patient.additional_note"><span class="text-weight-medium">Nota adicional:</span><br><span style="white-space: pre-wrap;">{{ patient.additional_note }}</span></div>
+                  </div>
+                  <div class="q-my-sm text-center" v-if="consentStatus">
+                    <q-badge
+                      :color="consentStatus.is_signed ? 'positive' : (consentStatus.signed_version ? 'warning' : 'negative')"
+                      class="q-pa-xs cursor-pointer text-caption text-weight-bold"
+                      @click="tab = 'consentimiento'"
+                    >
+                      <q-icon :name="consentStatus.is_signed ? 'verified' : (consentStatus.signed_version ? 'update' : 'draw')" class="q-mr-xs" />
+                      {{ consentStatus.is_signed ? `Consentimiento OK (v${consentStatus.signed_version})` : (consentStatus.signed_version ? 'Consentimiento Desactualizado' : 'Falta Consentimiento') }}
+                    </q-badge>
                   </div>
                   <div class="text-caption text-grey-6 text-center q-mb-md">ID: {{ patient.id }}</div>
                   <div class="row justify-center">
@@ -285,6 +336,186 @@
                 </q-card>
               </q-dialog>
             </q-tab-panel>
+
+            <!-- TAB PANEL CONSENTIMIENTO INFORMADO DIGITAL -->
+            <q-tab-panel name="consentimiento">
+              <div class="row items-center justify-between q-mb-md">
+                <div>
+                  <div class="text-h6 text-primary flex items-center">
+                    <q-icon name="draw" size="24px" class="q-mr-sm" />
+                    Consentimiento Informado Digital (Firma en Pantalla)
+                  </div>
+                  <div class="text-caption text-grey-8">
+                    Resguardo legal y bioético obligatorio previo a peelings químicos con ácidos o procedimientos invasivos.
+                  </div>
+                </div>
+                <q-badge
+                  v-if="consentStatus"
+                  :color="consentStatus.is_signed ? 'positive' : (consentStatus.signed_version ? 'warning' : 'negative')"
+                  text-color="white"
+                  class="q-px-md q-py-xs text-subtitle2 text-weight-bold"
+                >
+                  <q-icon :name="consentStatus.is_signed ? 'verified' : (consentStatus.signed_version ? 'update' : 'pending')" class="q-mr-xs" />
+                  {{ consentStatus.is_signed ? `CONSENTIMIENTO VIGENTE (v${consentStatus.signed_version})` : (consentStatus.signed_version ? `NUEVA VERSIÓN PENDIENTE (v${consentStatus.current_version})` : `PENDIENTE DE FIRMA (v${consentStatus?.current_version || 1})`) }}
+                </q-badge>
+              </div>
+
+              <!-- AVISO SI HAY NUEVA VERSIÓN -->
+              <q-banner
+                v-if="!consentStatus?.is_signed && consentStatus?.signed_version"
+                rounded
+                class="bg-orange-1 text-orange-9 q-mb-md"
+                style="border-left: 4px solid #f57c00;"
+              >
+                <template #avatar>
+                  <q-icon name="info" color="warning" size="24px" />
+                </template>
+                <div class="text-weight-bold">Se ha publicado una nueva versión del consentimiento (v{{ consentStatus.current_version }})</div>
+                <div class="text-caption">
+                  El paciente firmó oportunamente la versión <strong>v{{ consentStatus.signed_version }}</strong>. Conforme a las normas legales, se requiere firmar la última versión para mantener el consentimiento vigente.
+                </div>
+              </q-banner>
+
+              <!-- TEXTO LEGAL VIGENTE LEVANTADO DEL BACKEND -->
+              <q-card flat bordered class="q-pa-md q-mb-md bg-grey-1" style="max-height: 240px; overflow-y: auto; border: 1px solid #cfd8dc;">
+                <div class="row items-center justify-between q-mb-xs">
+                  <div class="text-weight-bold text-subtitle2 text-primary">
+                    {{ consentStatus?.active_template?.title || 'TÉRMINOS DEL CONSENTIMIENTO INFORMADO' }}
+                  </div>
+                  <q-badge outline color="primary">Versión {{ consentStatus?.active_template?.version || 1 }}</q-badge>
+                </div>
+                <q-separator class="q-my-xs" />
+                <div class="text-body2 text-grey-9 q-mt-sm" v-html="consentStatus?.active_template?.content"></div>
+              </q-card>
+
+              <!-- LIENZO DE FIRMA TÁCTIL O CERTIFICADO SEGÚN ESTADO -->
+              <div v-if="!consentStatus?.is_signed || reFirmando">
+                <q-card flat bordered class="q-pa-md q-mb-md">
+                  <div class="row items-center justify-between q-mb-sm">
+                    <div class="text-subtitle2 text-weight-bold">
+                      <q-icon name="touch_app" color="primary" class="q-mr-xs" />
+                      Lienzo de Firma Manuscrita en Pantalla / Tablet (v{{ consentStatus?.current_version || 1 }}):
+                    </div>
+                    <div class="row q-gutter-xs">
+                      <q-btn
+                        v-if="reFirmando"
+                        flat
+                        dense
+                        color="grey-7"
+                        label="Cancelar"
+                        @click="reFirmando = false; limpiarFirma();"
+                      />
+                      <q-btn
+                        flat
+                        dense
+                        color="negative"
+                        icon="layers_clear"
+                        label="Limpiar Lienzo"
+                        @click="limpiarFirma"
+                      />
+                    </div>
+                  </div>
+                  <div class="signature-pad-container bg-white rounded-borders" style="border: 2px dashed #1976d2; height: 180px; max-width: 600px; margin: 0 auto; touch-action: none;">
+                    <canvas
+                      ref="canvasFirmaRef"
+                      width="600"
+                      height="180"
+                      class="full-width full-height cursor-pointer"
+                      @mousedown="startDrawing"
+                      @mousemove="draw"
+                      @mouseup="stopDrawing"
+                      @mouseleave="stopDrawing"
+                      @touchstart.prevent="startDrawing"
+                      @touchmove.prevent="draw"
+                      @touchend.prevent="stopDrawing"
+                    />
+                  </div>
+                  <div class="row justify-between items-center q-mt-md">
+                    <div class="text-caption text-grey-7">
+                      Firma digital con trazabilidad y hash legal inmutable.
+                    </div>
+                    <q-btn
+                      color="primary"
+                      icon="verified_user"
+                      label="Firmar y Archivar Consentimiento"
+                      :loading="guardandoFirma"
+                      @click="guardarFirmaConsentimiento"
+                      class="minimal-btn-save"
+                    />
+                  </div>
+                </q-card>
+              </div>
+
+              <!-- CERTIFICADO DIGITAL VIGENTE ARCHIVADO -->
+              <div v-if="consentStatus?.is_signed && !reFirmando" class="q-mb-md">
+                <q-card flat bordered class="q-pa-md bg-green-1" style="border-left: 5px solid #2e7d32;">
+                  <div class="row items-center justify-between q-col-gutter-md">
+                    <div class="col-12 col-md-8">
+                      <div class="flex items-center q-mb-xs">
+                        <q-icon name="verified" color="positive" size="24px" class="q-mr-xs" />
+                        <span class="text-subtitle1 text-weight-bold text-positive">Consentimiento Digital Vigente (v{{ consentStatus.signed_version }})</span>
+                      </div>
+                      <div class="text-caption text-grey-9 q-mb-xs">
+                        Firmado por: <strong>{{ consentStatus.signed_by || `${patient.name} ${patient.last_name}` }}</strong> |
+                        Fecha y Hora: <strong>{{ formatDateTime(consentStatus.signed_at) }}</strong>
+                      </div>
+                      <div class="text-caption text-grey-8">
+                        Hash SHA-256 de Seguridad: <code class="bg-white q-px-xs rounded-borders">{{ consentStatus.signature_hash }}</code>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-4 text-center">
+                      <div class="text-caption text-weight-bold text-grey-8 q-mb-xs">Firma Registrada:</div>
+                      <div class="bg-white q-pa-xs rounded-borders inline-block shadow-1" style="border: 1px solid #c8e6c9;">
+                        <img :src="consentStatus.signature" alt="Firma del paciente" style="max-height: 70px; max-width: 200px; object-fit: contain;" />
+                      </div>
+                      <div class="q-mt-sm">
+                        <q-btn
+                          flat
+                          dense
+                          size="sm"
+                          color="primary"
+                          icon="edit"
+                          label="Actualizar / Volver a Firmar"
+                          @click="reFirmando = true"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </q-card>
+              </div>
+
+              <!-- HISTORIAL DE AUDITORÍA DE FIRMAS DE ESTE PACIENTE -->
+              <div v-if="consentStatus?.history && consentStatus.history.length > 0" class="q-mt-lg">
+                <div class="text-subtitle2 text-weight-bold q-mb-sm flex items-center">
+                  <q-icon name="history" color="primary" class="q-mr-xs" />
+                  Historial de Firmas y Versiones Archivadas del Paciente
+                </div>
+                <q-card flat bordered class="q-pa-xs">
+                  <q-table
+                    :rows="consentStatus.history"
+                    :columns="historyColumns"
+                    row-key="id"
+                    flat
+                    dense
+                    hide-pagination
+                    :pagination="{ rowsPerPage: 10 }"
+                  >
+                    <template #body-cell-status="props">
+                      <q-td :props="props">
+                        <q-badge :color="props.row.is_latest_version ? 'positive' : 'grey-7'">
+                          {{ props.row.is_latest_version ? 'VIGENTE' : 'HISTÓRICA' }}
+                        </q-badge>
+                      </q-td>
+                    </template>
+                    <template #body-cell-signature="props">
+                      <q-td :props="props">
+                        <img :src="props.row.signature" alt="Firma" style="height: 30px; max-width: 90px; object-fit: contain;" />
+                      </q-td>
+                    </template>
+                  </q-table>
+                </q-card>
+              </div>
+            </q-tab-panel>
           </q-tab-panels>
         </q-card>
       </div>
@@ -324,7 +555,7 @@
 <script setup>
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { PATIENTS_URL, MEDICAL_HISTORY_ENDPOINT, ROUTINES_ENDPOINT, DIAGNOSTICS_ENDPOINT, SessionsAPI } from "../services/api";
+import { PATIENTS_URL, MEDICAL_HISTORY_ENDPOINT, ROUTINES_ENDPOINT, DIAGNOSTICS_ENDPOINT, SessionsAPI, ConsentsAPI } from "../services/api";
 import axios from "axios";
 import { useQuasar } from "quasar";
 import RoutineGenerator from '../components/RoutineGenerator.vue';
@@ -675,8 +906,147 @@ onMounted(async () => {
     await fetchDiagnostics(route.params.id);
     await fetchRoutine(route.params.id);
     await fetchSessions(route.params.id);
+    await fetchConsentStatus(route.params.id);
   }
 });
+
+// --- CONSENTIMIENTO INFORMADO DIGITAL ---
+const consentStatus = ref(null);
+const loadingConsent = ref(false);
+const guardandoFirma = ref(false);
+const reFirmando = ref(false);
+const canvasFirmaRef = ref(null);
+const firmando = ref(false);
+const contextoFirma = ref(null);
+const trazandoFirma = ref(false);
+
+const historyColumns = [
+  { name: 'consent_version', label: 'Versión', field: row => `v${row.consent_version}`, align: 'left' },
+  { name: 'status', label: 'Estado', align: 'center' },
+  { name: 'signed_at', label: 'Fecha y Hora', field: row => formatDateTime(row.signed_at), align: 'left' },
+  { name: 'signed_by', label: 'Firmante', field: 'signed_by', align: 'left' },
+  { name: 'signature_hash', label: 'Hash SHA-256', field: 'signature_hash', align: 'left' },
+  { name: 'signature', label: 'Firma', align: 'center' }
+];
+
+async function fetchConsentStatus(patientId) {
+  loadingConsent.value = true;
+  try {
+    const res = await ConsentsAPI.getPatientConsentStatus(patientId);
+    consentStatus.value = res.data;
+  } catch (error) {
+    console.error('Error al cargar estado de consentimiento:', error);
+  } finally {
+    loadingConsent.value = false;
+  }
+}
+
+function getCanvasCoordinates(e) {
+  const canvas = canvasFirmaRef.value;
+  if (!canvas) return { x: 0, y: 0 };
+  const rect = canvas.getBoundingClientRect();
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  return {
+    x: (clientX - rect.left) * scaleX,
+    y: (clientY - rect.top) * scaleY
+  };
+}
+
+function startDrawing(e) {
+  firmando.value = true;
+  const canvas = canvasFirmaRef.value;
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.strokeStyle = '#1976d2';
+  ctx.lineWidth = 2.5;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  contextoFirma.value = ctx;
+
+  const { x, y } = getCanvasCoordinates(e);
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+}
+
+function draw(e) {
+  if (!firmando.value || !contextoFirma.value || !canvasFirmaRef.value) return;
+  const { x, y } = getCanvasCoordinates(e);
+  contextoFirma.value.lineTo(x, y);
+  contextoFirma.value.stroke();
+  trazandoFirma.value = true;
+}
+
+function stopDrawing() {
+  firmando.value = false;
+}
+
+function limpiarFirma() {
+  const canvas = canvasFirmaRef.value;
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  contextoFirma.value = null;
+  trazandoFirma.value = false;
+}
+
+async function guardarFirmaConsentimiento() {
+  if (!trazandoFirma.value) {
+    $q.notify({
+      type: 'warning',
+      message: 'Por favor, realice la firma en el recuadro antes de confirmar.'
+    });
+    return;
+  }
+  const canvas = canvasFirmaRef.value;
+  if (!canvas) return;
+  const signatureBase64 = canvas.toDataURL('image/png');
+
+  try {
+    guardandoFirma.value = true;
+    const fullName = `${patient.name || ''} ${patient.last_name || ''}`.trim();
+    await ConsentsAPI.signPatientConsent(route.params.id, {
+      signature: signatureBase64,
+      signed_by: fullName || `Paciente #${route.params.id}`
+    });
+    $q.notify({
+      type: 'positive',
+      icon: 'verified',
+      message: 'Consentimiento firmado y archivado exitosamente en base de datos.',
+      position: 'top'
+    });
+    reFirmando.value = false;
+    limpiarFirma();
+    await fetchConsentStatus(route.params.id);
+  } catch (error) {
+    console.error('Error al guardar firma de consentimiento:', error);
+    $q.notify({
+      type: 'negative',
+      message: 'Error al registrar la firma del consentimiento.',
+      position: 'top'
+    });
+  } finally {
+    guardandoFirma.value = false;
+  }
+}
+
+function formatDateTime(dateStr) {
+  if (!dateStr) return '-';
+  try {
+    const d = new Date(dateStr);
+    return d.toLocaleString('es-AR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  } catch {
+    return dateStr;
+  }
+}
 
 function findPatientById(id) {
   const patientUrl = `${PATIENTS_URL}/${id}`;

@@ -47,6 +47,11 @@ const routes = [
     component: () => import('../pages/RecommendedProducts.vue'),
     meta: { requiresAuth: true }
   },
+  {
+    path: '/consentimiento',
+    component: () => import('../pages/ConsentAdmin.vue'),
+    meta: { requiresAuth: true }
+  },
 ];
 
 const router = createRouter({
