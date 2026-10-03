@@ -14,31 +14,33 @@
               </div>
             </div>
 
-            <!-- Patologías en 2 columnas compactas -->
+            <!-- Patologías con layout responsive sin truncar -->
             <div class="text-subtitle2 text-grey-8 q-mt-md q-mb-xs">Patologías Evaluadas</div>
             <div class="row q-col-gutter-sm">
               <div
                 v-for="(item, key) in antecedentesList"
                 :key="key"
-                class="col-12 col-sm-6"
+                class="col-12 col-xl-6"
               >
-                <div class="hybrid-subitem q-pa-sm rounded-borders" :class="{ 'bg-teal-0': formData.antecedentes[key].aplica }">
-                  <div class="row items-center justify-between no-wrap">
-                    <span class="text-body2 text-weight-medium text-grey-9 text-ellipsis" style="max-width: 65%;">
+                <div class="hybrid-subitem q-py-sm q-px-md rounded-borders" :class="{ 'bg-teal-0': formData.antecedentes[key].aplica }">
+                  <div class="row items-center justify-between q-gutter-x-sm">
+                    <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">
                       {{ item.label }}
                     </span>
-                    <q-btn-toggle
-                      v-model="formData.antecedentes[key].aplica"
-                      no-caps
-                      dense
-                      rounded
-                      unelevated
-                      class="toggle-hybrid"
-                      toggle-color="teal"
-                      color="grey-2"
-                      text-color="grey-8"
-                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                    />
+                    <div class="col-auto">
+                      <q-btn-toggle
+                        v-model="formData.antecedentes[key].aplica"
+                        no-caps
+                        dense
+                        rounded
+                        unelevated
+                        class="toggle-hybrid"
+                        toggle-color="teal"
+                        color="grey-2"
+                        text-color="grey-8"
+                        :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                      />
+                    </div>
                   </div>
                   <q-slide-transition>
                     <div v-if="formData.antecedentes[key].aplica" class="q-mt-xs">
@@ -74,25 +76,27 @@
               <div
                 v-for="(item, key) in alergiasList"
                 :key="key"
-                class="col-12 col-sm-6"
+                class="col-12 col-xl-6"
               >
-                <div class="hybrid-subitem q-pa-sm rounded-borders" :class="{ 'bg-orange-0': formData.alergias[key].aplica }">
-                  <div class="row items-center justify-between no-wrap">
-                    <span class="text-body2 text-weight-medium text-grey-9 text-ellipsis" style="max-width: 65%;">
+                <div class="hybrid-subitem q-py-sm q-px-md rounded-borders" :class="{ 'bg-orange-0': formData.alergias[key].aplica }">
+                  <div class="row items-center justify-between q-gutter-x-sm">
+                    <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">
                       {{ item.label }}
                     </span>
-                    <q-btn-toggle
-                      v-model="formData.alergias[key].aplica"
-                      no-caps
-                      dense
-                      rounded
-                      unelevated
-                      class="toggle-hybrid"
-                      toggle-color="orange-9"
-                      color="grey-2"
-                      text-color="grey-8"
-                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                    />
+                    <div class="col-auto">
+                      <q-btn-toggle
+                        v-model="formData.alergias[key].aplica"
+                        no-caps
+                        dense
+                        rounded
+                        unelevated
+                        class="toggle-hybrid"
+                        toggle-color="orange-9"
+                        color="grey-2"
+                        text-color="grey-8"
+                        :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                      />
+                    </div>
                   </div>
                   <q-slide-transition>
                     <div v-if="formData.alergias[key].aplica" class="q-mt-xs">
@@ -172,7 +176,7 @@
                 />
               </div>
 
-              <div class="col-12 col-sm-4">
+              <div class="col-12 col-sm-6 col-md-4">
                 <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">Actividad física</div>
                 <q-btn-toggle
                   v-model="formData.habitos.actividadFisica"
@@ -192,7 +196,7 @@
                 />
               </div>
 
-              <div class="col-12 col-sm-4">
+              <div class="col-12 col-sm-6 col-md-4">
                 <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">Calidad del sueño</div>
                 <q-btn-toggle
                   v-model="formData.habitos.calidadSueno"
@@ -212,7 +216,7 @@
                 />
               </div>
 
-              <div class="col-12 col-sm-4">
+              <div class="col-12 col-sm-6 col-md-4">
                 <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">Nivel de estrés</div>
                 <q-btn-toggle
                   v-model="formData.habitos.nivelEstres"
@@ -236,7 +240,7 @@
             <!-- Historia Ginecológica -->
             <div class="text-subtitle2 text-grey-8 q-mt-md q-mb-xs">Historia Ginecológica</div>
             <div class="row q-col-gutter-sm">
-              <div class="col-12 col-sm-4">
+              <div class="col-12 col-sm-6 col-md-4">
                 <div class="text-caption text-grey-8">Embarazo / Lactancia</div>
                 <q-btn-toggle
                   v-model="formData.ginecologia.embarazoLactancia"
@@ -251,7 +255,7 @@
                   :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
                 />
               </div>
-              <div class="col-12 col-sm-4">
+              <div class="col-12 col-sm-6 col-md-4">
                 <div class="text-caption text-grey-8">Anticonceptivos</div>
                 <q-btn-toggle
                   v-model="formData.ginecologia.anticonceptivos"
@@ -266,7 +270,7 @@
                   :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
                 />
               </div>
-              <div class="col-12 col-sm-4">
+              <div class="col-12 col-sm-6 col-md-4">
                 <div class="text-caption text-grey-8">Climaterio / Menopausia</div>
                 <q-btn-toggle
                   v-model="formData.ginecologia.climaterioMenopausia"
@@ -430,23 +434,25 @@
                 <div
                   v-for="(item, key) in contraindicacionesList"
                   :key="key"
-                  class="row items-center justify-between q-py-xs border-bottom-light"
+                  class="row items-center justify-between q-py-xs border-bottom-light q-gutter-x-sm"
                 >
-                  <span class="text-body2 text-weight-medium text-grey-9" style="max-width: 65%;">
+                  <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">
                     {{ item.label }}
                   </span>
-                  <q-btn-toggle
-                    v-model="formData.contraindicaciones[key]"
-                    no-caps
-                    dense
-                    rounded
-                    unelevated
-                    class="toggle-hybrid"
-                    :toggle-color="formData.contraindicaciones[key] ? 'negative' : 'grey-7'"
-                    color="grey-2"
-                    text-color="grey-8"
-                    :options="[{ label: 'No', value: false }, { label: 'Sí ⚠️', value: true }]"
-                  />
+                  <div class="col-auto">
+                    <q-btn-toggle
+                      v-model="formData.contraindicaciones[key]"
+                      no-caps
+                      dense
+                      rounded
+                      unelevated
+                      class="toggle-hybrid"
+                      :toggle-color="formData.contraindicaciones[key] ? 'negative' : 'grey-7'"
+                      color="grey-2"
+                      text-color="grey-8"
+                      :options="[{ label: 'No', value: false }, { label: 'Sí ⚠️', value: true }]"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -457,25 +463,27 @@
               <div
                 v-for="(item, key) in medicacionList"
                 :key="key"
-                class="col-12 col-sm-6"
+                class="col-12 col-xl-6"
               >
-                <div class="hybrid-subitem q-pa-sm rounded-borders" :class="{ 'bg-purple-0': formData.medicacion[key].aplica }">
-                  <div class="row items-center justify-between no-wrap">
-                    <span class="text-body2 text-weight-medium text-grey-9 text-ellipsis" style="max-width: 65%;">
+                <div class="hybrid-subitem q-py-sm q-px-md rounded-borders" :class="{ 'bg-purple-0': formData.medicacion[key].aplica }">
+                  <div class="row items-center justify-between q-gutter-x-sm">
+                    <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">
                       {{ item.label }}
                     </span>
-                    <q-btn-toggle
-                      v-model="formData.medicacion[key].aplica"
-                      no-caps
-                      dense
-                      rounded
-                      unelevated
-                      class="toggle-hybrid"
-                      toggle-color="purple-8"
-                      color="grey-2"
-                      text-color="grey-8"
-                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                    />
+                    <div class="col-auto">
+                      <q-btn-toggle
+                        v-model="formData.medicacion[key].aplica"
+                        no-caps
+                        dense
+                        rounded
+                        unelevated
+                        class="toggle-hybrid"
+                        toggle-color="purple-8"
+                        color="grey-2"
+                        text-color="grey-8"
+                        :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                      />
+                    </div>
                   </div>
                   <q-slide-transition>
                     <div v-if="formData.medicacion[key].aplica" class="q-mt-xs">
@@ -752,6 +760,7 @@ const alertasCriticas = computed(() => {
   border: 1px solid #cbd5e1;
   border-radius: 16px;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .toggle-hybrid :deep(.q-btn) {
@@ -787,9 +796,7 @@ const alertasCriticas = computed(() => {
   z-index: 5;
 }
 
-.text-ellipsis {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.lh-snug {
+  line-height: 1.35;
 }
 </style>

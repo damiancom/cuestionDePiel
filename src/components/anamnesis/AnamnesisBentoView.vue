@@ -17,28 +17,30 @@
               <div
                 v-for="(item, key) in antecedentesList"
                 :key="key"
-                class="col-12 col-sm-6"
+                class="col-12 col-xl-6"
               >
-                <div class="bento-subitem q-pa-sm rounded-borders" :class="{ 'bg-teal-0': formData.antecedentes[key].aplica }">
-                  <div class="row items-center justify-between no-wrap">
-                    <span class="text-body2 text-weight-medium text-grey-9 text-ellipsis" style="max-width: 65%;">
+                <div class="bento-subitem q-py-sm q-px-md rounded-borders" :class="{ 'bg-teal-0': formData.antecedentes[key].aplica }">
+                  <div class="row items-center justify-between q-gutter-x-sm">
+                    <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">
                       {{ item.label }}
                     </span>
-                    <q-btn-toggle
-                      v-model="formData.antecedentes[key].aplica"
-                      no-caps
-                      dense
-                      rounded
-                      unelevated
-                      class="toggle-bento"
-                      toggle-color="teal"
-                      color="grey-2"
-                      text-color="grey-8"
-                      :options="[
-                        { label: 'No', value: false },
-                        { label: 'Sí', value: true }
-                      ]"
-                    />
+                    <div class="col-auto">
+                      <q-btn-toggle
+                        v-model="formData.antecedentes[key].aplica"
+                        no-caps
+                        dense
+                        rounded
+                        unelevated
+                        class="toggle-bento"
+                        toggle-color="teal"
+                        color="grey-2"
+                        text-color="grey-8"
+                        :options="[
+                          { label: 'No', value: false },
+                          { label: 'Sí', value: true }
+                        ]"
+                      />
+                    </div>
                   </div>
                   <q-slide-transition>
                     <div v-if="formData.antecedentes[key].aplica" class="q-mt-xs">
@@ -307,26 +309,28 @@
               <div
                 v-for="(item, key) in contraindicacionesList"
                 :key="key"
-                class="row items-center justify-between q-py-xs border-bottom-light"
+                class="row items-center justify-between q-py-xs border-bottom-light q-gutter-x-sm"
               >
-                <span class="text-body2 text-weight-medium text-grey-9" style="max-width: 65%;">
+                <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">
                   {{ item.label }}
                 </span>
-                <q-btn-toggle
-                  v-model="formData.contraindicaciones[key]"
-                  no-caps
-                  dense
-                  rounded
-                  unelevated
-                  class="toggle-bento"
-                  :toggle-color="formData.contraindicaciones[key] ? 'negative' : 'grey-7'"
-                  color="grey-2"
-                  text-color="grey-8"
-                  :options="[
-                    { label: 'No', value: false },
-                    { label: 'Sí ⚠️', value: true }
-                  ]"
-                />
+                <div class="col-auto">
+                  <q-btn-toggle
+                    v-model="formData.contraindicaciones[key]"
+                    no-caps
+                    dense
+                    rounded
+                    unelevated
+                    class="toggle-bento"
+                    :toggle-color="formData.contraindicaciones[key] ? 'negative' : 'grey-7'"
+                    color="grey-2"
+                    text-color="grey-8"
+                    :options="[
+                      { label: 'No', value: false },
+                      { label: 'Sí ⚠️', value: true }
+                    ]"
+                  />
+                </div>
               </div>
             </div>
           </q-card-section>
@@ -351,22 +355,24 @@
                 :key="key"
                 class="q-py-xs border-bottom-light"
               >
-                <div class="row items-center justify-between no-wrap">
-                  <span class="text-body2 text-weight-medium text-grey-9 text-ellipsis" style="max-width: 65%;">
+                <div class="row items-center justify-between q-gutter-x-sm">
+                  <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">
                     {{ item.label }}
                   </span>
-                  <q-btn-toggle
-                    v-model="formData.medicacion[key].aplica"
-                    no-caps
-                    dense
-                    rounded
-                    unelevated
-                    class="toggle-bento"
-                    toggle-color="purple-8"
-                    color="grey-2"
-                    text-color="grey-8"
-                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                  />
+                  <div class="col-auto">
+                    <q-btn-toggle
+                      v-model="formData.medicacion[key].aplica"
+                      no-caps
+                      dense
+                      rounded
+                      unelevated
+                      class="toggle-bento"
+                      toggle-color="purple-8"
+                      color="grey-2"
+                      text-color="grey-8"
+                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                    />
+                  </div>
                 </div>
                 <q-slide-transition>
                   <div v-if="formData.medicacion[key].aplica" class="q-mt-xs">
@@ -405,22 +411,24 @@
                 :key="key"
                 class="q-py-xs border-bottom-light"
               >
-                <div class="row items-center justify-between no-wrap">
-                  <span class="text-body2 text-weight-medium text-grey-9 text-ellipsis" style="max-width: 65%;">
+                <div class="row items-center justify-between q-gutter-x-sm">
+                  <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">
                     {{ item.label }}
                   </span>
-                  <q-btn-toggle
-                    v-model="formData.alergias[key].aplica"
-                    no-caps
-                    dense
-                    rounded
-                    unelevated
-                    class="toggle-bento"
-                    toggle-color="orange-9"
-                    color="grey-2"
-                    text-color="grey-8"
-                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                  />
+                  <div class="col-auto">
+                    <q-btn-toggle
+                      v-model="formData.alergias[key].aplica"
+                      no-caps
+                      dense
+                      rounded
+                      unelevated
+                      class="toggle-bento"
+                      toggle-color="orange-9"
+                      color="grey-2"
+                      text-color="grey-8"
+                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                    />
+                  </div>
                 </div>
                 <q-slide-transition>
                   <div v-if="formData.alergias[key].aplica" class="q-mt-xs">
@@ -660,9 +668,7 @@ const fototipoDescripcion = computed(() => {
   border: 1px solid #e2e8f0;
 }
 
-.text-ellipsis {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.lh-snug {
+  line-height: 1.35;
 }
 </style>
