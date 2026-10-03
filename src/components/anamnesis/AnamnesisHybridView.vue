@@ -127,65 +127,59 @@
               </div>
             </div>
 
-            <!-- Hábitos cotidianos Sí / No (3 columnas limpias) -->
+            <!-- Hábitos cotidianos Sí / No (tarjetas verticales sin desborde horizontal) -->
             <div class="row q-col-gutter-sm q-mt-xs">
               <div class="col-12 col-sm-4">
-                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders">
-                  <div class="row items-center justify-between no-wrap">
-                    <span class="text-caption text-weight-medium text-grey-8">¿Fuma?</span>
-                    <q-btn-toggle
-                      v-model="formData.habitos.fuma"
-                      no-caps
-                      rounded
-                      dense
-                      unelevated
-                      class="toggle-hybrid"
-                      toggle-color="primary"
-                      color="grey-2"
-                      text-color="grey-8"
-                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                    />
-                  </div>
+                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders text-center flex flex-center column">
+                  <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">¿Fuma?</div>
+                  <q-btn-toggle
+                    v-model="formData.habitos.fuma"
+                    no-caps
+                    rounded
+                    dense
+                    unelevated
+                    class="toggle-hybrid"
+                    toggle-color="primary"
+                    color="grey-2"
+                    text-color="grey-8"
+                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                  />
                 </div>
               </div>
 
               <div class="col-12 col-sm-4">
-                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders">
-                  <div class="row items-center justify-between no-wrap">
-                    <span class="text-caption text-weight-medium text-grey-8">¿Alcohol?</span>
-                    <q-btn-toggle
-                      v-model="formData.habitos.consumeAlcohol"
-                      no-caps
-                      rounded
-                      dense
-                      unelevated
-                      class="toggle-hybrid"
-                      toggle-color="primary"
-                      color="grey-2"
-                      text-color="grey-8"
-                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                    />
-                  </div>
+                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders text-center flex flex-center column">
+                  <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">¿Consume alcohol?</div>
+                  <q-btn-toggle
+                    v-model="formData.habitos.consumeAlcohol"
+                    no-caps
+                    rounded
+                    dense
+                    unelevated
+                    class="toggle-hybrid"
+                    toggle-color="primary"
+                    color="grey-2"
+                    text-color="grey-8"
+                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                  />
                 </div>
               </div>
 
               <div class="col-12 col-sm-4">
-                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders">
-                  <div class="row items-center justify-between no-wrap">
-                    <span class="text-caption text-weight-medium text-grey-8">Agua (2L)</span>
-                    <q-btn-toggle
-                      v-model="formData.habitos.ingestaAdecuada"
-                      no-caps
-                      rounded
-                      dense
-                      unelevated
-                      class="toggle-hybrid"
-                      toggle-color="primary"
-                      color="grey-2"
-                      text-color="grey-8"
-                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                    />
-                  </div>
+                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders text-center flex flex-center column">
+                  <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">Agua adecuada (2L)</div>
+                  <q-btn-toggle
+                    v-model="formData.habitos.ingestaAdecuada"
+                    no-caps
+                    rounded
+                    dense
+                    unelevated
+                    class="toggle-hybrid"
+                    toggle-color="primary"
+                    color="grey-2"
+                    text-color="grey-8"
+                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                  />
                 </div>
               </div>
             </div>
@@ -256,13 +250,15 @@
               </div>
             </div>
 
-            <!-- Historia Ginecológica -->
+            <!-- Historia Ginecológica en filas completas -->
             <div class="text-subtitle2 text-grey-8 q-mt-md q-mb-xs">Historia Ginecológica</div>
-            <div class="row q-col-gutter-sm">
-              <div class="col-12 col-sm-4">
-                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders">
-                  <div class="row items-center justify-between no-wrap">
-                    <span class="text-caption text-weight-medium text-grey-8">Embarazo / Lactancia</span>
+            <div class="q-gutter-y-xs">
+              <div class="hybrid-subitem q-py-sm q-px-md rounded-borders" :class="{ 'bg-pink-0 border-pink': formData.ginecologia.embarazoLactancia }">
+                <div class="row items-center justify-between q-gutter-x-sm">
+                  <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">
+                    Embarazo o período de lactancia activo
+                  </span>
+                  <div class="col-auto">
                     <q-btn-toggle
                       v-model="formData.ginecologia.embarazoLactancia"
                       no-caps
@@ -278,10 +274,13 @@
                   </div>
                 </div>
               </div>
-              <div class="col-12 col-sm-4">
-                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders">
-                  <div class="row items-center justify-between no-wrap">
-                    <span class="text-caption text-weight-medium text-grey-8">Anticonceptivos</span>
+
+              <div class="hybrid-subitem q-py-sm q-px-md rounded-borders" :class="{ 'bg-blue-0 border-blue': formData.ginecologia.anticonceptivos }">
+                <div class="row items-center justify-between q-gutter-x-sm">
+                  <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">
+                    Uso de anticonceptivos
+                  </span>
+                  <div class="col-auto">
                     <q-btn-toggle
                       v-model="formData.ginecologia.anticonceptivos"
                       no-caps
@@ -297,10 +296,13 @@
                   </div>
                 </div>
               </div>
-              <div class="col-12 col-sm-4">
-                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders">
-                  <div class="row items-center justify-between no-wrap">
-                    <span class="text-caption text-weight-medium text-grey-8">Climaterio / Menopausia</span>
+
+              <div class="hybrid-subitem q-py-sm q-px-md rounded-borders" :class="{ 'bg-blue-0 border-blue': formData.ginecologia.climaterioMenopausia }">
+                <div class="row items-center justify-between q-gutter-x-sm">
+                  <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">
+                    Climaterio / Menopausia
+                  </span>
+                  <div class="col-auto">
                     <q-btn-toggle
                       v-model="formData.ginecologia.climaterioMenopausia"
                       no-caps
