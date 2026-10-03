@@ -23,7 +23,8 @@
           :options="[
             { label: 'Formulario Completo', value: 'clasico', icon: 'view_agenda' },
             { label: 'Bento Grid', value: 'bento', icon: 'dashboard' },
-            { label: 'Wizard por Pasos', value: 'stepper', icon: 'linear_scale' }
+            { label: 'Wizard por Pasos', value: 'stepper', icon: 'linear_scale' },
+            { label: 'Híbrido + Resumen', value: 'hibrido', icon: 'view_quilt' }
           ]"
         />
       </div>
@@ -678,6 +679,16 @@
       :alergiasList="alergiasList"
       :contraindicacionesList="contraindicacionesList"
     />
+
+    <!-- 4. VISTA HÍBRIDA (Bento Continuo + Live Summary) -->
+    <AnamnesisHybridView
+      v-else-if="vistaMode === 'hibrido'"
+      :formData="formData"
+      :antecedentesList="antecedentesList"
+      :medicacionList="medicacionList"
+      :alergiasList="alergiasList"
+      :contraindicacionesList="contraindicacionesList"
+    />
   </div>
 </template>
 
@@ -685,6 +696,7 @@
 import { ref, reactive, watch } from 'vue';
 import AnamnesisBentoView from './anamnesis/AnamnesisBentoView.vue';
 import AnamnesisStepperView from './anamnesis/AnamnesisStepperView.vue';
+import AnamnesisHybridView from './anamnesis/AnamnesisHybridView.vue';
 
 const vistaMode = ref('clasico');
 
