@@ -23,7 +23,8 @@
           :options="[
             { label: 'Formulario Completo', value: 'clasico', icon: 'view_agenda' },
             { label: 'Bento Grid', value: 'bento', icon: 'dashboard' },
-            { label: 'Híbrido + Resumen', value: 'hibrido', icon: 'view_quilt' }
+            { label: 'Híbrido + Resumen', value: 'hibrido', icon: 'view_quilt' },
+            { label: 'Checklist Clínico', value: 'checklist', icon: 'check_box' }
           ]"
         />
       </div>
@@ -678,6 +679,16 @@
       :alergiasList="alergiasList"
       :contraindicacionesList="contraindicacionesList"
     />
+
+    <!-- 4. VISTA CHECKLIST CLÍNICO -->
+    <AnamnesisChecklistView
+      v-else-if="vistaMode === 'checklist'"
+      :formData="formData"
+      :antecedentesList="antecedentesList"
+      :medicacionList="medicacionList"
+      :alergiasList="alergiasList"
+      :contraindicacionesList="contraindicacionesList"
+    />
   </div>
 </template>
 
@@ -685,6 +696,7 @@
 import { ref, reactive, watch } from 'vue';
 import AnamnesisBentoView from './anamnesis/AnamnesisBentoView.vue';
 import AnamnesisHybridView from './anamnesis/AnamnesisHybridView.vue';
+import AnamnesisChecklistView from './anamnesis/AnamnesisChecklistView.vue';
 
 const vistaMode = ref('clasico');
 
