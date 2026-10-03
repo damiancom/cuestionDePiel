@@ -436,7 +436,7 @@
                 Tipo {{ ['I', 'II', 'III', 'IV', 'V', 'VI'][formData.dermatologicos.fototipo - 1] }}
               </q-badge>
             </div>
-            <div class="row q-gutter-md items-center">
+            <div class="row no-wrap justify-between items-center fototipo-row">
               <div
                 v-for="n in 6"
                 :key="n"
@@ -1169,15 +1169,20 @@ defineExpose({
   box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1) !important;
 }
 
+.fototipo-row {
+  width: 100%;
+}
+
 .fototipo-circle {
-  width: 44px;
-  height: 44px;
+  width: clamp(34px, 8.5vw, 44px);
+  height: clamp(34px, 8.5vw, 44px);
   border-radius: 50%;
   border: 2px solid transparent;
   transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
   font-weight: bold;
-  font-size: 15px;
+  font-size: clamp(13px, 3.5vw, 15px);
   user-select: none;
+  flex-shrink: 0;
 }
 
 .fototipo-selected {

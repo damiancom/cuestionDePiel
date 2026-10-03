@@ -180,69 +180,75 @@
               </div>
             </div>
 
-            <!-- Escalas de Bienestar y Rutina: en filas completas para que los botones nunca se solapen -->
-            <div class="q-mt-md q-gutter-y-xs bg-grey-1 q-pa-sm rounded-borders">
+            <!-- Escalas de Bienestar y Rutina: responsive simétrico en móvil y desktop -->
+            <div class="q-mt-sm q-gutter-y-xs bg-grey-1 q-pa-sm rounded-borders">
               <!-- Actividad física -->
-              <div class="row items-center justify-between q-py-xs border-bottom-light q-px-xs">
-                <span class="text-body2 text-weight-medium text-grey-8">Actividad física</span>
-                <q-btn-toggle
-                  v-model="formData.habitos.actividadFisica"
-                  no-caps
-                  dense
-                  rounded
-                  unelevated
-                  class="toggle-hybrid"
-                  toggle-color="primary"
-                  color="grey-2"
-                  text-color="grey-8"
-                  :options="[
-                    { label: 'Sedentaria', value: 'Sedentaria' },
-                    { label: 'Moderada', value: 'Moderada' },
-                    { label: 'Intensa', value: 'Intensa' }
-                  ]"
-                />
+              <div class="scale-item q-py-xs border-bottom-light q-px-xs">
+                <div class="row items-center justify-between scale-row">
+                  <span class="text-body2 text-weight-medium text-grey-8">Actividad física</span>
+                  <q-btn-toggle
+                    v-model="formData.habitos.actividadFisica"
+                    no-caps
+                    dense
+                    rounded
+                    unelevated
+                    class="toggle-hybrid scale-toggle"
+                    toggle-color="primary"
+                    color="grey-2"
+                    text-color="grey-8"
+                    :options="[
+                      { label: 'Sedentaria', value: 'Sedentaria' },
+                      { label: 'Moderada', value: 'Moderada' },
+                      { label: 'Intensa', value: 'Intensa' }
+                    ]"
+                  />
+                </div>
               </div>
 
               <!-- Calidad del sueño -->
-              <div class="row items-center justify-between q-py-xs border-bottom-light q-px-xs">
-                <span class="text-body2 text-weight-medium text-grey-8">Calidad del sueño</span>
-                <q-btn-toggle
-                  v-model="formData.habitos.calidadSueno"
-                  no-caps
-                  dense
-                  rounded
-                  unelevated
-                  class="toggle-hybrid"
-                  toggle-color="primary"
-                  color="grey-2"
-                  text-color="grey-8"
-                  :options="[
-                    { label: 'Mala', value: 'Mala' },
-                    { label: 'Regular', value: 'Regular' },
-                    { label: 'Buena', value: 'Buena' }
-                  ]"
-                />
+              <div class="scale-item q-py-xs border-bottom-light q-px-xs">
+                <div class="row items-center justify-between scale-row">
+                  <span class="text-body2 text-weight-medium text-grey-8">Calidad del sueño</span>
+                  <q-btn-toggle
+                    v-model="formData.habitos.calidadSueno"
+                    no-caps
+                    dense
+                    rounded
+                    unelevated
+                    class="toggle-hybrid scale-toggle"
+                    toggle-color="primary"
+                    color="grey-2"
+                    text-color="grey-8"
+                    :options="[
+                      { label: 'Mala', value: 'Mala' },
+                      { label: 'Regular', value: 'Regular' },
+                      { label: 'Buena', value: 'Buena' }
+                    ]"
+                  />
+                </div>
               </div>
 
               <!-- Nivel de estrés -->
-              <div class="row items-center justify-between q-py-xs q-px-xs">
-                <span class="text-body2 text-weight-medium text-grey-8">Nivel de estrés</span>
-                <q-btn-toggle
-                  v-model="formData.habitos.nivelEstres"
-                  no-caps
-                  dense
-                  rounded
-                  unelevated
-                  class="toggle-hybrid"
-                  toggle-color="primary"
-                  color="grey-2"
-                  text-color="grey-8"
-                  :options="[
-                    { label: 'Bajo', value: 'Bajo' },
-                    { label: 'Medio', value: 'Medio' },
-                    { label: 'Alto', value: 'Alto' }
-                  ]"
-                />
+              <div class="scale-item q-py-xs q-px-xs">
+                <div class="row items-center justify-between scale-row">
+                  <span class="text-body2 text-weight-medium text-grey-8">Nivel de estrés</span>
+                  <q-btn-toggle
+                    v-model="formData.habitos.nivelEstres"
+                    no-caps
+                    dense
+                    rounded
+                    unelevated
+                    class="toggle-hybrid scale-toggle"
+                    toggle-color="primary"
+                    color="grey-2"
+                    text-color="grey-8"
+                    :options="[
+                      { label: 'Bajo', value: 'Bajo' },
+                      { label: 'Medio', value: 'Medio' },
+                      { label: 'Alto', value: 'Alto' }
+                    ]"
+                  />
+                </div>
               </div>
             </div>
 
@@ -328,7 +334,7 @@
                   Fototipo {{ formData.dermatologicos.fototipo }}
                 </q-badge>
               </div>
-              <div class="row q-gutter-md justify-around items-center q-py-sm">
+              <div class="row no-wrap justify-between items-center q-py-xs fototipo-row">
                 <div
                   v-for="n in 6"
                   :key="n"
@@ -352,7 +358,9 @@
                 <q-chip
                   v-for="bt in biotiposOptions"
                   :key="bt"
+                  dense
                   clickable
+                  class="biotipo-chip"
                   :selected="formData.dermatologicos.biotipo === bt"
                   @click="formData.dermatologicos.biotipo = (formData.dermatologicos.biotipo === bt ? '' : bt)"
                   color="blue-1"
@@ -897,22 +905,61 @@ const alertasCriticas = computed(() => {
   padding: 2px 10px;
 }
 
+.fototipo-row {
+  width: 100%;
+}
+
 .fototipo-circle-checklist {
-  width: 42px;
-  height: 42px;
+  width: clamp(34px, 8.5vw, 42px);
+  height: clamp(34px, 8.5vw, 42px);
   border-radius: 50%;
   border: 2px solid transparent;
   transition: transform 0.2s, box-shadow 0.2s;
   font-weight: bold;
-  font-size: 15px;
+  font-size: clamp(13px, 3.5vw, 15px);
   user-select: none;
+  flex-shrink: 0;
 }
 
 .fototipo-selected {
-  transform: scale(1.18);
+  transform: scale(1.15);
   border-color: #1976d2 !important;
   box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.25) !important;
   z-index: 5;
+}
+
+.biotipo-chip {
+  font-size: 13px;
+  padding: 4px 8px;
+}
+
+.scale-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.scale-toggle {
+  width: 100%;
+  display: flex;
+}
+
+.scale-toggle :deep(.q-btn) {
+  flex: 1 1 0;
+}
+
+@media (min-width: 520px) {
+  .scale-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .scale-toggle {
+    width: auto;
+  }
+  .scale-toggle :deep(.q-btn) {
+    flex: initial;
+  }
 }
 
 .lh-snug {

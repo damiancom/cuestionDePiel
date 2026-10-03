@@ -218,7 +218,7 @@
                   Fototipo {{ formData.dermatologicos.fototipo }}
                 </q-badge>
               </div>
-              <div class="row q-gutter-md justify-around items-center q-py-sm">
+              <div class="row no-wrap justify-between items-center q-py-xs fototipo-row">
                 <div
                   v-for="n in 6"
                   :key="n"
@@ -644,19 +644,24 @@ const fototipoDescripcion = computed(() => {
   padding: 2px 10px;
 }
 
+.fototipo-row {
+  width: 100%;
+}
+
 .fototipo-circle-bento {
-  width: 42px;
-  height: 42px;
+  width: clamp(34px, 8.5vw, 42px);
+  height: clamp(34px, 8.5vw, 42px);
   border-radius: 50%;
   border: 2px solid transparent;
   transition: transform 0.2s, box-shadow 0.2s;
   font-weight: bold;
-  font-size: 15px;
+  font-size: clamp(13px, 3.5vw, 15px);
   user-select: none;
+  flex-shrink: 0;
 }
 
 .fototipo-selected {
-  transform: scale(1.18);
+  transform: scale(1.15);
   border-color: #1976d2 !important;
   box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.25) !important;
   z-index: 5;
