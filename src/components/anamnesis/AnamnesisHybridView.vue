@@ -127,8 +127,65 @@
               </div>
             </div>
 
-            <!-- Hábitos cotidianos Sí / No (en la misma línea: label a la izquierda y opciones a la derecha) -->
-            <div class="q-gutter-y-xs q-mt-xs">
+            <!-- Hábitos cotidianos: 3 columnas cuando está en tablet/desktop con detalle cerrado -->
+            <div v-if="useColumnsLayout" class="row q-col-gutter-sm q-mt-xs">
+              <div class="col-12 col-sm-4">
+                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders text-center flex flex-center column">
+                  <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">¿Fuma?</div>
+                  <q-btn-toggle
+                    v-model="formData.habitos.fuma"
+                    no-caps
+                    rounded
+                    dense
+                    unelevated
+                    class="toggle-hybrid"
+                    toggle-color="primary"
+                    color="grey-2"
+                    text-color="grey-8"
+                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                  />
+                </div>
+              </div>
+
+              <div class="col-12 col-sm-4">
+                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders text-center flex flex-center column">
+                  <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">¿Consume alcohol?</div>
+                  <q-btn-toggle
+                    v-model="formData.habitos.consumeAlcohol"
+                    no-caps
+                    rounded
+                    dense
+                    unelevated
+                    class="toggle-hybrid"
+                    toggle-color="primary"
+                    color="grey-2"
+                    text-color="grey-8"
+                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                  />
+                </div>
+              </div>
+
+              <div class="col-12 col-sm-4">
+                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders text-center flex flex-center column">
+                  <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">Agua adecuada (2L)</div>
+                  <q-btn-toggle
+                    v-model="formData.habitos.ingestaAdecuada"
+                    no-caps
+                    rounded
+                    dense
+                    unelevated
+                    class="toggle-hybrid"
+                    toggle-color="primary"
+                    color="grey-2"
+                    text-color="grey-8"
+                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Hábitos cotidianos: Fila completa (celular o detalle abierto) -->
+            <div v-else class="q-gutter-y-xs q-mt-xs">
               <div class="hybrid-subitem q-py-sm q-px-md rounded-borders">
                 <div class="row items-center justify-between q-gutter-x-sm">
                   <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">¿Fuma?</span>
@@ -405,49 +462,87 @@
             </div>
 
             <div class="row q-col-gutter-md">
-              <div class="col-12 col-sm-6">
-                <div class="hybrid-subitem q-py-sm q-px-md rounded-borders">
-                  <div class="row items-center justify-between q-gutter-x-sm">
-                    <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">¿Herpes Simple?</span>
-                    <div class="col-auto">
-                      <q-btn-toggle
-                        v-model="formData.dermatologicos.herpesSimple"
-                        no-caps
-                        dense
-                        rounded
-                        unelevated
-                        class="toggle-hybrid"
-                        toggle-color="primary"
-                        color="grey-2"
-                        text-color="grey-8"
-                        :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                      />
-                    </div>
-                  </div>
+              <!-- Herpes y Queloides: 2 columnas en tablet/desktop con detalle cerrado -->
+              <template v-if="useColumnsLayout">
+                <div class="col-12 col-sm-6">
+                  <div class="text-caption text-grey-8">¿Herpes Simple?</div>
+                  <q-btn-toggle
+                    v-model="formData.dermatologicos.herpesSimple"
+                    no-caps
+                    dense
+                    rounded
+                    unelevated
+                    class="toggle-hybrid q-mt-xs"
+                    toggle-color="primary"
+                    color="grey-2"
+                    text-color="grey-8"
+                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                  />
                 </div>
-              </div>
 
-              <div class="col-12 col-sm-6">
-                <div class="hybrid-subitem q-py-sm q-px-md rounded-borders">
-                  <div class="row items-center justify-between q-gutter-x-sm">
-                    <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">¿Cicatrización con queloides?</span>
-                    <div class="col-auto">
-                      <q-btn-toggle
-                        v-model="formData.dermatologicos.cicatrizacionQueloides"
-                        no-caps
-                        dense
-                        rounded
-                        unelevated
-                        class="toggle-hybrid"
-                        toggle-color="primary"
-                        color="grey-2"
-                        text-color="grey-8"
-                        :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                      />
+                <div class="col-12 col-sm-6">
+                  <div class="text-caption text-grey-8">¿Cicatrización con queloides?</div>
+                  <q-btn-toggle
+                    v-model="formData.dermatologicos.cicatrizacionQueloides"
+                    no-caps
+                    dense
+                    rounded
+                    unelevated
+                    class="toggle-hybrid q-mt-xs"
+                    toggle-color="primary"
+                    color="grey-2"
+                    text-color="grey-8"
+                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                  />
+                </div>
+              </template>
+
+              <!-- Herpes y Queloides: Fila completa (celular o detalle abierto) -->
+              <template v-else>
+                <div class="col-12">
+                  <div class="hybrid-subitem q-py-sm q-px-md rounded-borders">
+                    <div class="row items-center justify-between q-gutter-x-sm">
+                      <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">¿Herpes Simple?</span>
+                      <div class="col-auto">
+                        <q-btn-toggle
+                          v-model="formData.dermatologicos.herpesSimple"
+                          no-caps
+                          dense
+                          rounded
+                          unelevated
+                          class="toggle-hybrid"
+                          toggle-color="primary"
+                          color="grey-2"
+                          text-color="grey-8"
+                          :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+
+                <div class="col-12">
+                  <div class="hybrid-subitem q-py-sm q-px-md rounded-borders">
+                    <div class="row items-center justify-between q-gutter-x-sm">
+                      <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">¿Cicatrización con queloides?</span>
+                      <div class="col-auto">
+                        <q-btn-toggle
+                          v-model="formData.dermatologicos.cicatrizacionQueloides"
+                          no-caps
+                          dense
+                          rounded
+                          unelevated
+                          class="toggle-hybrid"
+                          toggle-color="primary"
+                          color="grey-2"
+                          text-color="grey-8"
+                          :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
 
               <div class="col-12 col-sm-6">
                 <q-input
@@ -679,6 +774,9 @@
 
 <script setup>
 import { computed } from 'vue';
+import { useQuasar } from 'quasar';
+
+const $q = useQuasar();
 
 const props = defineProps({
   formData: {
@@ -700,7 +798,16 @@ const props = defineProps({
   contraindicacionesList: {
     type: Object,
     required: true
+  },
+  isSidebarCollapsed: {
+    type: Boolean,
+    default: false
   }
+});
+
+// En tablets horizontal (>= 768px) y desktop cuando el detalle del paciente está cerrado, usamos columnas
+const useColumnsLayout = computed(() => {
+  return props.isSidebarCollapsed && ($q.screen.width >= 768);
 });
 
 const biotiposOptions = [

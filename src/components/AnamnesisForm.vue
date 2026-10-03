@@ -668,6 +668,7 @@
       :medicacionList="medicacionList"
       :alergiasList="alergiasList"
       :contraindicacionesList="contraindicacionesList"
+      :isSidebarCollapsed="isSidebarCollapsed"
     />
 
     <!-- 3. VISTA HÍBRIDA (Bento Continuo + Live Summary) -->
@@ -678,6 +679,7 @@
       :medicacionList="medicacionList"
       :alergiasList="alergiasList"
       :contraindicacionesList="contraindicacionesList"
+      :isSidebarCollapsed="isSidebarCollapsed"
     />
 
     <!-- 4. VISTA CHECKLIST CLÍNICO -->
@@ -688,6 +690,7 @@
       :medicacionList="medicacionList"
       :alergiasList="alergiasList"
       :contraindicacionesList="contraindicacionesList"
+      :isSidebarCollapsed="isSidebarCollapsed"
     />
   </div>
 </template>
@@ -708,6 +711,10 @@ const props = defineProps({
   observacion: {
     type: Object,
     default: () => ({})
+  },
+  isSidebarCollapsed: {
+    type: Boolean,
+    default: false
   }
 });
 

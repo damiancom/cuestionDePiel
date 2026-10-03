@@ -253,7 +253,7 @@
             </q-tab-panel>
             <q-tab-panel name="observaciones">
               <!-- Nueva Ficha de Anamnesis Dermatocosmiátrica -->
-              <AnamnesisForm ref="anamnesisFormRef" />
+              <AnamnesisForm ref="anamnesisFormRef" :is-sidebar-collapsed="isSidebarCollapsed" />
 
               <div class="row q-gutter-sm justify-end q-mt-lg">
                 <q-btn flat label="Cancelar" @click="cancelarAnamnesis" color="grey-8" class="minimal-btn" />
