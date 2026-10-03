@@ -127,59 +127,65 @@
               </div>
             </div>
 
-            <!-- Hábitos cotidianos Sí / No (tarjetas verticales sin desborde horizontal) -->
-            <div class="row q-col-gutter-sm q-mt-xs">
-              <div class="col-12 col-sm-4">
-                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders text-center flex flex-center column">
-                  <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">¿Fuma?</div>
-                  <q-btn-toggle
-                    v-model="formData.habitos.fuma"
-                    no-caps
-                    rounded
-                    dense
-                    unelevated
-                    class="toggle-hybrid"
-                    toggle-color="primary"
-                    color="grey-2"
-                    text-color="grey-8"
-                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                  />
+            <!-- Hábitos cotidianos Sí / No (en la misma línea: label a la izquierda y opciones a la derecha) -->
+            <div class="q-gutter-y-xs q-mt-xs">
+              <div class="hybrid-subitem q-py-sm q-px-md rounded-borders">
+                <div class="row items-center justify-between q-gutter-x-sm">
+                  <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">¿Fuma?</span>
+                  <div class="col-auto">
+                    <q-btn-toggle
+                      v-model="formData.habitos.fuma"
+                      no-caps
+                      rounded
+                      dense
+                      unelevated
+                      class="toggle-hybrid"
+                      toggle-color="primary"
+                      color="grey-2"
+                      text-color="grey-8"
+                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div class="col-12 col-sm-4">
-                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders text-center flex flex-center column">
-                  <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">¿Consume alcohol?</div>
-                  <q-btn-toggle
-                    v-model="formData.habitos.consumeAlcohol"
-                    no-caps
-                    rounded
-                    dense
-                    unelevated
-                    class="toggle-hybrid"
-                    toggle-color="primary"
-                    color="grey-2"
-                    text-color="grey-8"
-                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                  />
+              <div class="hybrid-subitem q-py-sm q-px-md rounded-borders">
+                <div class="row items-center justify-between q-gutter-x-sm">
+                  <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">¿Consume alcohol?</span>
+                  <div class="col-auto">
+                    <q-btn-toggle
+                      v-model="formData.habitos.consumeAlcohol"
+                      no-caps
+                      rounded
+                      dense
+                      unelevated
+                      class="toggle-hybrid"
+                      toggle-color="primary"
+                      color="grey-2"
+                      text-color="grey-8"
+                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div class="col-12 col-sm-4">
-                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders text-center flex flex-center column">
-                  <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">Agua adecuada (2L)</div>
-                  <q-btn-toggle
-                    v-model="formData.habitos.ingestaAdecuada"
-                    no-caps
-                    rounded
-                    dense
-                    unelevated
-                    class="toggle-hybrid"
-                    toggle-color="primary"
-                    color="grey-2"
-                    text-color="grey-8"
-                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                  />
+              <div class="hybrid-subitem q-py-sm q-px-md rounded-borders">
+                <div class="row items-center justify-between q-gutter-x-sm">
+                  <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">Agua adecuada (2L)</span>
+                  <div class="col-auto">
+                    <q-btn-toggle
+                      v-model="formData.habitos.ingestaAdecuada"
+                      no-caps
+                      rounded
+                      dense
+                      unelevated
+                      class="toggle-hybrid"
+                      toggle-color="primary"
+                      color="grey-2"
+                      text-color="grey-8"
+                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
