@@ -81,7 +81,7 @@
       </div>
 
       <!-- Contenido Principal con Tabs -->
-      <div :class="isSidebarCollapsed ? 'col-12 col-md-12 col-lg-11' : 'col-12 col-md-8 col-lg-7'" class="transition-width">
+      <div :class="isSidebarCollapsed ? 'col-12' : 'col-12 col-md-8 col-lg-9'" class="transition-width">
         <q-card class="q-pa-md q-pa-sm-lg">
           <div class="row items-center no-wrap q-mb-md">
             <!-- Botón para mostrar el detalle del paciente (solo en desktop cuando está colapsado) -->
