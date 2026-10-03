@@ -1,11 +1,36 @@
 <template>
   <div class="anamnesis-container q-gutter-y-md">
-    <!-- Encabezado de la Ficha -->
-    <div class="row items-center justify-between q-mb-md">
-      <div class="text-h6">Anamnesis Dermatocosmiátrica</div>
-      <q-badge color="primary" outline label="Ficha Clínica" class="q-pa-xs" />
+    <!-- Encabezado con Selector de Vistas Visuales -->
+    <div class="row items-center justify-between q-mb-md q-pa-sm bg-grey-1 rounded-borders border-view-selector">
+      <div class="q-py-xs">
+        <div class="text-subtitle1 text-weight-bold text-primary row items-center">
+          <q-icon name="assignment" class="q-mr-xs" size="22px" />
+          Anamnesis Dermatocosmiátrica
+        </div>
+        <div class="text-caption text-grey-7">Ficha clínica digital de evaluación dermatocosmiátrica</div>
+      </div>
+      <div class="row items-center q-gutter-x-sm q-my-xs">
+        <div class="text-caption text-weight-medium text-grey-8 gt-xs">Diseño de pantalla:</div>
+        <q-btn-toggle
+          v-model="vistaMode"
+          no-caps
+          rounded
+          unelevated
+          toggle-color="primary"
+          color="white"
+          text-color="grey-8"
+          class="shadow-1 toggle-modes"
+          :options="[
+            { label: 'Formulario Completo', value: 'clasico', icon: 'view_agenda' },
+            { label: 'Bento Grid', value: 'bento', icon: 'dashboard' },
+            { label: 'Wizard por Pasos', value: 'stepper', icon: 'linear_scale' }
+          ]"
+        />
+      </div>
     </div>
 
+    <!-- 1. VISTA CLÁSICA (Formulario continuo por cards) -->
+    <div v-if="vistaMode === 'clasico'" class="q-gutter-y-md">
     <!-- 1. ANTECEDENTES PERSONALES Y HEREDITARIOS -->
     <q-card flat bordered class="section-card">
       <q-card-section>
@@ -632,11 +657,36 @@
         </div>
       </q-card-section>
     </q-card>
+    </div>
+
+    <!-- 2. VISTA ALTERNATIVA BENTO GRID -->
+    <AnamnesisBentoView
+      v-else-if="vistaMode === 'bento'"
+      :formData="formData"
+      :antecedentesList="antecedentesList"
+      :medicacionList="medicacionList"
+      :alergiasList="alergiasList"
+      :contraindicacionesList="contraindicacionesList"
+    />
+
+    <!-- 3. VISTA ALTERNATIVA STEPPER WIZARD -->
+    <AnamnesisStepperView
+      v-else-if="vistaMode === 'stepper'"
+      :formData="formData"
+      :antecedentesList="antecedentesList"
+      :medicacionList="medicacionList"
+      :alergiasList="alergiasList"
+      :contraindicacionesList="contraindicacionesList"
+    />
   </div>
 </template>
 
 <script setup>
-import { reactive, watch } from 'vue';
+import { ref, reactive, watch } from 'vue';
+import AnamnesisBentoView from './anamnesis/AnamnesisBentoView.vue';
+import AnamnesisStepperView from './anamnesis/AnamnesisStepperView.vue';
+
+const vistaMode = ref('clasico');
 
 const props = defineProps({
   patient: {
@@ -1144,5 +1194,19 @@ defineExpose({
 .toggle-custom-alert :deep(.q-btn) {
   min-width: 72px;
   padding: 6px 14px;
+}
+
+.border-view-selector {
+  border: 1px solid #e2e8f0;
+}
+
+.toggle-modes {
+  border: 1px solid #cbd5e1;
+}
+
+.toggle-modes :deep(.q-btn) {
+  padding: 6px 14px;
+  font-weight: 600;
+  font-size: 13px;
 }
 </style>
