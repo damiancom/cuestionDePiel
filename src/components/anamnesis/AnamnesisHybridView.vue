@@ -127,64 +127,81 @@
               </div>
             </div>
 
-            <div class="row q-col-gutter-md q-mt-xs">
+            <!-- Hábitos cotidianos Sí / No (3 columnas limpias) -->
+            <div class="row q-col-gutter-sm q-mt-xs">
               <div class="col-12 col-sm-4">
-                <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">¿Fuma?</div>
-                <q-btn-toggle
-                  v-model="formData.habitos.fuma"
-                  no-caps
-                  rounded
-                  dense
-                  unelevated
-                  class="toggle-hybrid"
-                  toggle-color="primary"
-                  color="grey-2"
-                  text-color="grey-8"
-                  :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                />
+                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders">
+                  <div class="row items-center justify-between no-wrap">
+                    <span class="text-caption text-weight-medium text-grey-8">¿Fuma?</span>
+                    <q-btn-toggle
+                      v-model="formData.habitos.fuma"
+                      no-caps
+                      rounded
+                      dense
+                      unelevated
+                      class="toggle-hybrid"
+                      toggle-color="primary"
+                      color="grey-2"
+                      text-color="grey-8"
+                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                    />
+                  </div>
+                </div>
               </div>
 
               <div class="col-12 col-sm-4">
-                <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">¿Consume alcohol?</div>
-                <q-btn-toggle
-                  v-model="formData.habitos.consumeAlcohol"
-                  no-caps
-                  rounded
-                  dense
-                  unelevated
-                  class="toggle-hybrid"
-                  toggle-color="primary"
-                  color="grey-2"
-                  text-color="grey-8"
-                  :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                />
+                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders">
+                  <div class="row items-center justify-between no-wrap">
+                    <span class="text-caption text-weight-medium text-grey-8">¿Alcohol?</span>
+                    <q-btn-toggle
+                      v-model="formData.habitos.consumeAlcohol"
+                      no-caps
+                      rounded
+                      dense
+                      unelevated
+                      class="toggle-hybrid"
+                      toggle-color="primary"
+                      color="grey-2"
+                      text-color="grey-8"
+                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                    />
+                  </div>
+                </div>
               </div>
 
               <div class="col-12 col-sm-4">
-                <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">Ingesta de agua adecuada</div>
-                <q-btn-toggle
-                  v-model="formData.habitos.ingestaAdecuada"
-                  no-caps
-                  rounded
-                  dense
-                  unelevated
-                  class="toggle-hybrid"
-                  toggle-color="primary"
-                  color="grey-2"
-                  text-color="grey-8"
-                  :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                />
+                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders">
+                  <div class="row items-center justify-between no-wrap">
+                    <span class="text-caption text-weight-medium text-grey-8">Agua (2L)</span>
+                    <q-btn-toggle
+                      v-model="formData.habitos.ingestaAdecuada"
+                      no-caps
+                      rounded
+                      dense
+                      unelevated
+                      class="toggle-hybrid"
+                      toggle-color="primary"
+                      color="grey-2"
+                      text-color="grey-8"
+                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                    />
+                  </div>
+                </div>
               </div>
+            </div>
 
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">Actividad física</div>
+            <!-- Escalas de Bienestar y Rutina: en filas completas para que los botones nunca se solapen -->
+            <div class="q-mt-sm q-gutter-y-xs bg-grey-1 q-pa-sm rounded-borders">
+              <!-- Actividad física -->
+              <div class="row items-center justify-between q-py-xs border-bottom-light q-px-xs">
+                <span class="text-body2 text-weight-medium text-grey-8">Actividad física</span>
                 <q-btn-toggle
                   v-model="formData.habitos.actividadFisica"
                   no-caps
-                  rounded
                   dense
+                  rounded
                   unelevated
-                  spread
+                  class="toggle-hybrid"
                   toggle-color="primary"
                   color="grey-2"
                   text-color="grey-8"
@@ -196,15 +213,16 @@
                 />
               </div>
 
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">Calidad del sueño</div>
+              <!-- Calidad del sueño -->
+              <div class="row items-center justify-between q-py-xs border-bottom-light q-px-xs">
+                <span class="text-body2 text-weight-medium text-grey-8">Calidad del sueño</span>
                 <q-btn-toggle
                   v-model="formData.habitos.calidadSueno"
                   no-caps
-                  rounded
                   dense
+                  rounded
                   unelevated
-                  spread
+                  class="toggle-hybrid"
                   toggle-color="primary"
                   color="grey-2"
                   text-color="grey-8"
@@ -216,15 +234,16 @@
                 />
               </div>
 
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">Nivel de estrés</div>
+              <!-- Nivel de estrés -->
+              <div class="row items-center justify-between q-py-xs q-px-xs">
+                <span class="text-body2 text-weight-medium text-grey-8">Nivel de estrés</span>
                 <q-btn-toggle
                   v-model="formData.habitos.nivelEstres"
                   no-caps
-                  rounded
                   dense
+                  rounded
                   unelevated
-                  spread
+                  class="toggle-hybrid"
                   toggle-color="primary"
                   color="grey-2"
                   text-color="grey-8"
@@ -240,50 +259,62 @@
             <!-- Historia Ginecológica -->
             <div class="text-subtitle2 text-grey-8 q-mt-md q-mb-xs">Historia Ginecológica</div>
             <div class="row q-col-gutter-sm">
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="text-caption text-grey-8">Embarazo / Lactancia</div>
-                <q-btn-toggle
-                  v-model="formData.ginecologia.embarazoLactancia"
-                  no-caps
-                  dense
-                  rounded
-                  unelevated
-                  class="toggle-hybrid q-mt-xs"
-                  toggle-color="pink-6"
-                  color="grey-2"
-                  text-color="grey-8"
-                  :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                />
+              <div class="col-12 col-sm-4">
+                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders">
+                  <div class="row items-center justify-between no-wrap">
+                    <span class="text-caption text-weight-medium text-grey-8">Embarazo / Lactancia</span>
+                    <q-btn-toggle
+                      v-model="formData.ginecologia.embarazoLactancia"
+                      no-caps
+                      dense
+                      rounded
+                      unelevated
+                      class="toggle-hybrid"
+                      toggle-color="pink-6"
+                      color="grey-2"
+                      text-color="grey-8"
+                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                    />
+                  </div>
+                </div>
               </div>
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="text-caption text-grey-8">Anticonceptivos</div>
-                <q-btn-toggle
-                  v-model="formData.ginecologia.anticonceptivos"
-                  no-caps
-                  dense
-                  rounded
-                  unelevated
-                  class="toggle-hybrid q-mt-xs"
-                  toggle-color="primary"
-                  color="grey-2"
-                  text-color="grey-8"
-                  :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                />
+              <div class="col-12 col-sm-4">
+                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders">
+                  <div class="row items-center justify-between no-wrap">
+                    <span class="text-caption text-weight-medium text-grey-8">Anticonceptivos</span>
+                    <q-btn-toggle
+                      v-model="formData.ginecologia.anticonceptivos"
+                      no-caps
+                      dense
+                      rounded
+                      unelevated
+                      class="toggle-hybrid"
+                      toggle-color="primary"
+                      color="grey-2"
+                      text-color="grey-8"
+                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                    />
+                  </div>
+                </div>
               </div>
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="text-caption text-grey-8">Climaterio / Menopausia</div>
-                <q-btn-toggle
-                  v-model="formData.ginecologia.climaterioMenopausia"
-                  no-caps
-                  dense
-                  rounded
-                  unelevated
-                  class="toggle-hybrid q-mt-xs"
-                  toggle-color="primary"
-                  color="grey-2"
-                  text-color="grey-8"
-                  :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                />
+              <div class="col-12 col-sm-4">
+                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders">
+                  <div class="row items-center justify-between no-wrap">
+                    <span class="text-caption text-weight-medium text-grey-8">Climaterio / Menopausia</span>
+                    <q-btn-toggle
+                      v-model="formData.ginecologia.climaterioMenopausia"
+                      no-caps
+                      dense
+                      rounded
+                      unelevated
+                      class="toggle-hybrid"
+                      toggle-color="primary"
+                      color="grey-2"
+                      text-color="grey-8"
+                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </q-card-section>

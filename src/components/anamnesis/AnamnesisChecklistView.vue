@@ -180,16 +180,18 @@
               </div>
             </div>
 
-            <div class="row q-col-gutter-md q-mt-sm">
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">Actividad física</div>
+            <!-- Escalas de Bienestar y Rutina: en filas completas para que los botones nunca se solapen -->
+            <div class="q-mt-md q-gutter-y-xs bg-grey-1 q-pa-sm rounded-borders">
+              <!-- Actividad física -->
+              <div class="row items-center justify-between q-py-xs border-bottom-light q-px-xs">
+                <span class="text-body2 text-weight-medium text-grey-8">Actividad física</span>
                 <q-btn-toggle
                   v-model="formData.habitos.actividadFisica"
                   no-caps
-                  rounded
                   dense
+                  rounded
                   unelevated
-                  spread
+                  class="toggle-hybrid"
                   toggle-color="primary"
                   color="grey-2"
                   text-color="grey-8"
@@ -201,15 +203,16 @@
                 />
               </div>
 
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">Calidad del sueño</div>
+              <!-- Calidad del sueño -->
+              <div class="row items-center justify-between q-py-xs border-bottom-light q-px-xs">
+                <span class="text-body2 text-weight-medium text-grey-8">Calidad del sueño</span>
                 <q-btn-toggle
                   v-model="formData.habitos.calidadSueno"
                   no-caps
-                  rounded
                   dense
+                  rounded
                   unelevated
-                  spread
+                  class="toggle-hybrid"
                   toggle-color="primary"
                   color="grey-2"
                   text-color="grey-8"
@@ -221,15 +224,16 @@
                 />
               </div>
 
-              <div class="col-12 col-sm-6 col-md-4">
-                <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">Nivel de estrés</div>
+              <!-- Nivel de estrés -->
+              <div class="row items-center justify-between q-py-xs q-px-xs">
+                <span class="text-body2 text-weight-medium text-grey-8">Nivel de estrés</span>
                 <q-btn-toggle
                   v-model="formData.habitos.nivelEstres"
                   no-caps
-                  rounded
                   dense
+                  rounded
                   unelevated
-                  spread
+                  class="toggle-hybrid"
                   toggle-color="primary"
                   color="grey-2"
                   text-color="grey-8"
