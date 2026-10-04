@@ -1,8 +1,8 @@
 <template>
   <div class="anamnesis-container q-gutter-y-md">
     <!-- Encabezado alineado con las demás pestañas -->
-    <div class="row items-center justify-between q-mb-md">
-      <div>
+    <div class="row items-center justify-between q-mb-md q-col-gutter-sm">
+      <div class="col-12 col-sm-auto">
         <div class="text-h6 text-primary flex items-center">
           <q-icon name="assignment" class="q-mr-sm" size="24px" />
           Anamnesis Dermatocosmiátrica
@@ -11,10 +11,41 @@
           Ficha clínica digital de evaluación dermatocosmiátrica
         </div>
       </div>
+
+      <!-- Selector de versión para pruebas / comparación -->
+      <div class="col-12 col-sm-auto">
+        <div class="row items-center q-gutter-x-sm">
+          <span class="text-caption text-weight-medium text-grey-7">Versión:</span>
+          <q-btn-toggle
+            v-model="currentView"
+            no-caps
+            dense
+            rounded
+            unelevated
+            toggle-color="primary"
+            color="grey-2"
+            text-color="grey-8"
+            class="toggle-custom"
+            :options="viewOptions"
+          />
+        </div>
+      </div>
     </div>
 
-    <!-- VISTA HÍBRIDA + RESUMEN CLÍNICO -->
+    <!-- VISTA HÍBRIDA + RESUMEN CLÍNICO (OPCIÓN 1 ORIGINAL) -->
     <AnamnesisHybridView
+      v-if="currentView === 'opcion1'"
+      :formData="formData"
+      :antecedentesList="antecedentesList"
+      :medicacionList="medicacionList"
+      :alergiasList="alergiasList"
+      :contraindicacionesList="contraindicacionesList"
+      :isSidebarCollapsed="isSidebarCollapsed"
+    />
+
+    <!-- VISTA HÍBRIDA ALTERNATIVA + RESUMEN CLÍNICO (OPCIÓN 2 REORGANIZADA) -->
+    <AnamnesisHybridViewAlternativa
+      v-else
       :formData="formData"
       :antecedentesList="antecedentesList"
       :medicacionList="medicacionList"
@@ -28,6 +59,13 @@
 <script setup>
 import { ref, reactive, watch } from 'vue';
 import AnamnesisHybridView from './anamnesis/AnamnesisHybridView.vue';
+import AnamnesisHybridViewAlternativa from './anamnesis/AnamnesisHybridViewAlternativa.vue';
+
+const currentView = ref('opcion1');
+const viewOptions = [
+  { label: 'Opción 1 (Cutánea Primero)', value: 'opcion1' },
+  { label: 'Opción 2 (Salud Primero)', value: 'opcion2' }
+];
 
 const props = defineProps({
   patient: {
