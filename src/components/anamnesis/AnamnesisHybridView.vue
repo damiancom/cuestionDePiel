@@ -76,17 +76,17 @@
               </div>
             </div>
 
-            <!-- Condiciones de la Piel (label a la izquierda, opciones distribuidas uniformemente horizontal) -->
+            <!-- Condiciones de la Piel (distribución equilibrada y natural) -->
             <div class="q-mb-md">
               <div class="text-subtitle2 text-grey-8 q-mb-xs">Condiciones de la Piel</div>
-              <div class="row q-gutter-xs items-center justify-between">
+              <div class="row q-gutter-sm items-center justify-start condiciones-container">
                 <q-btn
                   v-for="cond in condicionesPielOptions"
                   :key="cond"
                   no-caps
                   rounded
                   unelevated
-                  class="condition-pill-toggle col-grow text-center"
+                  class="condition-pill-toggle text-center"
                   :class="{ 'is-selected': isConditionSelected(cond) }"
                   @click="toggleCondition(cond)"
                 >
