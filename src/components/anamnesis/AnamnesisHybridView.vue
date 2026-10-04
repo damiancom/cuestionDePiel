@@ -3,18 +3,34 @@
     <div class="row q-col-gutter-lg items-start">
       <!-- Columna Principal: Bloques temáticos continuos (sin stepper bloqueante) -->
       <div class="col-12 col-lg-8 q-gutter-y-md">
-        <!-- 1. EVALUACIÓN CUTÁNEA & FOTOTIPO -->
+                <!-- EVALUACIÓN CUTÁNEA & FOTOTIPO -->
         <q-card flat bordered class="hybrid-card">
-          <q-card-section>
-            <div class="row items-center q-mb-sm">
-              <q-avatar size="34px" color="amber-1" text-color="amber-9" icon="face" class="q-mr-sm" />
+          <q-card-section
+            class="cursor-pointer row items-center justify-between no-wrap q-py-sm header-collapsible"
+            @click="toggleSection('cutanea')"
+          >
+            <div class="row items-center no-wrap">
+              <q-avatar size="34px" color="amber-1" text-color="amber-9" icon="face" class="q-mr-sm flex-shrink-0" />
               <div>
-                <div class="text-subtitle1 text-weight-bold">1. Evaluación Cutánea & Fototipo</div>
+                <div class="text-subtitle1 text-weight-bold">Evaluación Cutánea & Fototipo</div>
                 <div class="text-caption text-grey-7">Fototipo de Fitzpatrick, biotipo cutáneo y condiciones de la piel</div>
               </div>
             </div>
+            <q-btn
+              flat
+              round
+              dense
+              color="grey-7"
+              :icon="collapsedSections.cutanea ? 'expand_more' : 'expand_less'"
+              @click.stop="toggleSection('cutanea')"
+            />
+          </q-card-section>
 
-            <!-- Fototipo Fitzpatrick Interactivo (siempre 1 sola línea) -->
+          <q-slide-transition>
+            <div v-show="!collapsedSections.cutanea">
+              <q-separator />
+              <q-card-section>
+                <!-- Fototipo Fitzpatrick Interactivo (siempre 1 sola línea) -->
             <div class="q-mb-md q-pa-sm bg-grey-1 rounded-borders">
               <div class="text-subtitle2 text-grey-9 q-mb-xs">
                 Fototipo - Clasificación de Fitzpatrick:
@@ -26,13 +42,11 @@
                 <div
                   v-for="n in 6"
                   :key="n"
-                  class="fototipo-circle-hybrid cursor-pointer flex flex-center"
+                  class="fototipo-pill-hybrid cursor-pointer"
                   :class="{ 'fototipo-selected': formData.dermatologicos.fototipo == n }"
                   :style="{ backgroundColor: getFototipoColor(n), color: n >= 5 ? '#fff' : '#333' }"
                   @click="formData.dermatologicos.fototipo = (formData.dermatologicos.fototipo == n ? null : n)"
-                >
-                  {{ n }}
-                </div>
+                ><span class="q-px-sm">{{ n }}</span></div>
               </div>
               <div class="text-caption text-grey-8 text-center q-mt-xs">
                 {{ fototipoDescripcion }}
@@ -164,21 +178,39 @@
 
 
             </div>
-          </q-card-section>
+              </q-card-section>
+            </div>
+          </q-slide-transition>
         </q-card>
 
-        <!-- 2. SALUD GENERAL & ANTECEDENTES MÉDICOS -->
+        <!-- SALUD GENERAL & ANTECEDENTES MÉDICOS -->
         <q-card flat bordered class="hybrid-card">
-          <q-card-section>
-            <div class="row items-center q-mb-sm">
-              <q-avatar size="34px" color="teal-1" text-color="teal-8" icon="favorite" class="q-mr-sm" />
+          <q-card-section
+            class="cursor-pointer row items-center justify-between no-wrap q-py-sm header-collapsible"
+            @click="toggleSection('salud')"
+          >
+            <div class="row items-center no-wrap">
+              <q-avatar size="34px" color="teal-1" text-color="teal-8" icon="favorite" class="q-mr-sm flex-shrink-0" />
               <div>
-                <div class="text-subtitle1 text-weight-bold">2. Salud General & Antecedentes Médicos</div>
-                <div class="text-caption text-grey-7">Patologías previas, alergias y antecedentes familiares</div>
+                <div class="text-subtitle1 text-weight-bold">Salud General & Antecedentes Médicos</div>
+                <div class="text-caption text-grey-7">Patologías previas, antecedentes familiares, alergias e historia ginecológica</div>
               </div>
             </div>
+            <q-btn
+              flat
+              round
+              dense
+              color="grey-7"
+              :icon="collapsedSections.salud ? 'expand_more' : 'expand_less'"
+              @click.stop="toggleSection('salud')"
+            />
+          </q-card-section>
 
-            <!-- Patologías con layout responsive sin truncar -->
+          <q-slide-transition>
+            <div v-show="!collapsedSections.salud">
+              <q-separator />
+              <q-card-section>
+                <!-- Patologías con layout responsive sin truncar -->
             <div class="text-subtitle2 text-grey-8 q-mt-md q-mb-xs">Patologías Evaluadas</div>
             <div class="row q-col-gutter-sm">
               <div
@@ -277,21 +309,242 @@
                 </div>
               </div>
             </div>
-          </q-card-section>
+
+            <!-- Historia Ginecológica en filas completas -->
+            <div class="text-subtitle2 text-grey-8 q-mt-md q-mb-xs">Historia Ginecológica</div>
+            <div class="q-gutter-y-xs">
+              <div class="hybrid-subitem q-py-sm q-px-md rounded-borders" :class="{ 'bg-pink-0 border-pink': formData.ginecologia.embarazoLactancia }">
+                <div class="row items-center justify-between q-gutter-x-sm">
+                  <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">
+                    Embarazo o período de lactancia activo
+                  </span>
+                  <div class="col-auto">
+                    <q-btn-toggle
+                      v-model="formData.ginecologia.embarazoLactancia"
+                      no-caps
+                      dense
+                      rounded
+                      unelevated
+                      class="toggle-hybrid"
+                      toggle-color="pink-6"
+                      color="grey-2"
+                      text-color="grey-8"
+                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="hybrid-subitem q-py-sm q-px-md rounded-borders" :class="{ 'bg-blue-0 border-blue': formData.ginecologia.anticonceptivos }">
+                <div class="row items-center justify-between q-gutter-x-sm">
+                  <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">
+                    Uso de anticonceptivos
+                  </span>
+                  <div class="col-auto">
+                    <q-btn-toggle
+                      v-model="formData.ginecologia.anticonceptivos"
+                      no-caps
+                      dense
+                      rounded
+                      unelevated
+                      class="toggle-hybrid"
+                      toggle-color="primary"
+                      color="grey-2"
+                      text-color="grey-8"
+                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="hybrid-subitem q-py-sm q-px-md rounded-borders" :class="{ 'bg-blue-0 border-blue': formData.ginecologia.climaterioMenopausia }">
+                <div class="row items-center justify-between q-gutter-x-sm">
+                  <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">
+                    Climaterio / Menopausia
+                  </span>
+                  <div class="col-auto">
+                    <q-btn-toggle
+                      v-model="formData.ginecologia.climaterioMenopausia"
+                      no-caps
+                      dense
+                      rounded
+                      unelevated
+                      class="toggle-hybrid"
+                      toggle-color="primary"
+                      color="grey-2"
+                      text-color="grey-8"
+                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+              </q-card-section>
+            </div>
+          </q-slide-transition>
         </q-card>
 
-        <!-- 3. HÁBITOS & ESTILO DE VIDA -->
+        <!-- SEGURIDAD, MEDICACIÓN & CONTRAINDICACIONES -->
         <q-card flat bordered class="hybrid-card">
-          <q-card-section>
-            <div class="row items-center q-mb-sm">
-              <q-avatar size="34px" color="blue-1" text-color="blue-8" icon="self_improvement" class="q-mr-sm" />
+          <q-card-section
+            class="cursor-pointer row items-center justify-between no-wrap q-py-sm header-collapsible"
+            @click="toggleSection('seguridad')"
+          >
+            <div class="row items-center no-wrap">
+              <q-avatar size="34px" color="red-1" text-color="negative" icon="security" class="q-mr-sm flex-shrink-0" />
               <div>
-                <div class="text-subtitle1 text-weight-bold">3. Hábitos & Estilo de Vida</div>
-                <div class="text-caption text-grey-7">Rutinas cotidianas, hidratación, cuidado solar, descanso y ginecología</div>
+                <div class="text-subtitle1 text-weight-bold">Seguridad, Medicación & Contraindicaciones</div>
+                <div class="text-caption text-grey-7">Validación indispensable para aparatología, peelings y seguridad de gabinete</div>
+              </div>
+            </div>
+            <q-btn
+              flat
+              round
+              dense
+              color="grey-7"
+              :icon="collapsedSections.seguridad ? 'expand_more' : 'expand_less'"
+              @click.stop="toggleSection('seguridad')"
+            />
+          </q-card-section>
+
+          <q-slide-transition>
+            <div v-show="!collapsedSections.seguridad">
+              <q-separator />
+              <q-card-section>
+                <!-- Contraindicaciones críticas destacadas -->
+            <div class="q-pa-md bg-red-0 border-negative-subtle rounded-borders q-mb-md">
+              <div class="text-subtitle2 text-weight-bold text-negative q-mb-sm row items-center">
+                <q-icon name="warning" class="q-mr-xs" size="20px" />
+                Contraindicaciones críticas para aparatología y peelings médicos
+              </div>
+              <div class="q-gutter-y-xs">
+                <div
+                  v-for="(item, key) in contraindicacionesList"
+                  :key="key"
+                  class="row items-center justify-between q-py-xs border-bottom-light q-gutter-x-sm"
+                >
+                  <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">
+                    {{ item.label }}
+                  </span>
+                  <div class="col-auto">
+                    <q-btn-toggle
+                      v-model="formData.contraindicaciones[key]"
+                      no-caps
+                      dense
+                      rounded
+                      unelevated
+                      class="toggle-hybrid"
+                      :toggle-color="formData.contraindicaciones[key] ? 'negative' : 'grey-7'"
+                      color="grey-2"
+                      text-color="grey-8"
+                      :options="[{ label: 'No', value: false }, { label: 'Sí ⚠️', value: true }]"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 
-            <!-- Hábitos cotidianos: 3 columnas cuando está en tablet/desktop con detalle cerrado -->
+            <!-- Medicación y Suplementos -->
+            <div class="text-subtitle2 text-grey-8 q-mb-xs">Medicación y Suplementos</div>
+            <div class="row q-col-gutter-sm q-mb-md">
+              <div
+                v-for="(item, key) in medicacionList"
+                :key="key"
+                class="col-12 col-xl-6"
+              >
+                <div class="hybrid-subitem q-py-sm q-px-md rounded-borders" :class="{ 'bg-purple-0': formData.medicacion[key].aplica }">
+                  <div class="row items-center justify-between q-gutter-x-sm">
+                    <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">
+                      {{ item.label }}
+                    </span>
+                    <div class="col-auto">
+                      <q-btn-toggle
+                        v-model="formData.medicacion[key].aplica"
+                        no-caps
+                        dense
+                        rounded
+                        unelevated
+                        class="toggle-hybrid"
+                        toggle-color="purple-8"
+                        color="grey-2"
+                        text-color="grey-8"
+                        :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                      />
+                    </div>
+                  </div>
+                  <q-slide-transition>
+                    <div v-if="formData.medicacion[key].aplica" class="q-mt-xs">
+                      <q-input
+                        v-model="formData.medicacion[key].detalle"
+                        label="Detalle de medicación *"
+                        class="minimal-input"
+                        borderless
+                        dense
+                        placeholder="Fármaco, tiempo o dosis..."
+                      />
+                    </div>
+                  </q-slide-transition>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cirugías & Tratamientos Estéticos -->
+            <div class="text-subtitle2 text-grey-8 q-mb-xs">Cirugías & Tratamientos Estéticos</div>
+            <div class="row q-col-gutter-sm">
+              <div class="col-12 col-sm-6">
+                <q-input
+                  v-model="formData.cirugias.generales.detalle"
+                  label="Cirugías generales"
+                  class="minimal-input"
+                  borderless
+                  dense
+                  placeholder="Quirúrgicas previas, cesárea, etc..."
+                />
+              </div>
+              <div class="col-12 col-sm-6">
+                <q-input
+                  v-model="formData.cirugias.tratamientosUltimosDosAnos"
+                  label="Tratamientos estéticos"
+                  class="minimal-input"
+                  borderless
+                  dense
+                  placeholder="Láser, rellenos, toxina, peelings..."
+                />
+              </div>
+            </div>
+              </q-card-section>
+            </div>
+          </q-slide-transition>
+        </q-card>
+
+        <!-- HÁBITOS & ESTILO DE VIDA -->
+        <q-card flat bordered class="hybrid-card">
+          <q-card-section
+            class="cursor-pointer row items-center justify-between no-wrap q-py-sm header-collapsible"
+            @click="toggleSection('habitos')"
+          >
+            <div class="row items-center no-wrap">
+              <q-avatar size="34px" color="blue-1" text-color="blue-8" icon="self_improvement" class="q-mr-sm flex-shrink-0" />
+              <div>
+                <div class="text-subtitle1 text-weight-bold">Hábitos & Estilo de Vida</div>
+                <div class="text-caption text-grey-7">Rutinas cotidianas, hidratación, cuidado solar y descanso</div>
+              </div>
+            </div>
+            <q-btn
+              flat
+              round
+              dense
+              color="grey-7"
+              :icon="collapsedSections.habitos ? 'expand_more' : 'expand_less'"
+              @click.stop="toggleSection('habitos')"
+            />
+          </q-card-section>
+
+          <q-slide-transition>
+            <div v-show="!collapsedSections.habitos">
+              <q-separator />
+              <q-card-section>
+                <!-- Hábitos cotidianos: 3 columnas cuando está en tablet/desktop con detalle cerrado -->
             <div v-if="useColumnsLayout" class="row q-col-gutter-md q-mt-xs">
               <div class="col-12 col-sm-4">
                 <div class="text-caption text-grey-8">¿Fuma?</div>
@@ -500,193 +753,11 @@
                 />
               </div>
             </div>
-
-            <!-- Historia Ginecológica en filas completas -->
-            <div class="text-subtitle2 text-grey-8 q-mt-md q-mb-xs">Historia Ginecológica</div>
-            <div class="q-gutter-y-xs">
-              <div class="hybrid-subitem q-py-sm q-px-md rounded-borders" :class="{ 'bg-pink-0 border-pink': formData.ginecologia.embarazoLactancia }">
-                <div class="row items-center justify-between q-gutter-x-sm">
-                  <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">
-                    Embarazo o período de lactancia activo
-                  </span>
-                  <div class="col-auto">
-                    <q-btn-toggle
-                      v-model="formData.ginecologia.embarazoLactancia"
-                      no-caps
-                      dense
-                      rounded
-                      unelevated
-                      class="toggle-hybrid"
-                      toggle-color="pink-6"
-                      color="grey-2"
-                      text-color="grey-8"
-                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div class="hybrid-subitem q-py-sm q-px-md rounded-borders" :class="{ 'bg-blue-0 border-blue': formData.ginecologia.anticonceptivos }">
-                <div class="row items-center justify-between q-gutter-x-sm">
-                  <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">
-                    Uso de anticonceptivos
-                  </span>
-                  <div class="col-auto">
-                    <q-btn-toggle
-                      v-model="formData.ginecologia.anticonceptivos"
-                      no-caps
-                      dense
-                      rounded
-                      unelevated
-                      class="toggle-hybrid"
-                      toggle-color="primary"
-                      color="grey-2"
-                      text-color="grey-8"
-                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div class="hybrid-subitem q-py-sm q-px-md rounded-borders" :class="{ 'bg-blue-0 border-blue': formData.ginecologia.climaterioMenopausia }">
-                <div class="row items-center justify-between q-gutter-x-sm">
-                  <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">
-                    Climaterio / Menopausia
-                  </span>
-                  <div class="col-auto">
-                    <q-btn-toggle
-                      v-model="formData.ginecologia.climaterioMenopausia"
-                      no-caps
-                      dense
-                      rounded
-                      unelevated
-                      class="toggle-hybrid"
-                      toggle-color="primary"
-                      color="grey-2"
-                      text-color="grey-8"
-                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                    />
-                  </div>
-                </div>
-              </div>
+              </q-card-section>
             </div>
-          </q-card-section>
+          </q-slide-transition>
         </q-card>
-
-        <!-- 4. SEGURIDAD, MEDICACIÓN & GABINETE -->
-        <q-card flat bordered class="hybrid-card">
-          <q-card-section>
-            <div class="row items-center q-mb-sm">
-              <q-avatar size="34px" color="red-1" text-color="negative" icon="security" class="q-mr-sm" />
-              <div>
-                <div class="text-subtitle1 text-weight-bold text-negative">4. Seguridad, Medicación & Contraindicaciones</div>
-                <div class="text-caption text-grey-7">Validación indispensable para aparatología, peelings y seguridad de gabinete</div>
-              </div>
-            </div>
-
-            <!-- Contraindicaciones críticas destacadas -->
-            <div class="q-pa-md bg-red-0 border-negative-subtle rounded-borders q-mb-md">
-              <div class="text-subtitle2 text-weight-bold text-negative q-mb-sm row items-center">
-                <q-icon name="warning" class="q-mr-xs" size="20px" />
-                Contraindicaciones críticas para aparatología y peelings médicos
-              </div>
-              <div class="q-gutter-y-xs">
-                <div
-                  v-for="(item, key) in contraindicacionesList"
-                  :key="key"
-                  class="row items-center justify-between q-py-xs border-bottom-light q-gutter-x-sm"
-                >
-                  <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">
-                    {{ item.label }}
-                  </span>
-                  <div class="col-auto">
-                    <q-btn-toggle
-                      v-model="formData.contraindicaciones[key]"
-                      no-caps
-                      dense
-                      rounded
-                      unelevated
-                      class="toggle-hybrid"
-                      :toggle-color="formData.contraindicaciones[key] ? 'negative' : 'grey-7'"
-                      color="grey-2"
-                      text-color="grey-8"
-                      :options="[{ label: 'No', value: false }, { label: 'Sí ⚠️', value: true }]"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Medicación y Suplementos -->
-            <div class="text-subtitle2 text-grey-8 q-mb-xs">Medicación y Suplementos</div>
-            <div class="row q-col-gutter-sm q-mb-md">
-              <div
-                v-for="(item, key) in medicacionList"
-                :key="key"
-                class="col-12 col-xl-6"
-              >
-                <div class="hybrid-subitem q-py-sm q-px-md rounded-borders" :class="{ 'bg-purple-0': formData.medicacion[key].aplica }">
-                  <div class="row items-center justify-between q-gutter-x-sm">
-                    <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">
-                      {{ item.label }}
-                    </span>
-                    <div class="col-auto">
-                      <q-btn-toggle
-                        v-model="formData.medicacion[key].aplica"
-                        no-caps
-                        dense
-                        rounded
-                        unelevated
-                        class="toggle-hybrid"
-                        toggle-color="purple-8"
-                        color="grey-2"
-                        text-color="grey-8"
-                        :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                      />
-                    </div>
-                  </div>
-                  <q-slide-transition>
-                    <div v-if="formData.medicacion[key].aplica" class="q-mt-xs">
-                      <q-input
-                        v-model="formData.medicacion[key].detalle"
-                        label="Detalle de medicación *"
-                        class="minimal-input"
-                        borderless
-                        dense
-                        placeholder="Fármaco, tiempo o dosis..."
-                      />
-                    </div>
-                  </q-slide-transition>
-                </div>
-              </div>
-            </div>
-
-            <!-- Cirugías & Tratamientos Estéticos -->
-            <div class="text-subtitle2 text-grey-8 q-mb-xs">Cirugías & Tratamientos Estéticos</div>
-            <div class="row q-col-gutter-sm">
-              <div class="col-12 col-sm-6">
-                <q-input
-                  v-model="formData.cirugias.generales.detalle"
-                  label="Cirugías generales"
-                  class="minimal-input"
-                  borderless
-                  dense
-                  placeholder="Quirúrgicas previas, cesárea, etc..."
-                />
-              </div>
-              <div class="col-12 col-sm-6">
-                <q-input
-                  v-model="formData.cirugias.tratamientosUltimosDosAnos"
-                  label="Tratamientos estéticos"
-                  class="minimal-input"
-                  borderless
-                  dense
-                  placeholder="Láser, rellenos, toxina, peelings..."
-                />
-              </div>
-            </div>
-          </q-card-section>
-        </q-card></div>
+      </div>
 
       <!-- Columna Lateral Sticky: LIVE CLINICAL SUMMARY -->
       <div class="col-12 col-lg-4">
@@ -788,7 +859,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, reactive } from 'vue';
 import { useQuasar } from 'quasar';
 
 const $q = useQuasar();
@@ -821,6 +892,17 @@ const props = defineProps({
 });
 
 // En tablets horizontal (>= 768px) y desktop cuando el detalle del paciente está cerrado, usamos columnas
+const collapsedSections = reactive({
+  cutanea: false,
+  salud: false,
+  seguridad: false,
+  habitos: false
+});
+
+function toggleSection(sec) {
+  collapsedSections[sec] = !collapsedSections[sec];
+}
+
 const useColumnsLayout = computed(() => {
   return props.isSidebarCollapsed && ($q.screen.width >= 768);
 });
@@ -989,23 +1071,37 @@ const alertasCriticas = computed(() => {
   max-width: 100%;
 }
 
-.fototipo-circle-hybrid {
-  width: clamp(34px, 8.5vw, 42px);
-  height: clamp(34px, 8.5vw, 42px);
-  border-radius: 50%;
+.fototipo-pill-hybrid {
+  min-height: 32px;
+  min-width: 52px;
+  padding: 5px 16px;
+  border-radius: 16px;
   border: 2px solid transparent;
-  transition: transform 0.2s, box-shadow 0.2s;
-  font-weight: bold;
-  font-size: clamp(13px, 3.5vw, 15px);
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.2;
+  transition: all 0.2s ease-in-out;
   user-select: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
 
-.fototipo-selected {
-  transform: scale(1.18);
+.fototipo-pill-hybrid.fototipo-selected {
+  transform: scale(1.08);
   border-color: #1976d2 !important;
   box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.25) !important;
   z-index: 5;
+}
+
+.header-collapsible {
+  transition: background-color 0.15s ease-in-out;
+}
+
+.header-collapsible:hover {
+  background-color: #f8fafc;
 }
 
 .pill-option-btn {
