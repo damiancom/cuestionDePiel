@@ -53,23 +53,26 @@
               </div>
             </div>
 
-            <!-- Biotipo Cutáneo (unificado como toggle continuo de opciones) -->
+            <!-- Biotipo Cutáneo (en la misma línea label y selección como actividad física) -->
             <div class="q-mb-md">
-              <div class="text-subtitle2 text-grey-8 q-mb-xs">Biotipo Cutáneo</div>
-              <div class="row items-center justify-start">
-                <q-btn-toggle
-                  v-model="formData.dermatologicos.biotipo"
-                  no-caps
-                  rounded
-                  unelevated
-                  class="toggle-hybrid biotipo-toggle-unified"
-                  toggle-color="primary"
-                  color="grey-2"
-                  text-color="grey-8"
-                  clearable
-                  :options="biotiposOptions"
-                  @update:model-value="val => { if (!val) formData.dermatologicos.biotipo = ''; }"
-                />
+              <div class="scale-item q-py-xs q-px-xs">
+                <div class="row items-center justify-between scale-row">
+                  <span class="text-body2 text-weight-medium text-grey-8">Biotipo Cutáneo</span>
+                  <q-btn-toggle
+                    v-model="formData.dermatologicos.biotipo"
+                    no-caps
+                    dense
+                    rounded
+                    unelevated
+                    class="toggle-hybrid scale-toggle biotipo-toggle-unified"
+                    toggle-color="primary"
+                    color="grey-2"
+                    text-color="grey-8"
+                    clearable
+                    :options="biotiposOptions"
+                    @update:model-value="val => { if (!val) formData.dermatologicos.biotipo = ''; }"
+                  />
+                </div>
               </div>
             </div>
 
@@ -1133,11 +1136,17 @@ const alertasCriticas = computed(() => {
 }
 
 .biotipo-toggle-unified :deep(.q-btn) {
-  min-width: 68px;
-  padding: 4px 16px;
+  min-width: 0;
+  padding: 4px 12px;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 12.5px;
   line-height: 1.2;
+}
+
+@media (min-width: 520px) {
+  .biotipo-toggle-unified {
+    width: 320px;
+  }
 }
 
 .condition-pill-toggle {
