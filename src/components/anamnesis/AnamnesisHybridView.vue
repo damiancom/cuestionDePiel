@@ -649,27 +649,27 @@
               </div>
             </div>
 
-            <!-- Intervenciones previas -->
-            <div class="text-subtitle2 text-grey-8 q-mb-xs">Intervenciones Estéticas & Chequeos</div>
+            <!-- Cirugías & Tratamientos Estéticos -->
+            <div class="text-subtitle2 text-grey-8 q-mb-xs">Cirugías & Tratamientos Estéticos</div>
             <div class="row q-col-gutter-sm">
               <div class="col-12 col-sm-6">
                 <q-input
-                  v-model="formData.cirugias.tratamientosUltimosDosAnos"
-                  label="Tratamientos estéticos en los últimos 2 años"
+                  v-model="formData.cirugias.generales.detalle"
+                  label="Cirugías generales"
                   class="minimal-input"
                   borderless
                   dense
-                  placeholder="Láser, rellenos, peelings..."
+                  placeholder="Quirúrgicas previas, cesárea, etc..."
                 />
               </div>
               <div class="col-12 col-sm-6">
                 <q-input
-                  v-model="formData.cirugias.ultimoChequeo"
-                  label="Último chequeo médico"
+                  v-model="formData.cirugias.tratamientosUltimosDosAnos"
+                  label="Tratamientos estéticos"
                   class="minimal-input"
                   borderless
                   dense
-                  placeholder="Fecha o informe..."
+                  placeholder="Láser, rellenos, toxina, peelings..."
                 />
               </div>
             </div>

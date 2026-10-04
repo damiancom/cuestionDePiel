@@ -1023,8 +1023,8 @@ function loadData(data) {
   formData.dermatologicos.exposicionSolar = val('sun_exposure', 'sunExposure', '') || '';
 
   // 7. Cirugías e intervenciones previas
-  formData.cirugias.generales.aplica = !!val('has_general_surgeries', 'hasGeneralSurgeries', false);
   formData.cirugias.generales.detalle = val('general_surgeries_detail', 'generalSurgeriesDetail', '') || '';
+  formData.cirugias.generales.aplica = !!(formData.cirugias.generales.detalle || val('has_general_surgeries', 'hasGeneralSurgeries', false));
   formData.cirugias.generales.zona = val('general_surgeries_zone', 'generalSurgeriesZone', '') || '';
   formData.cirugias.esteticasPocoInvasivas.aplica = !!val('has_aesthetic_interventions', 'hasAestheticInterventions', false);
   formData.cirugias.esteticasPocoInvasivas.detalle = val('aesthetic_interventions_detail', 'aestheticInterventionsDetail', '') || '';
@@ -1110,10 +1110,10 @@ function toBackendPayload() {
     sun_exposure: formData.dermatologicos.exposicionSolar || '',
 
     // 7. Cirugías e intervenciones previas
-    has_general_surgeries: formData.cirugias.generales.aplica,
-    general_surgeries_detail: formData.cirugias.generales.aplica ? formData.cirugias.generales.detalle : '',
-    general_surgeries_zone: formData.cirugias.generales.aplica ? formData.cirugias.generales.zona : '',
-    has_aesthetic_interventions: formData.cirugias.esteticasPocoInvasivas.aplica,
+    has_general_surgeries: !!(formData.cirugias.generales.detalle || formData.cirugias.generales.aplica),
+    general_surgeries_detail: formData.cirugias.generales.detalle || '',
+    general_surgeries_zone: formData.cirugias.generales.zona || '',
+    has_aesthetic_interventions: !!(formData.cirugias.tratamientosUltimosDosAnos || formData.cirugias.esteticasPocoInvasivas.aplica),
     aesthetic_interventions_detail: formData.cirugias.esteticasPocoInvasivas.aplica ? formData.cirugias.esteticasPocoInvasivas.detalle : '',
     aesthetic_interventions_zone: formData.cirugias.esteticasPocoInvasivas.aplica ? formData.cirugias.esteticasPocoInvasivas.zona : '',
     treatments_last_two_years: formData.cirugias.tratamientosUltimosDosAnos || '',

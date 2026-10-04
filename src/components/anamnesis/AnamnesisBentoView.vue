@@ -493,26 +493,26 @@
                 </div>
               </div>
 
-              <!-- Cirugías generales y estéticas -->
+              <!-- Cirugías generales y tratamientos estéticos -->
               <div class="row q-col-gutter-sm q-pt-sm">
                 <div class="col-12 col-sm-6">
                   <q-input
-                    v-model="formData.cirugias.tratamientosUltimosDosAnos"
-                    label="Tratamientos estéticos últimos 2 años"
+                    v-model="formData.cirugias.generales.detalle"
+                    label="Cirugías generales"
                     class="minimal-input"
                     borderless
                     dense
-                    placeholder="Peelings, toxina, láser..."
+                    placeholder="Quirúrgicas previas, cesárea, etc..."
                   />
                 </div>
                 <div class="col-12 col-sm-6">
                   <q-input
-                    v-model="formData.cirugias.ultimoChequeo"
-                    label="Último chequeo médico"
+                    v-model="formData.cirugias.tratamientosUltimosDosAnos"
+                    label="Tratamientos estéticos"
                     class="minimal-input"
                     borderless
                     dense
-                    placeholder="Fecha o resultado..."
+                    placeholder="Láser, rellenos, toxina, peelings..."
                   />
                 </div>
               </div>
