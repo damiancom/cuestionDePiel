@@ -424,44 +424,36 @@
             <!-- Biotipo Cutáneo -->
             <div class="q-mb-md">
               <div class="text-subtitle2 text-grey-8 q-mb-xs">Biotipo Cutáneo</div>
-              <div class="row items-center justify-start">
-                <q-btn-toggle
-                  v-model="formData.dermatologicos.biotipo"
+              <div class="row q-gutter-xs items-center justify-start">
+                <q-btn
+                  v-for="bt in biotiposOptions"
+                  :key="bt.value"
                   no-caps
                   rounded
                   unelevated
-                  class="toggle-hybrid biotipo-toggle"
-                  toggle-color="primary"
-                  color="grey-2"
-                  text-color="grey-8"
-                  clearable
-                  :options="biotiposOptions"
-                  @update:model-value="val => { if (!val) formData.dermatologicos.biotipo = ''; }"
-                />
+                  class="pill-option-btn"
+                  :class="{ 'is-selected': formData.dermatologicos.biotipo === bt.value }"
+                  @click="formData.dermatologicos.biotipo = (formData.dermatologicos.biotipo === bt.value ? '' : bt.value)"
+                >
+                  {{ bt.label }}
+                </q-btn>
               </div>
             </div>
 
             <!-- Condiciones de la Piel -->
             <div class="q-mb-md">
               <div class="text-subtitle2 text-grey-8 q-mb-xs">Condiciones de la Piel</div>
-              <div class="row q-gutter-sm items-center justify-start">
+              <div class="row q-gutter-xs items-center justify-start">
                 <q-btn
                   v-for="cond in condicionesPielOptions"
                   :key="cond"
                   no-caps
                   rounded
                   unelevated
-                  class="toggle-hybrid condition-toggle-btn"
-                  :color="isConditionSelected(cond) ? 'primary' : 'grey-2'"
-                  :text-color="isConditionSelected(cond) ? 'white' : 'grey-8'"
+                  class="pill-option-btn"
+                  :class="{ 'is-selected': isConditionSelected(cond) }"
                   @click="toggleCondition(cond)"
                 >
-                  <q-icon
-                    v-if="isConditionSelected(cond)"
-                    name="check"
-                    size="16px"
-                    class="q-mr-xs"
-                  />
                   {{ cond }}
                 </q-btn>
               </div>
@@ -1027,18 +1019,31 @@ const alertasCriticas = computed(() => {
   z-index: 5;
 }
 
-.biotipo-toggle :deep(.q-btn) {
-  min-width: 64px;
+.pill-option-btn {
+  border: 1px solid #cbd5e1;
+  border-radius: 16px;
+  min-height: 32px;
   padding: 5px 14px;
-  font-weight: 600;
   font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+  transition: all 0.15s ease-in-out;
 }
 
-.condition-toggle-btn {
-  padding: 5px 14px;
-  font-weight: 600;
-  font-size: 13px;
-  transition: all 0.2s ease-in-out;
+.pill-option-btn.is-selected {
+  background-color: var(--q-primary) !important;
+  color: #ffffff !important;
+  border-color: var(--q-primary) !important;
+}
+
+.pill-option-btn:not(.is-selected) {
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+  border-color: #cbd5e1 !important;
+}
+
+.pill-option-btn:hover:not(.is-selected) {
+  background-color: #e2e8f0 !important;
 }
 
 .scale-row {
