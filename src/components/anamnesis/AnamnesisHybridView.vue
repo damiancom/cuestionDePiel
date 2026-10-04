@@ -17,7 +17,7 @@
             <!-- Fototipo Fitzpatrick Interactivo (siempre 1 sola línea) -->
             <div class="q-mb-md q-pa-sm bg-grey-1 rounded-borders">
               <div class="text-subtitle2 text-grey-9 q-mb-xs">
-                Clasificación de Fitzpatrick:
+                Fototipo - Clasificación de Fitzpatrick:
                 <q-badge color="primary" class="q-ml-sm" v-if="formData.dermatologicos.fototipo">
                   Fototipo {{ formData.dermatologicos.fototipo }}
                 </q-badge>
