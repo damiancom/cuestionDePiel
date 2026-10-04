@@ -76,22 +76,53 @@
               </div>
             </div>
 
-            <!-- Condiciones de la Piel (distribución equilibrada y natural) -->
+            <!-- Condiciones de la Piel (distribución armónica estructurada y expandida) -->
             <div class="q-mb-md">
               <div class="text-subtitle2 text-grey-8 q-mb-xs">Condiciones de la Piel</div>
-              <div class="row q-gutter-sm items-center justify-start condiciones-container">
-                <q-btn
-                  v-for="cond in condicionesPielOptions"
-                  :key="cond"
-                  no-caps
-                  rounded
-                  unelevated
-                  class="condition-pill-toggle text-center"
-                  :class="{ 'is-selected': isConditionSelected(cond) }"
-                  @click="toggleCondition(cond)"
-                >
-                  {{ cond }}
-                </q-btn>
+              <div class="condiciones-grid q-gutter-y-xs">
+                <!-- Fila 1: 3 opciones -->
+                <div class="row q-gutter-x-sm no-wrap items-center justify-between">
+                  <q-btn
+                    v-for="cond in ['Sensible / Reactiva', 'Deshidratada', 'Acneica']"
+                    :key="cond"
+                    no-caps
+                    rounded
+                    unelevated
+                    class="condition-pill-toggle col text-center"
+                    :class="{ 'is-selected': isConditionSelected(cond) }"
+                    @click="toggleCondition(cond)"
+                  >
+                    {{ cond }}
+                  </q-btn>
+                </div>
+                <!-- Fila 2: 1 opción central (la más larga) -->
+                <div class="row items-center">
+                  <q-btn
+                    no-caps
+                    rounded
+                    unelevated
+                    class="condition-pill-toggle full-width text-center"
+                    :class="{ 'is-selected': isConditionSelected('Discromia (Hipopigmentaciones / hiperpigmentaciones)') }"
+                    @click="toggleCondition('Discromia (Hipopigmentaciones / hiperpigmentaciones)')"
+                  >
+                    Discromia (Hipopigmentaciones / hiperpigmentaciones)
+                  </q-btn>
+                </div>
+                <!-- Fila 3: 2 opciones -->
+                <div class="row q-gutter-x-sm no-wrap items-center justify-between">
+                  <q-btn
+                    v-for="cond in ['Madura', 'Fotoenvejecida']"
+                    :key="cond"
+                    no-caps
+                    rounded
+                    unelevated
+                    class="condition-pill-toggle col text-center"
+                    :class="{ 'is-selected': isConditionSelected(cond) }"
+                    @click="toggleCondition(cond)"
+                  >
+                    {{ cond }}
+                  </q-btn>
+                </div>
               </div>
             </div>
 
@@ -1184,11 +1215,18 @@ const alertasCriticas = computed(() => {
   border: 1px solid #cbd5e1;
   border-radius: 16px;
   min-height: 32px;
-  padding: 4px 14px;
-  font-size: 13px;
+  padding: 4px 6px;
+  font-size: 12px;
   font-weight: 600;
   line-height: 1.2;
   transition: all 0.15s ease-in-out;
+}
+
+@media (min-width: 600px) {
+  .condition-pill-toggle {
+    padding: 4px 14px;
+    font-size: 13px;
+  }
 }
 
 .condition-pill-toggle.is-selected {
