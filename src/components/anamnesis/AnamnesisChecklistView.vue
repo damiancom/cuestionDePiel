@@ -955,10 +955,14 @@ const alertasCriticas = computed(() => {
     justify-content: space-between;
   }
   .scale-toggle {
-    width: auto;
+    width: 250px;
+    display: flex;
   }
   .scale-toggle :deep(.q-btn) {
-    flex: initial;
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 2px 6px;
+    font-size: 12px;
   }
 }
 

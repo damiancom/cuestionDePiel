@@ -992,13 +992,14 @@ const alertasCriticas = computed(() => {
   }
 
   .scale-toggle {
-    width: auto;
+    width: 250px;
+    display: flex;
   }
 
   .scale-toggle :deep(.q-btn) {
-    flex: none;
-    min-width: 44px;
-    padding: 2px 10px;
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 2px 6px;
     font-size: 12px;
   }
 }
