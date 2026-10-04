@@ -153,6 +153,7 @@ const formData = reactive({
     cicatrizacionQueloides: false,
     fototipo: null,
     biotipo: '',
+    condiciones: [],
     protectorSolar: '',
     exposicionSolar: ''
   },
@@ -254,6 +255,7 @@ function resetData() {
   formData.dermatologicos.cicatrizacionQueloides = false;
   formData.dermatologicos.fototipo = null;
   formData.dermatologicos.biotipo = '';
+  formData.dermatologicos.condiciones = [];
   formData.dermatologicos.protectorSolar = '';
   formData.dermatologicos.exposicionSolar = '';
 
@@ -345,6 +347,14 @@ function loadData(data) {
   const rawFototipo = val('phototype', 'phototype', null);
   formData.dermatologicos.fototipo = rawFototipo != null && rawFototipo !== '' ? Number(rawFototipo) : null;
   formData.dermatologicos.biotipo = val('skin_biotype', 'skinBiotype', '') || '';
+  const rawCond = val('skin_conditions', 'skinConditions', '');
+  if (Array.isArray(rawCond)) {
+    formData.dermatologicos.condiciones = rawCond;
+  } else if (typeof rawCond === 'string' && rawCond.trim()) {
+    formData.dermatologicos.condiciones = rawCond.split(',').map(s => s.trim()).filter(Boolean);
+  } else {
+    formData.dermatologicos.condiciones = [];
+  }
   formData.dermatologicos.protectorSolar = val('sunscreen_use', 'sunscreenUse', '') || '';
   formData.dermatologicos.exposicionSolar = val('sun_exposure', 'sunExposure', '') || '';
 
@@ -431,6 +441,7 @@ function toBackendPayload() {
     has_keloids_irregular_scarring: formData.dermatologicos.cicatrizacionQueloides,
     phototype: formData.dermatologicos.fototipo != null ? String(formData.dermatologicos.fototipo) : '',
     skin_biotype: formData.dermatologicos.biotipo || '',
+    skin_conditions: (formData.dermatologicos.condiciones || []).join(', '),
     sunscreen_use: formData.dermatologicos.protectorSolar || '',
     sun_exposure: formData.dermatologicos.exposicionSolar || '',
 

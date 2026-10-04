@@ -441,6 +441,32 @@
               </div>
             </div>
 
+            <!-- Condiciones de la Piel -->
+            <div class="q-mb-md">
+              <div class="text-subtitle2 text-grey-8 q-mb-xs">Condiciones de la Piel</div>
+              <div class="row q-gutter-sm items-center justify-start">
+                <q-btn
+                  v-for="cond in condicionesPielOptions"
+                  :key="cond"
+                  no-caps
+                  rounded
+                  unelevated
+                  class="toggle-hybrid condition-toggle-btn"
+                  :color="isConditionSelected(cond) ? 'primary' : 'grey-2'"
+                  :text-color="isConditionSelected(cond) ? 'white' : 'grey-8'"
+                  @click="toggleCondition(cond)"
+                >
+                  <q-icon
+                    v-if="isConditionSelected(cond)"
+                    name="check"
+                    size="16px"
+                    class="q-mr-xs"
+                  />
+                  {{ cond }}
+                </q-btn>
+              </div>
+            </div>
+
             <!-- Afección actual -->
             <div class="q-mb-md">
               <q-input
@@ -734,6 +760,21 @@
                   <span v-else class="text-caption text-grey-6">Sin definir</span>
                 </div>
 
+                <div v-if="formData.dermatologicos.condiciones?.length" class="q-mb-xs">
+                  <div class="text-caption text-grey-7">Condiciones:</div>
+                  <div class="row q-gutter-xs q-mt-xs">
+                    <q-badge
+                      v-for="cond in formData.dermatologicos.condiciones"
+                      :key="cond"
+                      color="blue-1"
+                      text-color="primary"
+                      class="text-weight-bold"
+                    >
+                      {{ cond }}
+                    </q-badge>
+                  </div>
+                </div>
+
                 <div v-if="formData.dermatologicos.afeccionActual" class="q-mt-xs">
                   <div class="text-caption text-grey-7">Afección actual:</div>
                   <div class="text-caption text-weight-medium bg-grey-2 q-pa-xs rounded-borders">
@@ -809,6 +850,33 @@ const biotiposOptions = [
   { label: 'Grasa', value: 'Grasa' },
   { label: 'Mixta', value: 'Mixta' }
 ];
+
+const condicionesPielOptions = [
+  'Sensible / Reactiva',
+  'Deshidratada',
+  'Acneica',
+  'Discromia (Hipopigmentaciones / hiperpigmentaciones)',
+  'Madura',
+  'Fotoenvejecida'
+];
+
+function isConditionSelected(cond) {
+  return Array.isArray(props.formData?.dermatologicos?.condiciones) &&
+    props.formData.dermatologicos.condiciones.includes(cond);
+}
+
+function toggleCondition(cond) {
+  if (!props.formData?.dermatologicos) return;
+  if (!Array.isArray(props.formData.dermatologicos.condiciones)) {
+    props.formData.dermatologicos.condiciones = [];
+  }
+  const idx = props.formData.dermatologicos.condiciones.indexOf(cond);
+  if (idx > -1) {
+    props.formData.dermatologicos.condiciones.splice(idx, 1);
+  } else {
+    props.formData.dermatologicos.condiciones.push(cond);
+  }
+}
 
 function getFototipoColor(n) {
   const colors = {
@@ -964,6 +1032,13 @@ const alertasCriticas = computed(() => {
   padding: 5px 14px;
   font-weight: 600;
   font-size: 13px;
+}
+
+.condition-toggle-btn {
+  padding: 5px 14px;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.2s ease-in-out;
 }
 
 .scale-row {
