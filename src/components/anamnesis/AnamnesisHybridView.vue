@@ -38,7 +38,7 @@
                   Fototipo {{ formData.dermatologicos.fototipo }}
                 </q-badge>
               </div>
-              <div class="row no-wrap justify-between items-center q-py-xs fototipo-row">
+              <div class="row no-wrap q-gutter-x-sm items-center justify-start q-py-xs fototipo-row">
                 <div
                   v-for="n in 6"
                   :key="n"
@@ -48,31 +48,32 @@
                   @click="formData.dermatologicos.fototipo = (formData.dermatologicos.fototipo == n ? null : n)"
                 ><span class="q-px-sm">{{ n }}</span></div>
               </div>
-              <div class="text-caption text-grey-8 text-center q-mt-xs">
+              <div class="text-caption text-grey-8 q-mt-xs">
                 {{ fototipoDescripcion }}
               </div>
             </div>
 
-            <!-- Biotipo Cutáneo -->
+            <!-- Biotipo Cutáneo (unificado como toggle continuo de opciones) -->
             <div class="q-mb-md">
               <div class="text-subtitle2 text-grey-8 q-mb-xs">Biotipo Cutáneo</div>
-              <div class="row q-gutter-xs items-center justify-start">
-                <q-btn
-                  v-for="bt in biotiposOptions"
-                  :key="bt.value"
+              <div class="row items-center justify-start">
+                <q-btn-toggle
+                  v-model="formData.dermatologicos.biotipo"
                   no-caps
                   rounded
                   unelevated
-                  class="pill-option-btn"
-                  :class="{ 'is-selected': formData.dermatologicos.biotipo === bt.value }"
-                  @click="formData.dermatologicos.biotipo = (formData.dermatologicos.biotipo === bt.value ? '' : bt.value)"
-                >
-                  {{ bt.label }}
-                </q-btn>
+                  class="toggle-hybrid biotipo-toggle-unified"
+                  toggle-color="primary"
+                  color="grey-2"
+                  text-color="grey-8"
+                  clearable
+                  :options="biotiposOptions"
+                  @update:model-value="val => { if (!val) formData.dermatologicos.biotipo = ''; }"
+                />
               </div>
             </div>
 
-            <!-- Condiciones de la Piel -->
+            <!-- Condiciones de la Piel (píldoras armonizadas con el diseño general) -->
             <div class="q-mb-md">
               <div class="text-subtitle2 text-grey-8 q-mb-xs">Condiciones de la Piel</div>
               <div class="row q-gutter-xs items-center justify-start">
@@ -82,7 +83,7 @@
                   no-caps
                   rounded
                   unelevated
-                  class="pill-option-btn"
+                  class="condition-pill-toggle"
                   :class="{ 'is-selected': isConditionSelected(cond) }"
                   @click="toggleCondition(cond)"
                 >
@@ -983,7 +984,7 @@ const fototipoDescripcion = computed(() => {
     5: 'Fototipo V: Oscura. Muy rara vez se quema, se broncea intensamente.',
     6: 'Fototipo VI: Muy oscura. Nunca se quema, pigmentación profunda.'
   };
-  return desc[props.formData.dermatologicos.fototipo] || 'Hacé clic sobre un círculo para seleccionar el fototipo';
+  return desc[props.formData.dermatologicos.fototipo] || 'Hacé clic para seleccionar el fototipo';
 });
 
 const alertasCriticas = computed(() => {
@@ -1125,30 +1126,44 @@ const alertasCriticas = computed(() => {
   background-color: #f8fafc;
 }
 
-.pill-option-btn {
+.biotipo-toggle-unified {
+  border: 1px solid #cbd5e1;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.biotipo-toggle-unified :deep(.q-btn) {
+  min-width: 68px;
+  padding: 4px 16px;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.condition-pill-toggle {
   border: 1px solid #cbd5e1;
   border-radius: 16px;
   min-height: 32px;
-  padding: 5px 14px;
+  padding: 4px 14px;
   font-size: 13px;
   font-weight: 600;
   line-height: 1.2;
   transition: all 0.15s ease-in-out;
 }
 
-.pill-option-btn.is-selected {
+.condition-pill-toggle.is-selected {
   background-color: var(--q-primary) !important;
   color: #ffffff !important;
   border-color: var(--q-primary) !important;
 }
 
-.pill-option-btn:not(.is-selected) {
+.condition-pill-toggle:not(.is-selected) {
   background-color: #f1f5f9 !important;
   color: #334155 !important;
   border-color: #cbd5e1 !important;
 }
 
-.pill-option-btn:hover:not(.is-selected) {
+.condition-pill-toggle:hover:not(.is-selected) {
   background-color: #e2e8f0 !important;
 }
 
