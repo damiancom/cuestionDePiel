@@ -128,59 +128,53 @@
             </div>
 
             <!-- Hábitos cotidianos: 3 columnas cuando está en tablet/desktop con detalle cerrado -->
-            <div v-if="useColumnsLayout" class="row q-col-gutter-sm q-mt-xs">
+            <div v-if="useColumnsLayout" class="row q-col-gutter-md q-mt-xs">
               <div class="col-12 col-sm-4">
-                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders text-center flex flex-center column">
-                  <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">¿Fuma?</div>
-                  <q-btn-toggle
-                    v-model="formData.habitos.fuma"
-                    no-caps
-                    rounded
-                    dense
-                    unelevated
-                    class="toggle-hybrid"
-                    toggle-color="primary"
-                    color="grey-2"
-                    text-color="grey-8"
-                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                  />
-                </div>
+                <div class="text-caption text-grey-8">¿Fuma?</div>
+                <q-btn-toggle
+                  v-model="formData.habitos.fuma"
+                  no-caps
+                  dense
+                  rounded
+                  unelevated
+                  class="toggle-hybrid q-mt-xs"
+                  toggle-color="primary"
+                  color="grey-2"
+                  text-color="grey-8"
+                  :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                />
               </div>
 
               <div class="col-12 col-sm-4">
-                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders text-center flex flex-center column">
-                  <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">¿Consume alcohol?</div>
-                  <q-btn-toggle
-                    v-model="formData.habitos.consumeAlcohol"
-                    no-caps
-                    rounded
-                    dense
-                    unelevated
-                    class="toggle-hybrid"
-                    toggle-color="primary"
-                    color="grey-2"
-                    text-color="grey-8"
-                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                  />
-                </div>
+                <div class="text-caption text-grey-8">¿Consume alcohol?</div>
+                <q-btn-toggle
+                  v-model="formData.habitos.consumeAlcohol"
+                  no-caps
+                  dense
+                  rounded
+                  unelevated
+                  class="toggle-hybrid q-mt-xs"
+                  toggle-color="primary"
+                  color="grey-2"
+                  text-color="grey-8"
+                  :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                />
               </div>
 
               <div class="col-12 col-sm-4">
-                <div class="hybrid-subitem q-py-sm q-px-sm rounded-borders text-center flex flex-center column">
-                  <div class="text-caption text-weight-medium text-grey-8 q-mb-xs">Agua adecuada (2L)</div>
-                  <q-btn-toggle
-                    v-model="formData.habitos.ingestaAdecuada"
-                    no-caps
-                    rounded
-                    dense
-                    unelevated
-                    class="toggle-hybrid"
-                    toggle-color="primary"
-                    color="grey-2"
-                    text-color="grey-8"
-                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                  />
-                </div>
+                <div class="text-caption text-grey-8">Agua adecuada (2L)</div>
+                <q-btn-toggle
+                  v-model="formData.habitos.ingestaAdecuada"
+                  no-caps
+                  dense
+                  rounded
+                  unelevated
+                  class="toggle-hybrid q-mt-xs"
+                  toggle-color="primary"
+                  color="grey-2"
+                  text-color="grey-8"
+                  :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                />
               </div>
             </div>
 
