@@ -1103,13 +1103,16 @@ const alertasCriticas = computed(() => {
 }
 
 .fototipo-row {
+  width: 100%;
   max-width: 100%;
+  gap: 4px;
 }
 
 .fototipo-pill-hybrid {
   min-height: 32px;
-  min-width: 52px;
-  padding: 5px 16px;
+  min-width: 0;
+  flex: 1 1 0;
+  padding: 4px 6px;
   border-radius: 16px;
   border: 2px solid transparent;
   font-weight: 700;
@@ -1121,11 +1124,20 @@ const alertasCriticas = computed(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+@media (min-width: 520px) {
+  .fototipo-row {
+    gap: 8px;
+  }
+  .fototipo-pill-hybrid {
+    padding: 5px 16px;
+  }
 }
 
 .fototipo-pill-hybrid.fototipo-selected {
-  transform: scale(1.08);
+  transform: scale(1.05);
   border-color: #1976d2 !important;
   box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.25) !important;
   z-index: 5;
@@ -1143,19 +1155,28 @@ const alertasCriticas = computed(() => {
   border: 1px solid #cbd5e1;
   border-radius: 16px;
   overflow: hidden;
+  width: 100%;
+  display: flex;
 }
 
 .biotipo-toggle-unified :deep(.q-btn) {
+  flex: 1 1 0;
   min-width: 0;
-  padding: 4px 12px;
+  padding: 4px 6px;
   font-weight: 600;
-  font-size: 12.5px;
+  font-size: 12px;
   line-height: 1.2;
 }
 
 @media (min-width: 520px) {
   .biotipo-toggle-unified {
     width: 320px;
+    display: inline-flex;
+  }
+
+  .biotipo-toggle-unified :deep(.q-btn) {
+    padding: 4px 12px;
+    font-size: 12.5px;
   }
 }
 
