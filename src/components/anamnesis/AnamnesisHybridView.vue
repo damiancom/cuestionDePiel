@@ -805,11 +805,10 @@ const useColumnsLayout = computed(() => {
 });
 
 const biotiposOptions = [
-  'Eudérmica',
-  'Seca / Alípica',
+  'Normal',
   'Grasa',
-  'Mixta',
-  'Sensible'
+  'Seca',
+  'Mixta'
 ];
 
 function getFototipoColor(n) {
