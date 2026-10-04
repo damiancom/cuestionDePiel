@@ -1116,13 +1116,18 @@ const alertasCriticas = computed(() => {
   border-radius: 16px;
   overflow: hidden;
   flex-shrink: 0;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: stretch;
 }
 
 .toggle-hybrid :deep(.q-btn) {
   min-width: 44px;
-  padding: 2px 10px;
-  font-size: 12px;
+  min-height: 32px;
+  padding: 4px 12px;
+  font-size: 12.5px;
   font-weight: 600;
+  line-height: 1.2;
 }
 
 .minimal-input {
@@ -1187,19 +1192,25 @@ const alertasCriticas = computed(() => {
   border-radius: 16px;
   overflow: hidden;
   width: 100%;
+  min-height: 32px;
   display: flex;
 }
 
 .biotipo-toggle-unified :deep(.q-btn) {
   flex: 1 1 0;
   min-width: 0;
+  min-height: 32px;
   padding: 4px 6px;
   font-weight: 600;
-  font-size: 12px;
+  font-size: 12.5px;
   line-height: 1.2;
 }
 
 @media (min-width: 520px) {
+  .toggle-hybrid :deep(.q-btn) {
+    font-size: 13px;
+  }
+
   .biotipo-toggle-unified {
     width: 320px;
     display: inline-flex;
@@ -1207,7 +1218,7 @@ const alertasCriticas = computed(() => {
 
   .biotipo-toggle-unified :deep(.q-btn) {
     padding: 4px 12px;
-    font-size: 12.5px;
+    font-size: 13px;
   }
 }
 
@@ -1216,7 +1227,7 @@ const alertasCriticas = computed(() => {
   border-radius: 16px;
   min-height: 32px;
   padding: 4px 6px;
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 600;
   line-height: 1.2;
   transition: all 0.15s ease-in-out;
@@ -1253,13 +1264,17 @@ const alertasCriticas = computed(() => {
 
 .scale-toggle {
   width: 100%;
+  min-height: 32px;
 }
 
 .scale-toggle :deep(.q-btn) {
   flex: 1;
   min-width: 0;
-  padding: 3px 6px;
-  font-size: 11.5px;
+  min-height: 32px;
+  padding: 4px 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.2;
 }
 
 @media (min-width: 520px) {
@@ -1270,15 +1285,15 @@ const alertasCriticas = computed(() => {
   }
 
   .scale-toggle {
-    width: 250px;
+    width: 260px;
     display: flex;
   }
 
   .scale-toggle :deep(.q-btn) {
     flex: 1 1 0;
     min-width: 0;
-    padding: 2px 6px;
-    font-size: 12px;
+    padding: 4px 8px;
+    font-size: 13px;
   }
 }
 
