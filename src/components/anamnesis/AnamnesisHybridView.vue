@@ -763,94 +763,114 @@
       <div class="col-12 col-lg-4">
         <div class="sticky-summary">
           <q-card flat bordered class="live-summary-card">
-            <q-card-section>
-              <div class="row items-center justify-between q-mb-sm">
-                <div class="text-subtitle1 text-weight-bold text-primary row items-center">
-                  <q-icon name="assignment" class="q-mr-xs" size="20px" />
-                  Resumen Clínico en Vivo
-                </div>
-                <q-badge color="teal" label="Auto-detect" />
-              </div>
-              <div class="text-caption text-grey-7 q-mb-md">
-                Alertas críticas y perfil de piel generados en tiempo real
-              </div>
-
-              <!-- Alertas Críticas de Seguridad -->
-              <div class="q-mb-md">
-                <div class="text-caption text-weight-bold text-grey-8 q-mb-xs">ALERTAS DE SEGURIDAD</div>
-                <div v-if="alertasCriticas.length > 0" class="q-gutter-y-xs">
-                  <div
-                    v-for="(alerta, idx) in alertasCriticas"
-                    :key="idx"
-                    class="alert-badge-item q-pa-xs rounded-borders text-caption text-weight-bold"
-                    :class="alerta.clase"
-                  >
-                    <q-icon :name="alerta.icono" size="16px" class="q-mr-xs" />
-                    {{ alerta.texto }}
+            <q-card-section
+              class="cursor-pointer row items-center justify-between no-wrap q-py-sm header-collapsible"
+              @click="toggleSection('resumen')"
+            >
+              <div class="row items-center no-wrap">
+                <q-icon name="assignment" class="q-mr-xs text-primary flex-shrink-0" size="20px" />
+                <div>
+                  <div class="text-subtitle1 text-weight-bold text-primary">
+                    Resumen Clínico en Vivo
+                  </div>
+                  <div class="text-caption text-grey-7">
+                    Alertas críticas y perfil de piel generados en tiempo real
                   </div>
                 </div>
-                <div v-else class="text-caption text-positive bg-green-1 q-pa-sm rounded-borders">
-                  ✓ Sin contraindicaciones críticas declaradas
-                </div>
               </div>
-
-              <!-- Perfil de Piel -->
-              <div class="q-mb-md">
-                <div class="text-caption text-weight-bold text-grey-8 q-mb-xs">PERFIL CUTÁNEO</div>
-                <div class="row items-center q-gutter-x-sm q-mb-xs">
-                  <div class="text-body2 text-grey-8">Fototipo:</div>
-                  <q-badge
-                    v-if="formData.dermatologicos.fototipo"
-                    :style="{ backgroundColor: getFototipoColor(formData.dermatologicos.fototipo), color: formData.dermatologicos.fototipo >= 5 ? '#fff' : '#000' }"
-                    class="text-weight-bold text-caption q-pa-xs"
-                  >
-                    Tipo {{ formData.dermatologicos.fototipo }}
-                  </q-badge>
-                  <span v-else class="text-caption text-grey-6">Sin definir</span>
-                </div>
-
-                <div class="row items-center q-gutter-x-sm q-mb-xs">
-                  <div class="text-body2 text-grey-8">Biotipo:</div>
-                  <q-badge color="blue-2" text-color="primary" class="text-weight-bold" v-if="formData.dermatologicos.biotipo">
-                    {{ formData.dermatologicos.biotipo }}
-                  </q-badge>
-                  <span v-else class="text-caption text-grey-6">Sin definir</span>
-                </div>
-
-                <div v-if="formData.dermatologicos.condiciones?.length" class="q-mb-xs">
-                  <div class="text-caption text-grey-7">Condiciones:</div>
-                  <div class="row q-gutter-xs q-mt-xs">
-                    <q-badge
-                      v-for="cond in formData.dermatologicos.condiciones"
-                      :key="cond"
-                      color="blue-1"
-                      text-color="primary"
-                      class="text-weight-bold"
-                    >
-                      {{ cond }}
-                    </q-badge>
-                  </div>
-                </div>
-
-
-              </div>
-
-              <!-- Hábitos Resumen -->
-              <div>
-                <div class="text-caption text-weight-bold text-grey-8 q-mb-xs">HÁBITOS DETECTADOS</div>
-                <div class="row q-gutter-xs">
-                  <q-badge :color="formData.habitos.fuma ? 'negative' : 'grey-3'" :text-color="formData.habitos.fuma ? 'white' : 'grey-9'">
-                    {{ formData.habitos.fuma ? 'Fumador' : 'No fuma' }}
-                  </q-badge>
-                  <q-badge :color="formData.habitos.consumeAlcohol ? 'warning' : 'grey-3'" :text-color="formData.habitos.consumeAlcohol ? 'dark' : 'grey-9'">
-                    {{ formData.habitos.consumeAlcohol ? 'Alcohol' : 'Sin alcohol' }}
-                  </q-badge>
-                  <q-badge v-if="formData.habitos.nivelEstres" color="purple-1" text-color="purple-9">
-                    Estrés: {{ formData.habitos.nivelEstres }}
-                  </q-badge>
-                </div>
+              <div class="row items-center q-gutter-x-xs no-wrap">
+                <q-badge color="teal" label="Auto-detect" class="gt-xs" />
+                <q-btn
+                  flat
+                  round
+                  dense
+                  color="grey-7"
+                  :icon="collapsedSections.resumen ? 'expand_more' : 'expand_less'"
+                  @click.stop="toggleSection('resumen')"
+                />
               </div>
             </q-card-section>
+
+            <q-slide-transition>
+              <div v-show="!collapsedSections.resumen">
+                <q-separator />
+                <q-card-section>
+                  <!-- Alertas Críticas de Seguridad -->
+                  <div class="q-mb-md">
+                    <div class="text-caption text-weight-bold text-grey-8 q-mb-xs">ALERTAS DE SEGURIDAD</div>
+                    <div v-if="alertasCriticas.length > 0" class="q-gutter-y-xs">
+                      <div
+                        v-for="(alerta, idx) in alertasCriticas"
+                        :key="idx"
+                        class="alert-badge-item q-pa-xs rounded-borders text-caption text-weight-bold"
+                        :class="alerta.clase"
+                      >
+                        <q-icon :name="alerta.icono" size="16px" class="q-mr-xs" />
+                        {{ alerta.texto }}
+                      </div>
+                    </div>
+                    <div v-else class="text-caption text-positive bg-green-1 q-pa-sm rounded-borders">
+                      ✓ Sin contraindicaciones críticas declaradas
+                    </div>
+                  </div>
+
+                  <!-- Perfil de Piel -->
+                  <div class="q-mb-md">
+                    <div class="text-caption text-weight-bold text-grey-8 q-mb-xs">PERFIL CUTÁNEO</div>
+                    <div class="row items-center q-gutter-x-sm q-mb-xs">
+                      <div class="text-body2 text-grey-8">Fototipo:</div>
+                      <q-badge
+                        v-if="formData.dermatologicos.fototipo"
+                        :style="{ backgroundColor: getFototipoColor(formData.dermatologicos.fototipo), color: formData.dermatologicos.fototipo >= 5 ? '#fff' : '#000' }"
+                        class="text-weight-bold text-caption q-pa-xs"
+                      >
+                        Tipo {{ formData.dermatologicos.fototipo }}
+                      </q-badge>
+                      <span v-else class="text-caption text-grey-6">Sin definir</span>
+                    </div>
+
+                    <div class="row items-center q-gutter-x-sm q-mb-xs">
+                      <div class="text-body2 text-grey-8">Biotipo:</div>
+                      <q-badge color="blue-2" text-color="primary" class="text-weight-bold" v-if="formData.dermatologicos.biotipo">
+                        {{ formData.dermatologicos.biotipo }}
+                      </q-badge>
+                      <span v-else class="text-caption text-grey-6">Sin definir</span>
+                    </div>
+
+                    <div v-if="formData.dermatologicos.condiciones?.length" class="q-mb-xs">
+                      <div class="text-caption text-grey-7">Condiciones:</div>
+                      <div class="row q-gutter-xs q-mt-xs">
+                        <q-badge
+                          v-for="cond in formData.dermatologicos.condiciones"
+                          :key="cond"
+                          color="blue-1"
+                          text-color="primary"
+                          class="text-weight-bold"
+                        >
+                          {{ cond }}
+                        </q-badge>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Hábitos Resumen -->
+                  <div>
+                    <div class="text-caption text-weight-bold text-grey-8 q-mb-xs">HÁBITOS DETECTADOS</div>
+                    <div class="row q-gutter-xs">
+                      <q-badge :color="formData.habitos.fuma ? 'negative' : 'grey-3'" :text-color="formData.habitos.fuma ? 'white' : 'grey-9'">
+                        {{ formData.habitos.fuma ? 'Fumador' : 'No fuma' }}
+                      </q-badge>
+                      <q-badge :color="formData.habitos.consumeAlcohol ? 'warning' : 'grey-3'" :text-color="formData.habitos.consumeAlcohol ? 'dark' : 'grey-9'">
+                        {{ formData.habitos.consumeAlcohol ? 'Alcohol' : 'Sin alcohol' }}
+                      </q-badge>
+                      <q-badge v-if="formData.habitos.nivelEstres" color="purple-1" text-color="purple-9">
+                        Estrés: {{ formData.habitos.nivelEstres }}
+                      </q-badge>
+                    </div>
+                  </div>
+                </q-card-section>
+              </div>
+            </q-slide-transition>
           </q-card>
         </div>
       </div>
@@ -896,7 +916,8 @@ const collapsedSections = reactive({
   cutanea: false,
   salud: false,
   seguridad: false,
-  habitos: false
+  habitos: false,
+  resumen: true
 });
 
 function toggleSection(sec) {
