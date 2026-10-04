@@ -3,13 +3,177 @@
     <div class="row q-col-gutter-lg items-start">
       <!-- Columna Principal: Bloques temáticos continuos (sin stepper bloqueante) -->
       <div class="col-12 col-lg-8 q-gutter-y-md">
-        <!-- 1. SALUD GENERAL & ANTECEDENTES MÉDICOS -->
+        <!-- 1. EVALUACIÓN CUTÁNEA & FOTOTIPO -->
+        <q-card flat bordered class="hybrid-card">
+          <q-card-section>
+            <div class="row items-center q-mb-sm">
+              <q-avatar size="34px" color="amber-1" text-color="amber-9" icon="face" class="q-mr-sm" />
+              <div>
+                <div class="text-subtitle1 text-weight-bold">1. Evaluación Cutánea & Fototipo</div>
+                <div class="text-caption text-grey-7">Fototipo de Fitzpatrick, biotipo cutáneo y condiciones de la piel</div>
+              </div>
+            </div>
+
+            <!-- Fototipo Fitzpatrick Interactivo (siempre 1 sola línea) -->
+            <div class="q-mb-md q-pa-sm bg-grey-1 rounded-borders">
+              <div class="text-subtitle2 text-grey-9 q-mb-xs">
+                Clasificación de Fitzpatrick:
+                <q-badge color="primary" class="q-ml-sm" v-if="formData.dermatologicos.fototipo">
+                  Fototipo {{ formData.dermatologicos.fototipo }}
+                </q-badge>
+              </div>
+              <div class="row no-wrap justify-between items-center q-py-xs fototipo-row">
+                <div
+                  v-for="n in 6"
+                  :key="n"
+                  class="fototipo-circle-hybrid cursor-pointer flex flex-center"
+                  :class="{ 'fototipo-selected': formData.dermatologicos.fototipo == n }"
+                  :style="{ backgroundColor: getFototipoColor(n), color: n >= 5 ? '#fff' : '#333' }"
+                  @click="formData.dermatologicos.fototipo = (formData.dermatologicos.fototipo == n ? null : n)"
+                >
+                  {{ n }}
+                </div>
+              </div>
+              <div class="text-caption text-grey-8 text-center q-mt-xs">
+                {{ fototipoDescripcion }}
+              </div>
+            </div>
+
+            <!-- Biotipo Cutáneo -->
+            <div class="q-mb-md">
+              <div class="text-subtitle2 text-grey-8 q-mb-xs">Biotipo Cutáneo</div>
+              <div class="row q-gutter-xs items-center justify-start">
+                <q-btn
+                  v-for="bt in biotiposOptions"
+                  :key="bt.value"
+                  no-caps
+                  rounded
+                  unelevated
+                  class="pill-option-btn"
+                  :class="{ 'is-selected': formData.dermatologicos.biotipo === bt.value }"
+                  @click="formData.dermatologicos.biotipo = (formData.dermatologicos.biotipo === bt.value ? '' : bt.value)"
+                >
+                  {{ bt.label }}
+                </q-btn>
+              </div>
+            </div>
+
+            <!-- Condiciones de la Piel -->
+            <div class="q-mb-md">
+              <div class="text-subtitle2 text-grey-8 q-mb-xs">Condiciones de la Piel</div>
+              <div class="row q-gutter-xs items-center justify-start">
+                <q-btn
+                  v-for="cond in condicionesPielOptions"
+                  :key="cond"
+                  no-caps
+                  rounded
+                  unelevated
+                  class="pill-option-btn"
+                  :class="{ 'is-selected': isConditionSelected(cond) }"
+                  @click="toggleCondition(cond)"
+                >
+                  {{ cond }}
+                </q-btn>
+              </div>
+            </div>
+
+
+
+            <div class="row q-col-gutter-md">
+              <!-- Herpes y Queloides: 2 columnas en tablet/desktop con detalle cerrado -->
+              <template v-if="useColumnsLayout">
+                <div class="col-12 col-sm-6">
+                  <div class="text-caption text-grey-8">¿Herpes Simple?</div>
+                  <q-btn-toggle
+                    v-model="formData.dermatologicos.herpesSimple"
+                    no-caps
+                    dense
+                    rounded
+                    unelevated
+                    class="toggle-hybrid q-mt-xs"
+                    toggle-color="primary"
+                    color="grey-2"
+                    text-color="grey-8"
+                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                  />
+                </div>
+
+                <div class="col-12 col-sm-6">
+                  <div class="text-caption text-grey-8">¿Cicatrización con queloides?</div>
+                  <q-btn-toggle
+                    v-model="formData.dermatologicos.cicatrizacionQueloides"
+                    no-caps
+                    dense
+                    rounded
+                    unelevated
+                    class="toggle-hybrid q-mt-xs"
+                    toggle-color="primary"
+                    color="grey-2"
+                    text-color="grey-8"
+                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                  />
+                </div>
+              </template>
+
+              <!-- Herpes y Queloides: Fila completa (celular o detalle abierto) -->
+              <template v-else>
+                <div class="col-12">
+                  <div class="hybrid-subitem q-py-sm q-px-md rounded-borders">
+                    <div class="row items-center justify-between q-gutter-x-sm">
+                      <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">¿Herpes Simple?</span>
+                      <div class="col-auto">
+                        <q-btn-toggle
+                          v-model="formData.dermatologicos.herpesSimple"
+                          no-caps
+                          dense
+                          rounded
+                          unelevated
+                          class="toggle-hybrid"
+                          toggle-color="primary"
+                          color="grey-2"
+                          text-color="grey-8"
+                          :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <div class="hybrid-subitem q-py-sm q-px-md rounded-borders">
+                    <div class="row items-center justify-between q-gutter-x-sm">
+                      <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">¿Cicatrización con queloides?</span>
+                      <div class="col-auto">
+                        <q-btn-toggle
+                          v-model="formData.dermatologicos.cicatrizacionQueloides"
+                          no-caps
+                          dense
+                          rounded
+                          unelevated
+                          class="toggle-hybrid"
+                          toggle-color="primary"
+                          color="grey-2"
+                          text-color="grey-8"
+                          :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+
+
+            </div>
+          </q-card-section>
+        </q-card>
+
+        <!-- 2. SALUD GENERAL & ANTECEDENTES MÉDICOS -->
         <q-card flat bordered class="hybrid-card">
           <q-card-section>
             <div class="row items-center q-mb-sm">
               <q-avatar size="34px" color="teal-1" text-color="teal-8" icon="favorite" class="q-mr-sm" />
               <div>
-                <div class="text-subtitle1 text-weight-bold">1. Salud General & Antecedentes Médicos</div>
+                <div class="text-subtitle1 text-weight-bold">2. Salud General & Antecedentes Médicos</div>
                 <div class="text-caption text-grey-7">Patologías previas, alergias y antecedentes familiares</div>
               </div>
             </div>
@@ -116,14 +280,14 @@
           </q-card-section>
         </q-card>
 
-        <!-- 2. HÁBITOS & ESTILO DE VIDA -->
+        <!-- 3. HÁBITOS & ESTILO DE VIDA -->
         <q-card flat bordered class="hybrid-card">
           <q-card-section>
             <div class="row items-center q-mb-sm">
               <q-avatar size="34px" color="blue-1" text-color="blue-8" icon="self_improvement" class="q-mr-sm" />
               <div>
-                <div class="text-subtitle1 text-weight-bold">2. Hábitos & Estilo de Vida</div>
-                <div class="text-caption text-grey-7">Rutinas cotidianas, hidratación, descanso y ginecología</div>
+                <div class="text-subtitle1 text-weight-bold">3. Hábitos & Estilo de Vida</div>
+                <div class="text-caption text-grey-7">Rutinas cotidianas, hidratación, cuidado solar, descanso y ginecología</div>
               </div>
             </div>
 
@@ -313,6 +477,30 @@
               </div>
             </div>
 
+                        <!-- Cuidado & Exposición Solar -->
+            <div class="text-subtitle2 text-grey-8 q-mt-md q-mb-xs">Cuidado & Exposición Solar</div>
+            <div class="row q-col-gutter-sm">
+              <div class="col-12 col-sm-6">
+                <q-input
+                  v-model="formData.dermatologicos.protectorSolar"
+                  label="Uso de protector solar"
+                  class="minimal-input"
+                  borderless
+                  dense
+                />
+              </div>
+
+              <div class="col-12 col-sm-6">
+                <q-input
+                  v-model="formData.dermatologicos.exposicionSolar"
+                  label="Exposición solar habitual"
+                  class="minimal-input"
+                  borderless
+                  dense
+                />
+              </div>
+            </div>
+
             <!-- Historia Ginecológica en filas completas -->
             <div class="text-subtitle2 text-grey-8 q-mt-md q-mb-xs">Historia Ginecológica</div>
             <div class="q-gutter-y-xs">
@@ -380,199 +568,6 @@
                     />
                   </div>
                 </div>
-              </div>
-            </div>
-          </q-card-section>
-        </q-card>
-
-        <!-- 3. EVALUACIÓN DERMATOLÓGICA & FOTOTIPO -->
-        <q-card flat bordered class="hybrid-card">
-          <q-card-section>
-            <div class="row items-center q-mb-sm">
-              <q-avatar size="34px" color="amber-1" text-color="amber-9" icon="face" class="q-mr-sm" />
-              <div>
-                <div class="text-subtitle1 text-weight-bold">3. Evaluación Cutánea & Fototipo</div>
-                <div class="text-caption text-grey-7">Fototipo de Fitzpatrick, biotipo y afección cutánea actual</div>
-              </div>
-            </div>
-
-            <!-- Fototipo Fitzpatrick Interactivo (siempre 1 sola línea) -->
-            <div class="q-mb-md q-pa-sm bg-grey-1 rounded-borders">
-              <div class="text-subtitle2 text-grey-9 q-mb-xs">
-                Clasificación de Fitzpatrick:
-                <q-badge color="primary" class="q-ml-sm" v-if="formData.dermatologicos.fototipo">
-                  Fototipo {{ formData.dermatologicos.fototipo }}
-                </q-badge>
-              </div>
-              <div class="row no-wrap justify-between items-center q-py-xs fototipo-row">
-                <div
-                  v-for="n in 6"
-                  :key="n"
-                  class="fototipo-circle-hybrid cursor-pointer flex flex-center"
-                  :class="{ 'fototipo-selected': formData.dermatologicos.fototipo == n }"
-                  :style="{ backgroundColor: getFototipoColor(n), color: n >= 5 ? '#fff' : '#333' }"
-                  @click="formData.dermatologicos.fototipo = (formData.dermatologicos.fototipo == n ? null : n)"
-                >
-                  {{ n }}
-                </div>
-              </div>
-              <div class="text-caption text-grey-8 text-center q-mt-xs">
-                {{ fototipoDescripcion }}
-              </div>
-            </div>
-
-            <!-- Biotipo Cutáneo -->
-            <div class="q-mb-md">
-              <div class="text-subtitle2 text-grey-8 q-mb-xs">Biotipo Cutáneo</div>
-              <div class="row q-gutter-xs items-center justify-start">
-                <q-btn
-                  v-for="bt in biotiposOptions"
-                  :key="bt.value"
-                  no-caps
-                  rounded
-                  unelevated
-                  class="pill-option-btn"
-                  :class="{ 'is-selected': formData.dermatologicos.biotipo === bt.value }"
-                  @click="formData.dermatologicos.biotipo = (formData.dermatologicos.biotipo === bt.value ? '' : bt.value)"
-                >
-                  {{ bt.label }}
-                </q-btn>
-              </div>
-            </div>
-
-            <!-- Condiciones de la Piel -->
-            <div class="q-mb-md">
-              <div class="text-subtitle2 text-grey-8 q-mb-xs">Condiciones de la Piel</div>
-              <div class="row q-gutter-xs items-center justify-start">
-                <q-btn
-                  v-for="cond in condicionesPielOptions"
-                  :key="cond"
-                  no-caps
-                  rounded
-                  unelevated
-                  class="pill-option-btn"
-                  :class="{ 'is-selected': isConditionSelected(cond) }"
-                  @click="toggleCondition(cond)"
-                >
-                  {{ cond }}
-                </q-btn>
-              </div>
-            </div>
-
-            <!-- Afección actual -->
-            <div class="q-mb-md">
-              <q-input
-                v-model="formData.dermatologicos.afeccionActual"
-                label="Motivo de la consulta y afección cutánea actual *"
-                type="textarea"
-                autogrow
-                class="minimal-input"
-                borderless
-                placeholder="Acné, rosácea, melasma, fotoenvejecimiento, sensibilidad..."
-              />
-            </div>
-
-            <div class="row q-col-gutter-md">
-              <!-- Herpes y Queloides: 2 columnas en tablet/desktop con detalle cerrado -->
-              <template v-if="useColumnsLayout">
-                <div class="col-12 col-sm-6">
-                  <div class="text-caption text-grey-8">¿Herpes Simple?</div>
-                  <q-btn-toggle
-                    v-model="formData.dermatologicos.herpesSimple"
-                    no-caps
-                    dense
-                    rounded
-                    unelevated
-                    class="toggle-hybrid q-mt-xs"
-                    toggle-color="primary"
-                    color="grey-2"
-                    text-color="grey-8"
-                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                  />
-                </div>
-
-                <div class="col-12 col-sm-6">
-                  <div class="text-caption text-grey-8">¿Cicatrización con queloides?</div>
-                  <q-btn-toggle
-                    v-model="formData.dermatologicos.cicatrizacionQueloides"
-                    no-caps
-                    dense
-                    rounded
-                    unelevated
-                    class="toggle-hybrid q-mt-xs"
-                    toggle-color="primary"
-                    color="grey-2"
-                    text-color="grey-8"
-                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                  />
-                </div>
-              </template>
-
-              <!-- Herpes y Queloides: Fila completa (celular o detalle abierto) -->
-              <template v-else>
-                <div class="col-12">
-                  <div class="hybrid-subitem q-py-sm q-px-md rounded-borders">
-                    <div class="row items-center justify-between q-gutter-x-sm">
-                      <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">¿Herpes Simple?</span>
-                      <div class="col-auto">
-                        <q-btn-toggle
-                          v-model="formData.dermatologicos.herpesSimple"
-                          no-caps
-                          dense
-                          rounded
-                          unelevated
-                          class="toggle-hybrid"
-                          toggle-color="primary"
-                          color="grey-2"
-                          text-color="grey-8"
-                          :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-12">
-                  <div class="hybrid-subitem q-py-sm q-px-md rounded-borders">
-                    <div class="row items-center justify-between q-gutter-x-sm">
-                      <span class="col text-body2 text-weight-medium text-grey-9 lh-snug">¿Cicatrización con queloides?</span>
-                      <div class="col-auto">
-                        <q-btn-toggle
-                          v-model="formData.dermatologicos.cicatrizacionQueloides"
-                          no-caps
-                          dense
-                          rounded
-                          unelevated
-                          class="toggle-hybrid"
-                          toggle-color="primary"
-                          color="grey-2"
-                          text-color="grey-8"
-                          :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </template>
-
-              <div class="col-12 col-sm-6">
-                <q-input
-                  v-model="formData.dermatologicos.protectorSolar"
-                  label="Uso de protector solar"
-                  class="minimal-input"
-                  borderless
-                  dense
-                />
-              </div>
-
-              <div class="col-12 col-sm-6">
-                <q-input
-                  v-model="formData.dermatologicos.exposicionSolar"
-                  label="Exposición solar habitual"
-                  class="minimal-input"
-                  borderless
-                  dense
-                />
               </div>
             </div>
           </q-card-section>
@@ -691,8 +686,7 @@
               </div>
             </div>
           </q-card-section>
-        </q-card>
-      </div>
+        </q-card></div>
 
       <!-- Columna Lateral Sticky: LIVE CLINICAL SUMMARY -->
       <div class="col-12 col-lg-4">
@@ -767,12 +761,7 @@
                   </div>
                 </div>
 
-                <div v-if="formData.dermatologicos.afeccionActual" class="q-mt-xs">
-                  <div class="text-caption text-grey-7">Afección actual:</div>
-                  <div class="text-caption text-weight-medium bg-grey-2 q-pa-xs rounded-borders">
-                    {{ formData.dermatologicos.afeccionActual }}
-                  </div>
-                </div>
+
               </div>
 
               <!-- Hábitos Resumen -->
