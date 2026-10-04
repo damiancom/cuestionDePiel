@@ -100,36 +100,40 @@
             <div class="row q-col-gutter-md">
               <!-- Herpes y Queloides: 2 columnas en tablet/desktop con detalle cerrado -->
               <template v-if="useColumnsLayout">
-                <div class="col-12 col-sm-6">
+                <div class="col-12 col-sm-6 text-center">
                   <div class="text-caption text-grey-8">¿Herpes Simple?</div>
-                  <q-btn-toggle
-                    v-model="formData.dermatologicos.herpesSimple"
-                    no-caps
-                    dense
-                    rounded
-                    unelevated
-                    class="toggle-hybrid q-mt-xs"
-                    toggle-color="primary"
-                    color="grey-2"
-                    text-color="grey-8"
-                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                  />
+                  <div class="row justify-center">
+                    <q-btn-toggle
+                      v-model="formData.dermatologicos.herpesSimple"
+                      no-caps
+                      dense
+                      rounded
+                      unelevated
+                      class="toggle-hybrid q-mt-xs"
+                      toggle-color="primary"
+                      color="grey-2"
+                      text-color="grey-8"
+                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                    />
+                  </div>
                 </div>
 
-                <div class="col-12 col-sm-6">
+                <div class="col-12 col-sm-6 text-center">
                   <div class="text-caption text-grey-8">¿Cicatrización con queloides?</div>
-                  <q-btn-toggle
-                    v-model="formData.dermatologicos.cicatrizacionQueloides"
-                    no-caps
-                    dense
-                    rounded
-                    unelevated
-                    class="toggle-hybrid q-mt-xs"
-                    toggle-color="primary"
-                    color="grey-2"
-                    text-color="grey-8"
-                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                  />
+                  <div class="row justify-center">
+                    <q-btn-toggle
+                      v-model="formData.dermatologicos.cicatrizacionQueloides"
+                      no-caps
+                      dense
+                      rounded
+                      unelevated
+                      class="toggle-hybrid q-mt-xs"
+                      toggle-color="primary"
+                      color="grey-2"
+                      text-color="grey-8"
+                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                    />
+                  </div>
                 </div>
               </template>
 
