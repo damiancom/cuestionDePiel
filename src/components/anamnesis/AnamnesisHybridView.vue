@@ -806,8 +806,8 @@ const useColumnsLayout = computed(() => {
 
 const biotiposOptions = [
   'Normal',
-  'Grasa',
   'Seca',
+  'Grasa',
   'Mixta'
 ];
 
