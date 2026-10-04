@@ -554,52 +554,58 @@
               <q-card-section>
                 <!-- Hábitos cotidianos: 3 columnas cuando está en tablet/desktop con detalle cerrado -->
             <div v-if="useColumnsLayout" class="row q-col-gutter-md q-mt-xs">
-              <div class="col-12 col-sm-4">
+              <div class="col-12 col-sm-4 text-center">
                 <div class="text-caption text-grey-8">¿Fuma?</div>
-                <q-btn-toggle
-                  v-model="formData.habitos.fuma"
-                  no-caps
-                  dense
-                  rounded
-                  unelevated
-                  class="toggle-hybrid q-mt-xs"
-                  toggle-color="primary"
-                  color="grey-2"
-                  text-color="grey-8"
-                  :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                />
+                <div class="row justify-center">
+                  <q-btn-toggle
+                    v-model="formData.habitos.fuma"
+                    no-caps
+                    dense
+                    rounded
+                    unelevated
+                    class="toggle-hybrid q-mt-xs"
+                    toggle-color="primary"
+                    color="grey-2"
+                    text-color="grey-8"
+                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                  />
+                </div>
               </div>
 
-              <div class="col-12 col-sm-4">
+              <div class="col-12 col-sm-4 text-center">
                 <div class="text-caption text-grey-8">¿Consume alcohol?</div>
-                <q-btn-toggle
-                  v-model="formData.habitos.consumeAlcohol"
-                  no-caps
-                  dense
-                  rounded
-                  unelevated
-                  class="toggle-hybrid q-mt-xs"
-                  toggle-color="primary"
-                  color="grey-2"
-                  text-color="grey-8"
-                  :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                />
+                <div class="row justify-center">
+                  <q-btn-toggle
+                    v-model="formData.habitos.consumeAlcohol"
+                    no-caps
+                    dense
+                    rounded
+                    unelevated
+                    class="toggle-hybrid q-mt-xs"
+                    toggle-color="primary"
+                    color="grey-2"
+                    text-color="grey-8"
+                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                  />
+                </div>
               </div>
 
-              <div class="col-12 col-sm-4">
+              <div class="col-12 col-sm-4 text-center">
                 <div class="text-caption text-grey-8">Agua adecuada (2L)</div>
-                <q-btn-toggle
-                  v-model="formData.habitos.ingestaAdecuada"
-                  no-caps
-                  dense
-                  rounded
-                  unelevated
-                  class="toggle-hybrid q-mt-xs"
-                  toggle-color="primary"
-                  color="grey-2"
-                  text-color="grey-8"
-                  :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                />
+                <div class="row justify-center">
+                  <q-btn-toggle
+                    v-model="formData.habitos.ingestaAdecuada"
+                    no-caps
+                    dense
+                    rounded
+                    unelevated
+                    class="toggle-hybrid q-mt-xs"
+                    toggle-color="primary"
+                    color="grey-2"
+                    text-color="grey-8"
+                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                  />
+                </div>
               </div>
             </div>
 
