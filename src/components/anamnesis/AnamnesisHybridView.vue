@@ -30,15 +30,15 @@
             <div v-show="!collapsedSections.cutanea">
               <q-separator />
               <q-card-section>
-                <!-- Fototipo Fitzpatrick Interactivo (siempre 1 sola línea) -->
-            <div class="q-mb-md q-pa-sm bg-grey-1 rounded-borders">
+                <!-- Fototipo Fitzpatrick Interactivo (centrado y distribuido uniformemente) -->
+            <div class="q-mb-md q-pa-sm bg-grey-1 rounded-borders text-center">
               <div class="text-subtitle2 text-grey-9 q-mb-xs">
                 Fototipo - Clasificación de Fitzpatrick:
                 <q-badge color="primary" class="q-ml-sm" v-if="formData.dermatologicos.fototipo">
                   Fototipo {{ formData.dermatologicos.fototipo }}
                 </q-badge>
               </div>
-              <div class="row no-wrap q-gutter-x-sm items-center justify-start q-py-xs fototipo-row">
+              <div class="row no-wrap q-gutter-x-sm items-center justify-center q-py-xs fototipo-row">
                 <div
                   v-for="n in 6"
                   :key="n"
@@ -48,7 +48,7 @@
                   @click="formData.dermatologicos.fototipo = (formData.dermatologicos.fototipo == n ? null : n)"
                 ><span class="q-px-sm">{{ n }}</span></div>
               </div>
-              <div class="text-caption text-grey-8 q-mt-xs">
+              <div class="text-caption text-grey-8 q-mt-xs text-center">
                 {{ fototipoDescripcion }}
               </div>
             </div>
@@ -76,10 +76,10 @@
               </div>
             </div>
 
-            <!-- Condiciones de la Piel (píldoras armonizadas con el diseño general) -->
+            <!-- Condiciones de la Piel (píldoras centradas y distribuidas) -->
             <div class="q-mb-md">
-              <div class="text-subtitle2 text-grey-8 q-mb-xs">Condiciones de la Piel</div>
-              <div class="row q-gutter-xs items-center justify-start">
+              <div class="text-subtitle2 text-grey-8 q-mb-xs text-center">Condiciones de la Piel</div>
+              <div class="row q-gutter-sm items-center justify-center">
                 <q-btn
                   v-for="cond in condicionesPielOptions"
                   :key="cond"
@@ -97,39 +97,43 @@
 
 
 
-            <div class="row q-col-gutter-md">
+            <div class="row q-col-gutter-md justify-center">
               <!-- Herpes y Queloides: 2 columnas en tablet/desktop con detalle cerrado -->
               <template v-if="useColumnsLayout">
-                <div class="col-12 col-sm-6">
+                <div class="col-12 col-sm-6 text-center">
                   <div class="text-caption text-grey-8">¿Herpes Simple?</div>
-                  <q-btn-toggle
-                    v-model="formData.dermatologicos.herpesSimple"
-                    no-caps
-                    dense
-                    rounded
-                    unelevated
-                    class="toggle-hybrid q-mt-xs"
-                    toggle-color="primary"
-                    color="grey-2"
-                    text-color="grey-8"
-                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                  />
+                  <div class="row justify-center">
+                    <q-btn-toggle
+                      v-model="formData.dermatologicos.herpesSimple"
+                      no-caps
+                      dense
+                      rounded
+                      unelevated
+                      class="toggle-hybrid q-mt-xs"
+                      toggle-color="primary"
+                      color="grey-2"
+                      text-color="grey-8"
+                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                    />
+                  </div>
                 </div>
 
-                <div class="col-12 col-sm-6">
+                <div class="col-12 col-sm-6 text-center">
                   <div class="text-caption text-grey-8">¿Cicatrización con queloides?</div>
-                  <q-btn-toggle
-                    v-model="formData.dermatologicos.cicatrizacionQueloides"
-                    no-caps
-                    dense
-                    rounded
-                    unelevated
-                    class="toggle-hybrid q-mt-xs"
-                    toggle-color="primary"
-                    color="grey-2"
-                    text-color="grey-8"
-                    :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
-                  />
+                  <div class="row justify-center">
+                    <q-btn-toggle
+                      v-model="formData.dermatologicos.cicatrizacionQueloides"
+                      no-caps
+                      dense
+                      rounded
+                      unelevated
+                      class="toggle-hybrid q-mt-xs"
+                      toggle-color="primary"
+                      color="grey-2"
+                      text-color="grey-8"
+                      :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                    />
+                  </div>
                 </div>
               </template>
 
