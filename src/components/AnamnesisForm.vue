@@ -1029,8 +1029,7 @@ function loadData(data) {
   formData.cirugias.esteticasPocoInvasivas.aplica = !!val('has_aesthetic_interventions', 'hasAestheticInterventions', false);
   formData.cirugias.esteticasPocoInvasivas.detalle = val('aesthetic_interventions_detail', 'aestheticInterventionsDetail', '') || '';
   formData.cirugias.esteticasPocoInvasivas.zona = val('aesthetic_interventions_zone', 'aestheticInterventionsZone', '') || '';
-  formData.cirugias.tratamientosUltimosDosAnos = val('treatments_last_two_years', 'treatmentsLastTwoYears', '') || '';
-  formData.cirugias.ultimoChequeo = val('last_medical_checkup', 'lastMedicalCheckup', '') || '';
+  formData.cirugias.tratamientosUltimosDosAnos = val('aesthetic_treatments', 'aestheticTreatments', '') || val('treatments_last_two_years', 'treatmentsLastTwoYears', '') || '';
 
   // 8. Contraindicaciones específicas
   formData.contraindicaciones.marcapasos = !!val('has_pacemaker', 'hasPacemaker', false);
@@ -1115,9 +1114,8 @@ function toBackendPayload() {
     general_surgeries_zone: formData.cirugias.generales.zona || '',
     has_aesthetic_interventions: !!(formData.cirugias.tratamientosUltimosDosAnos || formData.cirugias.esteticasPocoInvasivas.aplica),
     aesthetic_interventions_detail: formData.cirugias.esteticasPocoInvasivas.aplica ? formData.cirugias.esteticasPocoInvasivas.detalle : '',
-    aesthetic_interventions_zone: formData.cirugias.esteticasPocoInvasivas.aplica ? formData.cirugias.esteticasPocoInvasivas.zona : '',
+    aesthetic_treatments: formData.cirugias.tratamientosUltimosDosAnos || '',
     treatments_last_two_years: formData.cirugias.tratamientosUltimosDosAnos || '',
-    last_medical_checkup: formData.cirugias.ultimoChequeo || '',
 
     // 8. Contraindicaciones específicas
     has_pacemaker: formData.contraindicaciones.marcapasos,
