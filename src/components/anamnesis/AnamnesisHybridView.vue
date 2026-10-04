@@ -293,18 +293,6 @@
               </div>
             </div>
 
-            <div class="q-mt-md">
-              <q-input
-                v-model="formData.antecedentes.hereditariosRelevantes"
-                label="Antecedentes familiares relevantes"
-                type="textarea"
-                autogrow
-                class="minimal-input"
-                borderless
-                placeholder="Diabetes, hipertensión, afecciones cutáneas familiares..."
-              />
-            </div>
-
             <!-- Alergias -->
             <div class="text-subtitle2 text-grey-8 q-mt-md q-mb-xs">Alergias Conocidas</div>
             <div class="row q-col-gutter-sm">
@@ -347,6 +335,19 @@
                   </q-slide-transition>
                 </div>
               </div>
+            </div>
+
+            <!-- Antecedentes familiares relevantes -->
+            <div class="q-mt-md">
+              <q-input
+                v-model="formData.antecedentes.hereditariosRelevantes"
+                label="Antecedentes familiares relevantes"
+                type="textarea"
+                autogrow
+                class="minimal-input"
+                borderless
+                placeholder="Diabetes, hipertensión, afecciones cutáneas familiares..."
+              />
             </div>
 
             <!-- Historia Ginecológica en filas completas -->
