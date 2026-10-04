@@ -424,21 +424,20 @@
             <!-- Biotipo Cutáneo -->
             <div class="q-mb-md">
               <div class="text-subtitle2 text-grey-8 q-mb-xs">Biotipo Cutáneo</div>
-              <div class="row q-gutter-xs items-center">
-                <q-chip
-                  v-for="bt in biotiposOptions"
-                  :key="bt"
-                  clickable
-                  dense
-                  class="biotipo-chip"
-                  :selected="formData.dermatologicos.biotipo === bt"
-                  @click="formData.dermatologicos.biotipo = (formData.dermatologicos.biotipo === bt ? '' : bt)"
-                  color="blue-1"
-                  text-color="primary"
-                  selected-color="primary"
-                >
-                  {{ bt }}
-                </q-chip>
+              <div class="row items-center justify-start">
+                <q-btn-toggle
+                  v-model="formData.dermatologicos.biotipo"
+                  no-caps
+                  rounded
+                  unelevated
+                  class="toggle-hybrid biotipo-toggle"
+                  toggle-color="primary"
+                  color="grey-2"
+                  text-color="grey-8"
+                  clearable
+                  :options="biotiposOptions"
+                  @update:model-value="val => { if (!val) formData.dermatologicos.biotipo = ''; }"
+                />
               </div>
             </div>
 
@@ -805,10 +804,10 @@ const useColumnsLayout = computed(() => {
 });
 
 const biotiposOptions = [
-  'Normal',
-  'Seca',
-  'Grasa',
-  'Mixta'
+  { label: 'Normal', value: 'Normal' },
+  { label: 'Seca', value: 'Seca' },
+  { label: 'Grasa', value: 'Grasa' },
+  { label: 'Mixta', value: 'Mixta' }
 ];
 
 function getFototipoColor(n) {
@@ -960,10 +959,11 @@ const alertasCriticas = computed(() => {
   z-index: 5;
 }
 
-.biotipo-chip {
-  font-size: 12px;
-  font-weight: 500;
-  padding: 4px 8px;
+.biotipo-toggle :deep(.q-btn) {
+  min-width: 64px;
+  padding: 5px 14px;
+  font-weight: 600;
+  font-size: 13px;
 }
 
 .scale-row {
