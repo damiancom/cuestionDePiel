@@ -4,12 +4,23 @@ import router from '../router';
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export const PATIENTS_ENDPOINT = '/patients';
-export const MEDICAL_HISTORY_ENDPOINT = '/medical-history';
+export const ANAMNESIS_ENDPOINT = '/anamnesis';
 export const SESSIONS_ENDPOINT = '/sessions';
 export const ROUTINES_ENDPOINT = '/routines';
-export const DIAGNOSTICS_ENDPOINT = '/diagnostics';
 export const PATIENTS_URL = `${API_BASE_URL}${PATIENTS_ENDPOINT}`;
 export const SESSION_URL = `${PATIENTS_URL}/{patient_id}${SESSIONS_ENDPOINT}`;
+
+export const AnamnesisAPI = {
+  get(patientId) {
+    return axios.get(`${PATIENTS_URL}/${patientId}${ANAMNESIS_ENDPOINT}`);
+  },
+  save(patientId, payload) {
+    return axios.put(`${PATIENTS_URL}/${patientId}${ANAMNESIS_ENDPOINT}`, payload);
+  },
+  patch(patientId, payload) {
+    return axios.patch(`${PATIENTS_URL}/${patientId}${ANAMNESIS_ENDPOINT}`, payload);
+  }
+};
 
 // Interceptor: agrega el token Firebase en cada request
 axios.interceptors.request.use(async (config) => {

@@ -81,7 +81,7 @@
       </div>
 
       <!-- Contenido Principal con Tabs -->
-      <div :class="isSidebarCollapsed ? 'col-12 col-md-12 col-lg-11' : 'col-12 col-md-8 col-lg-7'" class="transition-width">
+      <div :class="isSidebarCollapsed ? 'col-12' : 'col-12 col-md-8 col-lg-9'" class="transition-width">
         <q-card class="q-pa-md q-pa-sm-lg">
           <div class="row items-center no-wrap q-mb-md">
             <!-- Botón para mostrar el detalle del paciente (solo en desktop cuando está colapsado) -->
@@ -178,8 +178,7 @@
                   </q-icon>
                 </div>
               </q-tab>
-              <q-tab name="antecedentes" label="Datos Médicos" />
-              <q-tab name="observaciones" label="Observaciones y Diagnóstico" />
+              <q-tab name="observaciones" label="Anamnesis Dermatocosmiátrica" />
               <q-tab name="rutina" label="Rutina" />
               <q-tab name="sesiones" label="Sesiones" />
               <q-tab name="consentimiento" label="Consentimiento" />
@@ -252,67 +251,14 @@
                 </div>
               </div>
             </q-tab-panel>
-            <q-tab-panel name="antecedentes">
-              <div class="text-h6 q-mb-md">Datos Médicos</div>
-              <q-form class="q-gutter-md">
-                <q-input v-model="antecedentes.intervenciones" label="Intervenciones quirúrgicas" class="minimal-input"
-                  borderless dense />
-                <q-input v-model="antecedentes.rellenos" label="Rellenos estéticos" class="minimal-input" borderless
-                  dense />
-                <q-input v-model="antecedentes.alergias" label="Alergias" class="minimal-input" borderless dense />
-                <q-input v-model="antecedentes.enfermedades" label="Enfermedades" class="minimal-input" borderless
-                  dense />
-                <q-input v-model="antecedentes.medicamentos" label="Medicamentos" class="minimal-input" borderless
-                  dense />
-                <q-input v-model="antecedentes.habitos" label="Hábitos" class="minimal-input" borderless dense />
-                <q-input v-model="antecedentes.cutaneas" label="Antecedentes de enfermedades cutáneas"
-                  class="minimal-input" borderless dense />
-                <q-input v-model="antecedentes.familiares" label="Antecedentes familiares" class="minimal-input"
-                  borderless dense />
-                <div class="row q-gutter-sm justify-end q-mt-md">
-                  <q-btn flat label="Cancelar" @click="resetAntecedentes" color="grey-8" class="minimal-btn" />
-                  <q-btn label="Guardar" color="primary" @click="guardarAntecedentes" class="minimal-btn-save" />
-                </div>
-              </q-form>
-            </q-tab-panel>
             <q-tab-panel name="observaciones">
-              <div class="text-h6 q-mb-md">Observación y Diagnóstico</div>
-              <q-form class="q-gutter-md">
-                <q-input v-model="observacion.motivo" label="Motivo de la consulta" class="minimal-input" borderless
-                  dense />
-                <q-input v-model="observacion.biotipo" label="Biotipo" class="minimal-input" borderless dense />
-                <div class="q-mb-md">
-                  <div class="q-mb-sm text-grey-8" style="padding-left: 4px;">Fototipo</div>
-                  <div class="row q-gutter-sm justify-start items-center q-pl-xs">
-                    <div v-for="n in 6" :key="n" 
-                         class="fototipo-circle cursor-pointer flex flex-center shadow-1"
-                         :class="{ 'fototipo-selected': observacion.fototipo == n }"
-                         :style="{ backgroundColor: getFototipoColor(n), color: n >= 5 ? '#fff' : '#333' }"
-                         @click="observacion.fototipo = (observacion.fototipo == n ? null : n)">
-                      {{ n }}
-                    </div>
-                  </div>
-                </div>
+              <!-- Nueva Ficha de Anamnesis Dermatocosmiátrica -->
+              <AnamnesisForm ref="anamnesisFormRef" :is-sidebar-collapsed="isSidebarCollapsed" />
 
-                <q-input v-model="observacion.recomendaciones" label="Recomendaciones" class="minimal-input" borderless
-                  dense />
-                <q-card class="q-mt-lg q-pa-lg bg-grey-2 shadow-1 minimal-lesion-card">
-                  <div class="text-h6 q-mb-md">Lesión</div>
-                  <q-input v-model="lesion.inicio" label="Inicio" class="minimal-input" borderless dense />
-                  <q-input v-model="lesion.lugar" label="Lugar de inicio" class="minimal-input" borderless dense />
-                  <q-input v-model="lesion.sintomas" label="Síntomas" class="minimal-input" borderless dense />
-                  <q-input v-model="lesion.evolucion" label="Evolución" class="minimal-input" borderless dense />
-                  <q-input v-model="lesion.cambios" label="Cambios" class="minimal-input" borderless dense />
-                  <q-input v-model="lesion.factores" label="Factores que incrementan riesgo" class="minimal-input"
-                    borderless dense />
-                  <q-input v-model="lesion.tratamientos" label="Tratamientos posteriores" class="minimal-input"
-                    borderless dense />
-                </q-card>
-                <div class="row q-gutter-sm justify-end q-mt-md">
-                  <q-btn flat label="Cancelar" @click="resetObservaciones" color="grey-8" class="minimal-btn" />
-                  <q-btn label="Guardar" color="primary" @click="guardarObservaciones" class="minimal-btn-save" />
-                </div>
-              </q-form>
+              <div class="row q-gutter-sm justify-end q-mt-lg">
+                <q-btn flat label="Cancelar" @click="cancelarAnamnesis" color="grey-8" class="minimal-btn" />
+                <q-btn label="Guardar Anamnesis" color="primary" @click="guardarAnamnesis" :loading="guardandoAnamnesis" class="minimal-btn-save" />
+              </div>
             </q-tab-panel>
             <q-tab-panel name="rutina">
               <RoutineGenerator ref="routineEditor" :initialRoutine="mappedRoutine" @save="handleRoutineSave" />
@@ -595,22 +541,13 @@
 <script setup>
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { PATIENTS_URL, MEDICAL_HISTORY_ENDPOINT, ROUTINES_ENDPOINT, DIAGNOSTICS_ENDPOINT, SessionsAPI, ConsentsAPI } from "../services/api";
+import { PATIENTS_URL, ROUTINES_ENDPOINT, SessionsAPI, ConsentsAPI, AnamnesisAPI } from "../services/api";
 import axios from "axios";
 import { useQuasar } from "quasar";
 import RoutineGenerator from '../components/RoutineGenerator.vue';
+import AnamnesisForm from '../components/AnamnesisForm.vue';
 
-function getFototipoColor(n) {
-  const colors = {
-    1: '#f8dcd1',
-    2: '#f0c7b1',
-    3: '#e2b397',
-    4: '#c58e6e',
-    5: '#8c593d',
-    6: '#492f22'
-  };
-  return colors[n] || '#ccc';
-}
+const anamnesisFormRef = ref(null);
 
 const $q = useQuasar();
 const route = useRoute();
@@ -640,7 +577,7 @@ const cropContainer = ref(null);
 const cropZoom = ref(1);
 const cropImage = ref(null);
 const cropOffset = ref({x: 0, y: 0});
-const tab = ref($q.screen.gt.sm ? 'antecedentes' : 'perfil');
+const tab = ref($q.screen.gt.sm ? 'observaciones' : 'perfil');
 const isSidebarCollapsed = ref(false);
 
 function toggleSidebar() {
@@ -662,13 +599,13 @@ onMounted(() => {
     // Ignore storage errors
   }
   if ($q.screen.gt.sm && tab.value === 'perfil') {
-    tab.value = 'antecedentes';
+    tab.value = 'observaciones';
   }
 });
 
 watch(() => $q.screen.gt.sm, (isDesktop) => {
   if (isDesktop && tab.value === 'perfil') {
-    tab.value = 'antecedentes';
+    tab.value = 'observaciones';
   }
 });
 
@@ -915,35 +852,13 @@ async function addSession() {
   }
 }
 
-const datosOriginalesAntecedentes = {
-  intervenciones: '',
-  rellenos: '',
-  alergias: '',
-  enfermedades: '',
-  medicamentos: '',
-  habitos: '',
-  cutaneas: '',
-  familiares: '',
-  id: null
-};
-const datosOriginalesObservacion = {
-  motivo: '', biotipo: '', fototipo: '', recomendaciones: ''
-};
-const datosOriginalesLesion = {
-  inicio: '', lugar: '', sintomas: '', evolucion: '', cambios: '', factores: '', tratamientos: ''
-};
-const antecedentes = reactive({ ...datosOriginalesAntecedentes });
-const antecedentesBackup = reactive({ ...datosOriginalesAntecedentes });
-const observacion = reactive({ ...datosOriginalesObservacion });
-const observacionBackup = reactive({ ...datosOriginalesObservacion });
-const lesion = reactive({ ...datosOriginalesLesion });
-const lesionBackup = reactive({ ...datosOriginalesLesion });
+const anamnesisBackup = ref(null);
+const guardandoAnamnesis = ref(false);
 
 onMounted(async () => {
   if (route.params.id) {
     await findPatientById(route.params.id);
-    await fetchMedicalHistory(route.params.id);
-    await fetchDiagnostics(route.params.id);
+    await fetchAnamnesis(route.params.id);
     await fetchRoutine(route.params.id);
     await fetchSessions(route.params.id);
     await fetchConsentStatus(route.params.id);
@@ -1120,36 +1035,54 @@ function findPatientById(id) {
     });
 }
 
-async function fetchMedicalHistory(id) {
+async function fetchAnamnesis(id) {
   try {
-    const response = await axios.get(`${PATIENTS_URL}/${id}${MEDICAL_HISTORY_ENDPOINT}`);
-    console.log('Medical history:', response.data);
-
-    const mappedData = {
-      intervenciones: response.data.surgicalIntervention,
-      rellenos: response.data.aestheticFilling,
-      alergias: response.data.allergy,
-      enfermedades: response.data.disease,
-      medicamentos: response.data.medication,
-      habitos: response.data.habit,
-      cutaneas: response.data.skinDiseaseHistory,
-      familiares: response.data.familyHistory,
-      id: response.data.id
-    };
-
-    Object.assign(antecedentes, mappedData);
-    Object.assign(antecedentesBackup, mappedData);
+    const response = await AnamnesisAPI.get(id);
+    anamnesisBackup.value = response.data;
+    anamnesisFormRef.value?.loadData(response.data);
   } catch (error) {
     if (error.response && error.response.status === 404) {
-      console.log('Medical history not found (404), assuming empty.');
+      console.log('Anamnesis not found (404), ficha en blanco.');
       return;
     }
-    console.error('Error fetching medical history:', error);
+    console.error('Error fetching anamnesis:', error);
     $q.notify({
       type: 'negative',
-      message: 'Error al cargar antecedentes médicos',
+      message: 'Error al cargar anamnesis',
       position: 'top'
     });
+  }
+}
+
+async function guardarAnamnesis() {
+  try {
+    guardandoAnamnesis.value = true;
+    const payload = anamnesisFormRef.value?.toBackendPayload();
+    const response = await AnamnesisAPI.save(route.params.id, payload);
+    anamnesisBackup.value = response.data;
+    anamnesisFormRef.value?.loadData(response.data);
+    $q.notify({
+      type: 'positive',
+      message: 'Anamnesis guardada correctamente',
+      position: 'top'
+    });
+  } catch (error) {
+    console.error('Error guardando anamnesis:', error);
+    $q.notify({
+      type: 'negative',
+      message: 'Error al guardar anamnesis',
+      position: 'top'
+    });
+  } finally {
+    guardandoAnamnesis.value = false;
+  }
+}
+
+function cancelarAnamnesis() {
+  if (anamnesisBackup.value) {
+    anamnesisFormRef.value?.loadData(anamnesisBackup.value);
+  } else {
+    anamnesisFormRef.value?.resetData();
   }
 }
 
@@ -1185,127 +1118,6 @@ function calculateAge(date) {
   const monthDiff = now.getMonth() - birth.getMonth();
   if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < birth.getDate())) age--;
   return age >= 0 ? age : '';
-}
-
-function resetAntecedentes() {
-  Object.assign(antecedentes, antecedentesBackup);
-}
-
-async function guardarAntecedentes() {
-  try {
-    const payload = {
-      id: antecedentes.id,
-      surgicalIntervention: antecedentes.intervenciones,
-      aestheticFilling: antecedentes.rellenos,
-      allergy: antecedentes.alergias,
-      disease: antecedentes.enfermedades,
-      medication: antecedentes.medicamentos,
-      habit: antecedentes.habitos,
-      skinDiseaseHistory: antecedentes.cutaneas,
-      familyHistory: antecedentes.familiares
-    };
-
-    await axios.patch(`${PATIENTS_URL}/${route.params.id}${MEDICAL_HISTORY_ENDPOINT}`, payload);
-
-    Object.assign(antecedentesBackup, antecedentes);
-    $q.notify({
-      type: 'positive',
-      message: 'Antecedentes guardados correctamente',
-      position: 'top'
-    });
-  } catch (error) {
-    console.error('Error saving medical history:', error);
-    $q.notify({
-      type: 'negative',
-      message: 'Error al guardar antecedentes',
-      position: 'top'
-    });
-  }
-}
-
-function resetObservaciones() {
-  Object.assign(observacion, observacionBackup);
-  Object.assign(lesion, lesionBackup);
-}
-
-async function fetchDiagnostics(id) {
-  try {
-    const response = await axios.get(`${PATIENTS_URL}/${id}${DIAGNOSTICS_ENDPOINT}`);
-    console.log('Diagnostics:', response.data);
-
-    const mappedObservacion = {
-      motivo: response.data.reasonForConsultation || '',
-      biotipo: response.data.skinBiotype || '',
-      fototipo: response.data.phototype || '',
-      recomendaciones: response.data.recommendations || ''
-    };
-
-    Object.assign(observacion, mappedObservacion);
-    Object.assign(observacionBackup, mappedObservacion);
-
-    if (response.data.skinLesion) {
-      const mappedLesion = {
-        inicio: response.data.skinLesion.onset || '',
-        lugar: response.data.skinLesion.onsetLocation || '',
-        sintomas: response.data.skinLesion.symptoms || '',
-        evolucion: response.data.skinLesion.evolution || '',
-        cambios: response.data.skinLesion.changes || '',
-        factores: response.data.skinLesion.riskIncreasingFactors || '',
-        tratamientos: response.data.skinLesion.postTreatment || ''
-      };
-
-      Object.assign(lesion, mappedLesion);
-      Object.assign(lesionBackup, mappedLesion);
-    }
-  } catch (error) {
-    if (error.response && error.response.status === 404) {
-      console.log('Diagnostics not found (404), assuming empty.');
-      return;
-    }
-    console.error('Error fetching diagnostics:', error);
-    $q.notify({
-      type: 'negative',
-      message: 'Error al cargar observaciones',
-      position: 'top'
-    });
-  }
-}
-
-async function guardarObservaciones() {
-  try {
-    const payload = {
-      reasonForConsultation: observacion.motivo,
-      skinBiotype: observacion.biotipo,
-      phototype: observacion.fototipo ? String(observacion.fototipo) : '',
-      recommendations: observacion.recomendaciones,
-      skinLesion: {
-        onset: lesion.inicio,
-        onsetLocation: lesion.lugar,
-        symptoms: lesion.sintomas,
-        evolution: lesion.evolucion,
-        changes: lesion.cambios,
-        riskIncreasingFactors: lesion.factores,
-        postTreatment: lesion.tratamientos
-      }
-    };
-
-    await axios.patch(`${PATIENTS_URL}/${route.params.id}${DIAGNOSTICS_ENDPOINT}`, payload);
-
-    Object.assign(observacionBackup, observacion);
-    Object.assign(lesionBackup, lesion);
-    $q.notify({
-      type: 'positive',
-      message: 'Observaciones guardadas correctamente',
-      position: 'top'
-    });
-  } catch (error) {
-    console.error('Error saving diagnostics:', error);
-    $q.notify({
-      type: 'negative',
-      message: 'Error al guardar observaciones',
-      position: 'top'
-    });
-  }
 }
 
 // ─── Rutina Facial (endpoint propio /routines) ───
@@ -1485,28 +1297,6 @@ async function handleRoutineSave(routineData) {
   background: #125ea7;
 }
 
-.fototipo-circle {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 2px solid transparent;
-  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
-  font-weight: bold;
-  font-size: 16px;
-  user-select: none;
-}
-
-.fototipo-selected {
-  transform: scale(1.15);
-  border-color: #1976d2 !important;
-  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.2) !important;
-  z-index: 10;
-}
-
-.minimal-lesion-card {
-  border-radius: 14px;
-  border: 1px solid #ececec;
-}
 
 .hidden {
   display: none;
