@@ -2,7 +2,12 @@
   <q-page padding>
     <div class="row items-center justify-between q-mb-md q-col-gutter-sm">
       <div class="col-12 col-sm">
-        <div class="text-h5">Pacientes ({{ filteredPatients.length }})</div>
+        <div class="row items-center no-wrap">
+          <q-icon name="people" size="24px" color="primary" class="q-mr-sm" style="flex-shrink: 0;" />
+          <div class="text-h5 text-primary text-weight-bold ellipsis">
+            Pacientes ({{ filteredPatients.length }})
+          </div>
+        </div>
         <div class="text-caption text-grey-7">Mostrando {{ paginatedPatients.length }} de {{
             filteredPatients.length
           }}

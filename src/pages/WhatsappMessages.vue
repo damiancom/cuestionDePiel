@@ -3,7 +3,12 @@
     <!-- Cabecera de la página -->
     <div class="row items-center justify-between q-mb-md">
       <div class="col-12 col-sm q-mb-sm q-mb-sm-none">
-        <div class="text-h5">Mensajes</div>
+        <div class="row items-center no-wrap">
+          <q-icon name="chat" size="24px" color="primary" class="q-mr-sm" style="flex-shrink: 0;" />
+          <div class="text-h5 text-primary text-weight-bold ellipsis">
+            Mensajes
+          </div>
+        </div>
         <div class="text-caption text-grey-7">Gestión de mensajes predefinidos y difusión a pacientes</div>
       </div>
       <div class="col-12 col-sm-auto row items-center q-gutter-sm">

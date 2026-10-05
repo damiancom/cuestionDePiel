@@ -1,7 +1,15 @@
 <template>
   <div class="routine-generator-container">
-    <div class="row items-center q-mb-md">
-      <div class="col text-h6">Rutina Facial</div>
+    <div class="row items-center justify-between q-mb-md">
+      <div>
+        <div class="text-h6 text-primary flex items-center">
+          <q-icon name="spa" size="24px" class="q-mr-sm" />
+          Rutina Facial
+        </div>
+        <div class="text-caption text-grey-8">
+          Plan de cuidado diario personalizado para el paciente
+        </div>
+      </div>
     </div>
 
     <div class="routine-card" id="routine-preview">
