@@ -37,9 +37,22 @@
               </div>
               <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Profesión:</span><br>{{ patient.profession || '-' }}</div>
               <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Dirección:</span><br>{{ patient.address }}</div>
-              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Localidad:</span><br>{{ patient.locality }}</div>
-              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Teléfono:</span><br>{{ patient.phone }}</div>
-              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Celular:</span><br>{{ patient.cellphone }}</div>
+              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Teléfono:</span><br>{{ patient.phone || '-' }}</div>
+              <div class="q-mb-sm row items-center justify-between no-wrap">
+                <div><span class="text-weight-bold text-grey-8">Celular:</span><br>{{ patient.cellphone || '-' }}</div>
+                <q-btn
+                  v-if="hasPhone"
+                  flat
+                  round
+                  dense
+                  size="sm"
+                  color="positive"
+                  icon="fa-brands fa-whatsapp"
+                  @click="tab = 'mensajes'"
+                >
+                  <q-tooltip>Enviar mensaje predefinido de WhatsApp</q-tooltip>
+                </q-btn>
+              </div>
               <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">E-mail:</span><br>{{ patient.email }}</div>
               <div class="q-mb-sm" v-if="patient.additional_note"><span class="text-weight-bold text-grey-8">Nota adicional:</span><br><span style="white-space: pre-wrap;">{{ patient.additional_note }}</span></div>
               <div class="q-my-sm text-center" v-if="consentStatus">
@@ -182,6 +195,7 @@
               <q-tab name="rutina" label="Rutina" />
               <q-tab name="sesiones" label="Sesiones" />
               <q-tab name="consentimiento" label="Consentimiento" />
+              <q-tab v-if="hasPhone" name="mensajes" label="Mensajes" />
             </q-tabs>
           </div>
           <q-separator />
@@ -209,9 +223,22 @@
                     </div>
                     <div class="col-12 col-sm-6"><span class="text-weight-medium">Profesión:</span><br>{{ patient.profession || '-' }}</div>
                     <div class="col-12 col-sm-6"><span class="text-weight-medium">Dirección:</span><br>{{ patient.address }}</div>
-                    <div class="col-12 col-sm-6"><span class="text-weight-medium">Localidad:</span><br>{{ patient.locality }}</div>
-                    <div class="col-12 col-sm-6"><span class="text-weight-medium">Teléfono:</span><br>{{ patient.phone }}</div>
-                    <div class="col-12 col-sm-6"><span class="text-weight-medium">Celular:</span><br>{{ patient.cellphone }}</div>
+                    <div class="col-12 col-sm-6"><span class="text-weight-medium">Teléfono:</span><br>{{ patient.phone || '-' }}</div>
+                    <div class="col-12 col-sm-6 row items-center justify-between no-wrap">
+                      <div><span class="text-weight-medium">Celular:</span><br>{{ patient.cellphone || '-' }}</div>
+                      <q-btn
+                        v-if="hasPhone"
+                        flat
+                        round
+                        dense
+                        size="sm"
+                        color="positive"
+                        icon="fa-brands fa-whatsapp"
+                        @click="tab = 'mensajes'"
+                      >
+                        <q-tooltip>Enviar mensaje de WhatsApp</q-tooltip>
+                      </q-btn>
+                    </div>
                     <div class="col-12 col-sm-6"><span class="text-weight-medium">E-mail:</span><br>{{ patient.email }}</div>
                     <div class="col-12" v-if="patient.additional_note"><span class="text-weight-medium">Nota adicional:</span><br><span style="white-space: pre-wrap;">{{ patient.additional_note }}</span></div>
                   </div>
@@ -502,6 +529,85 @@
                 </q-card>
               </div>
             </q-tab-panel>
+
+            <!-- ─── Tab Panel Mensajes (solo si el paciente tiene teléfono) ─── -->
+            <q-tab-panel v-if="hasPhone" name="mensajes">
+              <div class="row items-center justify-between q-mb-md">
+                <div class="col-12 col-sm">
+                  <div class="text-h6">Mensajes ({{ filteredWhatsappMessages.length }})</div>
+                  <div class="text-caption text-grey-7">
+                    Envío de mensajes predefinidos a {{ patient.name }} {{ patient.last_name || '' }} ({{ patientPhone }})
+                  </div>
+                </div>
+                <div class="col-12 col-sm-auto row items-center q-gutter-sm q-mt-xs q-mt-sm-none">
+                  <q-input
+                    v-model="searchWhatsappMessage"
+                    label="Buscar"
+                    dense
+                    borderless
+                    class="minimal-search-input"
+                    :input-style="{ background: 'transparent' }"
+                  >
+                    <template #append>
+                      <q-icon name="search" />
+                    </template>
+                  </q-input>
+                </div>
+              </div>
+
+              <!-- Spinner mientras carga -->
+              <div v-if="loadingWhatsappMessages" class="text-center q-py-xl">
+                <q-spinner color="positive" size="2.5em" />
+                <div class="text-caption text-grey-6 q-mt-sm">Cargando mensajes predefinidos...</div>
+              </div>
+
+              <!-- Si no hay mensajes cargados -->
+              <div v-else-if="filteredWhatsappMessages.length === 0" class="text-center q-pa-xl text-grey-6 bg-grey-1 rounded-borders">
+                <q-icon name="chat" size="48px" class="q-mb-sm text-grey-4" />
+                <div class="text-subtitle1 text-weight-medium">No se encontraron mensajes predefinidos</div>
+                <div class="text-caption text-grey-6 q-mb-md">Podés crear y administrar tus mensajes predefinidos desde la sección de Mensajes.</div>
+                <q-btn
+                  outline
+                  color="primary"
+                  icon="open_in_new"
+                  label="Ir a Mensajes de WhatsApp"
+                  to="/mensajes-whatsapp"
+                  class="minimal-btn"
+                />
+              </div>
+
+              <!-- Listado de mensajes con botón Enviar -->
+              <q-list v-else bordered separator class="rounded-borders bg-white">
+                <q-item
+                  v-for="msg in filteredWhatsappMessages"
+                  :key="msg.id"
+                  class="q-py-md"
+                >
+                  <q-item-section>
+                    <div class="text-subtitle2 text-weight-bold text-grey-9 q-mb-xs">
+                      {{ msg.title }}
+                    </div>
+                    <div class="text-body2 text-grey-8" style="white-space: pre-line; line-height: 1.45;">
+                      {{ getPersonalizedMessageText(msg.content) }}
+                    </div>
+                  </q-item-section>
+
+                  <q-item-section side class="q-pl-md">
+                    <q-btn
+                      unelevated
+                      rounded
+                      color="positive"
+                      icon="fa-brands fa-whatsapp"
+                      label="Enviar"
+                      class="text-weight-bold"
+                      @click="confirmSendWhatsappMessage(msg)"
+                    >
+                      <q-tooltip>Enviar este mensaje por WhatsApp a {{ patient.name }}</q-tooltip>
+                    </q-btn>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-tab-panel>
           </q-tab-panels>
         </q-card>
       </div>
@@ -541,7 +647,7 @@
 <script setup>
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { PATIENTS_URL, ROUTINES_ENDPOINT, SessionsAPI, ConsentsAPI, AnamnesisAPI } from "../services/api";
+import { PATIENTS_URL, ROUTINES_ENDPOINT, SessionsAPI, ConsentsAPI, AnamnesisAPI, WhatsappMessagesAPI } from "../services/api";
 import axios from "axios";
 import { useQuasar } from "quasar";
 import RoutineGenerator from '../components/RoutineGenerator.vue';
@@ -855,6 +961,102 @@ async function addSession() {
 const anamnesisBackup = ref(null);
 const guardandoAnamnesis = ref(false);
 
+// ─── WhatsApp Mensajes Predefinidos ───
+const whatsappMessages = ref([]);
+const loadingWhatsappMessages = ref(false);
+const searchWhatsappMessage = ref('');
+
+const patientPhone = computed(() => {
+  return (patient.cellphone || patient.phone || '').trim();
+});
+
+const hasPhone = computed(() => {
+  return patientPhone.value.length > 0;
+});
+
+const filteredWhatsappMessages = computed(() => {
+  const q = searchWhatsappMessage.value.toLowerCase().trim();
+  if (!q) return whatsappMessages.value;
+  return whatsappMessages.value.filter(m =>
+    (m.title && m.title.toLowerCase().includes(q)) ||
+    (m.content && m.content.toLowerCase().includes(q))
+  );
+});
+
+function getPersonalizedMessageText(content) {
+  if (!content) return '';
+  const nombre = patient.name ? patient.name.trim() : '';
+  return content.replace(/\{nombre\}/g, nombre);
+}
+
+function cleanPhoneForWhatsApp(phone) {
+  if (!phone) return '';
+  let digits = String(phone).replace(/\D/g, '');
+  while (digits.startsWith('0')) {
+    digits = digits.substring(1);
+  }
+  if (digits.length === 10) {
+    return '549' + digits;
+  }
+  if (digits.length === 12 && digits.startsWith('54') && !digits.startsWith('549')) {
+    return '549' + digits.substring(2);
+  }
+  return digits;
+}
+
+async function fetchWhatsappMessages() {
+  loadingWhatsappMessages.value = true;
+  try {
+    const res = await WhatsappMessagesAPI.list();
+    whatsappMessages.value = res.data || [];
+  } catch (error) {
+    console.error('Error al cargar mensajes de WhatsApp:', error);
+  } finally {
+    loadingWhatsappMessages.value = false;
+  }
+}
+
+function confirmSendWhatsappMessage(msg) {
+  const rawPhone = patientPhone.value;
+  const cleanPhone = cleanPhoneForWhatsApp(rawPhone);
+  if (!cleanPhone) {
+    $q.notify({
+      color: 'warning',
+      message: 'El número de teléfono no es válido para WhatsApp',
+      icon: 'warning'
+    });
+    return;
+  }
+  const nombre = patient.name ? patient.name.trim() : '';
+  const textToSend = (msg.content || '').replace(/\{nombre\}/g, nombre);
+  const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(textToSend)}`;
+
+  $q.dialog({
+    title: 'Confirmar envío por WhatsApp',
+    message: `¿Deseas enviar el mensaje "${msg.title}" a "${patient.name} ${patient.last_name || ''}" (Tel: ${rawPhone})?`,
+    cancel: {
+      label: 'Cancelar',
+      flat: true,
+      color: 'grey-8',
+      class: 'minimal-btn'
+    },
+    ok: {
+      label: 'Confirmar y abrir WhatsApp',
+      color: 'primary',
+      class: 'minimal-btn-save',
+      icon: 'fa-brands fa-whatsapp'
+    },
+    persistent: true
+  }).onOk(() => {
+    window.open(url, '_blank', 'noopener,noreferrer');
+    $q.notify({
+      color: 'positive',
+      message: `Abriendo WhatsApp para ${patient.name}...`,
+      icon: 'fa-brands fa-whatsapp'
+    });
+  });
+}
+
 onMounted(async () => {
   if (route.params.id) {
     await findPatientById(route.params.id);
@@ -862,6 +1064,7 @@ onMounted(async () => {
     await fetchRoutine(route.params.id);
     await fetchSessions(route.params.id);
     await fetchConsentStatus(route.params.id);
+    await fetchWhatsappMessages();
   }
 });
 
