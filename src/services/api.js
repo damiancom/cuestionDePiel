@@ -141,3 +141,23 @@ export const ConsentsAPI = {
   },
 };
 
+const WHATSAPP_MESSAGES_URL = `${API_BASE_URL}/whatsapp-messages`;
+
+export const WhatsappMessagesAPI = {
+  list() {
+    return axios.get(WHATSAPP_MESSAGES_URL);
+  },
+  get(id) {
+    return axios.get(`${WHATSAPP_MESSAGES_URL}/${id}`);
+  },
+  create(payload) {
+    return axios.post(WHATSAPP_MESSAGES_URL, payload);
+  },
+  update(id, payload) {
+    return axios.put(`${WHATSAPP_MESSAGES_URL}/${id}`, payload);
+  },
+  remove(id) {
+    return axios.delete(`${WHATSAPP_MESSAGES_URL}/${id}`);
+  },
+};
+

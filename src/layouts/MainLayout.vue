@@ -33,6 +33,9 @@
             <q-btn flat round dense icon="gavel" to="/consentimiento">
               <div class="text-caption">Consentimiento</div>
             </q-btn>
+            <q-btn flat round dense icon="chat" to="/mensajes-whatsapp">
+              <div class="text-caption">Mensajes</div>
+            </q-btn>
           </div>
         </q-toolbar-title>
         <q-space v-else />
@@ -70,6 +73,7 @@
         <q-route-tab icon="inventory_2" label="Productos" to="/catalogo" />
         <q-route-tab icon="point_of_sale" label="Ventas" to="/ventas" />
         <q-route-tab icon="gavel" label="Consentimiento" to="/consentimiento" />
+        <q-route-tab icon="chat" label="Mensajes" to="/mensajes-whatsapp" />
       </q-tabs>
     </q-footer>
   </q-layout>

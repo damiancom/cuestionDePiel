@@ -52,6 +52,11 @@ const routes = [
     component: () => import('../pages/ConsentAdmin.vue'),
     meta: { requiresAuth: true }
   },
+  {
+    path: '/mensajes-whatsapp',
+    component: () => import('../pages/WhatsappMessages.vue'),
+    meta: { requiresAuth: true }
+  },
 ];
 
 const router = createRouter({
