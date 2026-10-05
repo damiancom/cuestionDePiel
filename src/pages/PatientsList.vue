@@ -43,11 +43,13 @@
         row-key="id"
         flat
         dense
+        :loading="loading"
         :grid="$q.screen.lt.md"
         :pagination.sync="pagination"
         :rows-per-page-options="[20]"
         @row-click="goToDetail"
         class="q-mb-md minimal-table"
+        no-data-label="No hay pacientes registrados"
     >
       <template v-slot:item="props">
         <div class="q-pa-xs col-xs-12 col-sm-6">
