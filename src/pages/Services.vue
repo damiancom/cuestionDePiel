@@ -2,7 +2,12 @@
   <q-page padding>
     <div class="row items-center justify-between q-mb-md">
       <div class="col-12 col-sm q-mb-sm q-mb-sm-none">
-        <div class="text-h5">Servicios</div>
+        <div class="row items-center no-wrap">
+          <q-icon name="medical_services" size="24px" color="primary" class="q-mr-sm" style="flex-shrink: 0;" />
+          <div class="text-h5 text-primary text-weight-bold ellipsis">
+            Servicios
+          </div>
+        </div>
         <div class="text-caption text-grey-7">Gestión de servicios ofrecidos, precios y duración estimada</div>
       </div>
       <div class="col-12 col-sm-auto row items-center q-gutter-sm">

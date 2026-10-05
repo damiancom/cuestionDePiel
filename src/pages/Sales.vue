@@ -2,7 +2,13 @@
   <q-page padding>
     <div class="row items-center justify-between q-mb-md q-col-gutter-sm">
       <div class="col-12 col-md">
-        <div class="text-h5">Ventas</div>
+        <div class="row items-center no-wrap">
+          <q-icon name="point_of_sale" size="24px" color="primary" class="q-mr-sm" style="flex-shrink: 0;" />
+          <div class="text-h5 text-primary text-weight-bold ellipsis">
+            Ventas
+          </div>
+        </div>
+        <div class="text-caption text-grey-7">Registro de ventas, productos y facturación</div>
       </div>
       <div class="col-12 col-md-auto row items-center q-gutter-sm">
         <q-input

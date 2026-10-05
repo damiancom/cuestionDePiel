@@ -203,6 +203,17 @@
           <q-tab-panels v-model="tab" animated>
             <!-- Tab Panel Perfil: Sólo visible en mobile (lt-md) -->
             <q-tab-panel name="perfil" class="lt-md">
+              <div class="row items-center justify-between q-mb-md">
+                <div>
+                  <div class="text-h6 text-primary flex items-center">
+                    <q-icon name="person" size="24px" class="q-mr-sm" />
+                    Perfil del Paciente
+                  </div>
+                  <div class="text-caption text-grey-8">
+                    Datos personales y de contacto
+                  </div>
+                </div>
+              </div>
               <div class="flex column items-center q-pa-md">
                 <q-avatar size="100px" class="q-mb-md" :class="editing ? 'avatar-clickable' : 'bg-blue-1 text-primary'" @click="editing && seleccionarFoto()">
                   <img v-if="patient.profile_picture" :src="patient.profile_picture" alt="Foto de perfil"/>
@@ -296,9 +307,16 @@
               </div>
             </q-tab-panel>
             <q-tab-panel name="sesiones">
-              <div class="row items-center q-mb-md">
-                <div class="col text-h6">Sesiones ({{ sesionesOrdenadas.length }})</div>
-                <q-space />
+              <div class="row items-center justify-between q-mb-md">
+                <div>
+                  <div class="text-h6 text-primary flex items-center">
+                    <q-icon name="event_note" size="24px" class="q-mr-sm" />
+                    Sesiones ({{ sesionesOrdenadas.length }})
+                  </div>
+                  <div class="text-caption text-grey-8">
+                    Historial y registro evolutivo de tratamientos realizados
+                  </div>
+                </div>
                 <q-btn
                   color="primary"
                   icon="add"
@@ -534,8 +552,11 @@
             <q-tab-panel v-if="hasPhone" name="mensajes">
               <div class="row items-center justify-between q-mb-md">
                 <div class="col-12 col-sm">
-                  <div class="text-h6">Mensajes ({{ filteredWhatsappMessages.length }})</div>
-                  <div class="text-caption text-grey-7">
+                  <div class="text-h6 text-primary flex items-center">
+                    <q-icon name="chat" size="24px" class="q-mr-sm" />
+                    Mensajes ({{ filteredWhatsappMessages.length }})
+                  </div>
+                  <div class="text-caption text-grey-8">
                     Envío de mensajes predefinidos a {{ patient.name }} {{ patient.last_name || '' }} ({{ patientPhone }})
                   </div>
                 </div>

@@ -1,8 +1,16 @@
 <template>
   <q-page padding>
-    <div class="row items-center q-mb-md">
-      <div class="col">
-        <div class="text-h5">Nuevo Paciente</div>
+    <div class="row items-center justify-between q-mb-md">
+      <div class="col-12 col-sm">
+        <div class="row items-center no-wrap">
+          <q-icon name="person_add" size="24px" color="primary" class="q-mr-sm" style="flex-shrink: 0;" />
+          <div class="text-h5 text-primary text-weight-bold ellipsis">
+            Nuevo Paciente
+          </div>
+        </div>
+        <div class="text-caption text-grey-7">
+          Alta y registro de nuevo paciente en la clínica
+        </div>
       </div>
     </div>
     <div class="row justify-center">
