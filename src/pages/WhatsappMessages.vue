@@ -773,13 +773,28 @@ onMounted(loadData);
 
 .message-table-content {
   display: -webkit-box;
-  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
   overflow: hidden;
   text-overflow: ellipsis;
   color: #4b5563;
   line-height: 1.5;
   word-break: break-word;
+}
+
+@media (max-width: 1023.98px) {
+  .message-table-content {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+}
+
+@media (max-width: 599.98px) {
+  .message-table-content {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
 }
 
 /* ─── Vista Móvil: Estilo Mercado Libre con Swipe ────────── */
@@ -812,11 +827,26 @@ onMounted(loadData);
   font-size: 13px;
   color: #6b7280;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   overflow: hidden;
   text-overflow: ellipsis;
   line-height: 1.4;
   word-break: break-word;
+}
+
+@media (min-width: 600px) and (max-width: 1023.98px) {
+  .meli-subtitle {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+}
+
+@media (min-width: 1024px) {
+  .meli-subtitle {
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+  }
 }
 </style>
