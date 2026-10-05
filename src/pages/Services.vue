@@ -199,6 +199,20 @@
         no-data-label="No hay servicios registrados en esta categoría"
         @row-click="handleRowClick"
       >
+        <template #body-cell-name="props">
+          <q-td class="text-left">
+            <div class="service-table-name">
+              {{ props.row.name }}
+            </div>
+          </q-td>
+        </template>
+        <template #body-cell-description="props">
+          <q-td class="text-left">
+            <div class="service-table-description">
+              {{ props.row.description || '—' }}
+            </div>
+          </q-td>
+        </template>
         <template #body-cell-price="props">
           <q-td class="text-left">
             <span class="simple-price">
@@ -1300,6 +1314,7 @@ onMounted(loadData);
   padding: 13px 16px;
   border-bottom: 1px solid #f0f4f8;
   color: #1f2937;
+  vertical-align: top;
 }
 .simple-table :deep(tbody tr:last-child td) {
   border-bottom: none;
@@ -1318,6 +1333,7 @@ onMounted(loadData);
   white-space: normal;
   word-break: break-word;
   line-height: 1.4;
+  vertical-align: top;
 }
 
 /* Descripción: resto del espacio disponible, con salto de línea */
@@ -1326,6 +1342,46 @@ onMounted(loadData);
   white-space: normal;
   word-break: break-word;
   line-height: 1.5;
+  vertical-align: top;
+}
+
+.service-table-name {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+.service-table-description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+  line-height: 1.5;
+  color: #4b5563;
+}
+
+@media (max-width: 1023.98px) {
+  .service-table-name,
+  .service-table-description {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+}
+
+@media (max-width: 599.98px) {
+  .service-table-name,
+  .service-table-description {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
 }
 
 /* Precio: ancho ajustado para no desperdiciar espacio */
@@ -1450,6 +1506,26 @@ onMounted(loadData);
   color: #1f2937;
   line-height: 1.35;
   word-break: break-word;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (min-width: 600px) and (max-width: 1023.98px) {
+  .meli-title {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+}
+
+@media (min-width: 1024px) {
+  .meli-title {
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+  }
 }
 .meli-price {
   font-size: 17px;

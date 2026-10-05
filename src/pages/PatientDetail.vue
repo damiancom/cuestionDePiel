@@ -608,7 +608,7 @@
                     <div class="text-subtitle2 text-weight-bold text-grey-9 q-mb-xs">
                       {{ msg.title }}
                     </div>
-                    <div class="text-body2 text-grey-8" style="white-space: pre-line; line-height: 1.45;">
+                    <div class="text-body2 text-grey-8 message-patient-content" style="white-space: pre-line; line-height: 1.45;">
                       {{ getPersonalizedMessageText(msg.content) }}
                     </div>
                   </q-item-section>
@@ -1571,5 +1571,29 @@ async function handleRoutineSave(routineData) {
 
 .crop-container:active {
   cursor: grabbing;
+}
+
+.message-patient-content {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+}
+
+@media (max-width: 1023.98px) {
+  .message-patient-content {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+}
+
+@media (max-width: 599.98px) {
+  .message-patient-content {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
 }
 </style>
