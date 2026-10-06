@@ -57,6 +57,11 @@ const routes = [
     component: () => import('../pages/WhatsappMessages.vue'),
     meta: { requiresAuth: true }
   },
+  {
+    path: '/proveedores',
+    component: () => import('../pages/Suppliers.vue'),
+    meta: { requiresAuth: true }
+  },
 ];
 
 const router = createRouter({
