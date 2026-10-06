@@ -161,3 +161,24 @@ export const WhatsappMessagesAPI = {
   },
 };
 
+const SUPPLIERS_URL = `${API_BASE_URL}/suppliers`;
+
+export const SuppliersAPI = {
+  list() {
+    return axios.get(SUPPLIERS_URL);
+  },
+  get(id) {
+    return axios.get(`${SUPPLIERS_URL}/${id}`);
+  },
+  create(payload) {
+    return axios.post(SUPPLIERS_URL, payload);
+  },
+  update(id, payload) {
+    return axios.put(`${SUPPLIERS_URL}/${id}`, payload);
+  },
+  remove(id) {
+    return axios.delete(`${SUPPLIERS_URL}/${id}`);
+  },
+};
+
+

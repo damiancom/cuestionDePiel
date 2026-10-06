@@ -36,6 +36,9 @@
             <q-btn flat round dense icon="chat" to="/mensajes-whatsapp">
               <div class="text-caption">Mensajes</div>
             </q-btn>
+            <q-btn flat round dense icon="contact_phone" to="/proveedores">
+              <div class="text-caption">Proveedores</div>
+            </q-btn>
           </div>
         </q-toolbar-title>
         <q-space v-else />
@@ -74,6 +77,7 @@
         <q-route-tab icon="point_of_sale" label="Ventas" to="/ventas" />
         <q-route-tab icon="gavel" label="Consentimiento" to="/consentimiento" />
         <q-route-tab icon="chat" label="Mensajes" to="/mensajes-whatsapp" />
+        <q-route-tab icon="contact_phone" label="Proveedores" to="/proveedores" />
       </q-tabs>
     </q-footer>
   </q-layout>
