@@ -124,4 +124,19 @@ body {
     max-width: none;
   }
 }
+
+/* Tablas: alternancia sutil de fondo entre filas (zebra striping) y hover */
+.q-table tbody tr:nth-child(even) {
+  background-color: #f4f6fa;
+}
+
+.q-table tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.q-table tbody tr:hover,
+.q-table tbody tr:hover td {
+  background-color: #eaf1fb !important;
+}
 </style>
+
