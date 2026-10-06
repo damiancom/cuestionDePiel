@@ -959,10 +959,10 @@ const props = defineProps({
 
 // En tablets horizontal (>= 768px) y desktop cuando el detalle del paciente está cerrado, usamos columnas
 const collapsedSections = reactive({
-  cutanea: false,
-  salud: false,
-  seguridad: false,
-  habitos: false,
+  cutanea: true,
+  salud: true,
+  seguridad: true,
+  habitos: true,
   resumen: true
 });
 
