@@ -138,5 +138,26 @@ body {
 .q-table tbody tr:hover td {
   background-color: #eaf1fb !important;
 }
+
+/* Listas: alternancia sutil de fondo entre filas (zebra striping) y hover */
+.zebra-list {
+  overflow: hidden;
+}
+
+.zebra-list .q-item {
+  transition: background-color 0.15s ease;
+}
+
+.zebra-list .q-item:nth-child(even) {
+  background-color: #f4f6fa;
+}
+
+.zebra-list .q-item:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.zebra-list .q-item:hover {
+  background-color: #eaf1fb !important;
+}
 </style>
 

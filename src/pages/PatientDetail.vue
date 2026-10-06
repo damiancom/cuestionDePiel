@@ -598,7 +598,7 @@
               </div>
 
               <!-- Listado de mensajes con botón Enviar -->
-              <q-list v-else bordered separator class="rounded-borders bg-white">
+              <q-list v-else bordered separator class="rounded-borders zebra-list patient-messages-list">
                 <q-item
                   v-for="msg in filteredWhatsappMessages"
                   :key="msg.id"
@@ -1595,5 +1595,29 @@ async function handleRoutineSave(routineData) {
     -webkit-line-clamp: 2;
     line-clamp: 2;
   }
+}
+
+.patient-messages-list {
+  overflow: hidden;
+}
+
+.patient-messages-list :deep(.q-item),
+.patient-messages-list .q-item {
+  transition: background-color 0.15s ease;
+}
+
+.patient-messages-list :deep(.q-item:nth-child(even)),
+.patient-messages-list .q-item:nth-child(even) {
+  background-color: #f4f6fa;
+}
+
+.patient-messages-list :deep(.q-item:nth-child(odd)),
+.patient-messages-list .q-item:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.patient-messages-list :deep(.q-item:hover),
+.patient-messages-list .q-item:hover {
+  background-color: #eaf1fb !important;
 }
 </style>
