@@ -234,6 +234,25 @@
                       </q-slide-transition>
                     </div>
                   </div>
+
+                  <!-- OTROS: campo directo de carga sin selector Sí/No -->
+                  <div class="col-12 q-mt-xs">
+                    <div
+                      class="hybrid-subitem q-py-sm q-px-md rounded-borders"
+                      :class="{ 'bg-blue-1 border-primary-subtle': !!(formData.lesiones.otherLesions.detalle && formData.lesiones.otherLesions.detalle.trim()) }"
+                    >
+                      <div class="text-body2 text-weight-medium text-grey-9 q-mb-xs">Otros:</div>
+                      <q-input
+                        v-model="formData.lesiones.otherLesions.detalle"
+                        placeholder="Especificar otras alteraciones o lesiones..."
+                        type="textarea"
+                        autogrow
+                        class="minimal-input"
+                        borderless
+                        dense
+                      />
+                    </div>
+                  </div>
                 </div>
               </q-card-section>
             </div>
@@ -480,11 +499,6 @@ const lesionesList = {
     label: 'Flacidez',
     detailKey: 'flaccidity_detail',
     placeholder: 'Óvalo facial, cuello, párpados...'
-  },
-  otherLesions: {
-    label: 'Otros',
-    detailKey: 'other_lesions_detail',
-    placeholder: 'Especificar otras alteraciones o lesiones...'
   }
 };
 
@@ -536,6 +550,13 @@ const totalLesionesActivas = computed(() => {
   return Object.values(formData.lesiones).filter(item => item.aplica).length;
 });
 
+watch(
+  () => formData.lesiones.otherLesions.detalle,
+  (val) => {
+    formData.lesiones.otherLesions.aplica = !!(val && val.trim().length > 0);
+  }
+);
+
 const lesionesActivasResumen = computed(() => {
   const result = [];
   for (const [key, conf] of Object.entries(lesionesList)) {
@@ -545,6 +566,12 @@ const lesionesActivasResumen = computed(() => {
         detalle: formData.lesiones[key].detalle || ''
       });
     }
+  }
+  if (formData.lesiones.otherLesions.detalle && formData.lesiones.otherLesions.detalle.trim()) {
+    result.push({
+      label: 'Otros',
+      detalle: formData.lesiones.otherLesions.detalle.trim()
+    });
   }
   return result;
 });
@@ -675,13 +702,15 @@ function loadData(data) {
   formData.lesiones.flaccidity.aplica = !!val('has_flaccidity', 'hasFlaccidity', false);
   formData.lesiones.flaccidity.detalle = val('flaccidity_detail', 'flaccidityDetail', '') || '';
 
-  formData.lesiones.otherLesions.aplica = !!val('has_other_lesions', 'hasOtherLesions', false);
-  formData.lesiones.otherLesions.detalle = val('other_lesions_detail', 'otherLesionsDetail', '') || '';
+  const otherDet = val('other_lesions_detail', 'otherLesionsDetail', '') || '';
+  formData.lesiones.otherLesions.detalle = otherDet;
+  formData.lesiones.otherLesions.aplica = !!(otherDet && otherDet.trim().length > 0);
 
   updateSnapshot();
 }
 
 function toBackendPayload() {
+  const hasOther = !!(formData.lesiones.otherLesions.detalle && formData.lesiones.otherLesions.detalle.trim().length > 0);
   return {
     phototype: formData.fototipo != null ? String(formData.fototipo) : '',
     skin_biotype: formData.biotipo || '',
@@ -745,8 +774,8 @@ function toBackendPayload() {
     has_flaccidity: formData.lesiones.flaccidity.aplica,
     flaccidity_detail: formData.lesiones.flaccidity.aplica ? formData.lesiones.flaccidity.detalle : '',
 
-    has_other_lesions: formData.lesiones.otherLesions.aplica,
-    other_lesions_detail: formData.lesiones.otherLesions.aplica ? formData.lesiones.otherLesions.detalle : ''
+    has_other_lesions: hasOther,
+    other_lesions_detail: hasOther ? formData.lesiones.otherLesions.detalle.trim() : ''
   };
 }
 
