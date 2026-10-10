@@ -192,6 +192,7 @@
                 </div>
               </q-tab>
               <q-tab name="observaciones" label="Anamnesis Dermatocosmiátrica" />
+              <q-tab name="mapeo_facial" label="Mapa Facial" />
               <q-tab name="rutina" label="Rutina" />
               <q-tab name="sesiones" label="Sesiones" />
               <q-tab name="consentimiento" label="Consentimiento" />
@@ -297,6 +298,9 @@
                 <q-btn flat label="Cancelar" @click="cancelarAnamnesis" color="grey-8" class="minimal-btn" />
                 <q-btn label="Guardar Anamnesis" color="primary" @click="guardarAnamnesis" :loading="guardandoAnamnesis" class="minimal-btn-save" />
               </div>
+            </q-tab-panel>
+            <q-tab-panel name="mapeo_facial">
+              <FacialMapping :patient="patient" />
             </q-tab-panel>
             <q-tab-panel name="rutina">
               <RoutineGenerator ref="routineEditor" :initialRoutine="mappedRoutine" @save="handleRoutineSave" />
@@ -673,6 +677,7 @@ import axios from "axios";
 import { useQuasar } from "quasar";
 import RoutineGenerator from '../components/RoutineGenerator.vue';
 import AnamnesisForm from '../components/AnamnesisForm.vue';
+import FacialMapping from '../components/FacialMapping.vue';
 
 const anamnesisFormRef = ref(null);
 
