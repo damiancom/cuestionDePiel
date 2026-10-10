@@ -191,7 +191,8 @@
                   </q-icon>
                 </div>
               </q-tab>
-              <q-tab name="observaciones" label="Anamnesis Dermatocosmiátrica" />
+              <q-tab name="evaluacion-cutanea" label="Evaluación Cutánea & Fototipo" />
+              <q-tab name="salud-habitos" label="Salud, Seguridad y Hábitos" />
               <q-tab name="rutina" label="Rutina" />
               <q-tab name="sesiones" label="Sesiones" />
               <q-tab name="consentimiento" label="Consentimiento" />
@@ -289,17 +290,28 @@
                 </div>
               </div>
             </q-tab-panel>
-            <q-tab-panel name="observaciones">
-              <!-- Nueva Ficha de Anamnesis Dermatocosmiátrica -->
-              <AnamnesisForm
-                ref="anamnesisFormRef"
-                :initial-data="anamnesisBackup"
-                :is-sidebar-collapsed="isSidebarCollapsed"
+            <q-tab-panel name="evaluacion-cutanea">
+              <!-- Ficha de Evaluación Cutánea & Fototipo -->
+              <SkinEvaluationForm
+                ref="skinEvaluationFormRef"
+                :initial-data="skinEvaluationBackup"
               />
 
               <div class="row q-gutter-sm justify-end q-mt-lg">
-                <q-btn flat label="Cancelar" @click="cancelarAnamnesis" color="grey-8" class="minimal-btn" />
-                <q-btn label="Guardar Anamnesis" color="primary" @click="guardarAnamnesis" :loading="guardandoAnamnesis" class="minimal-btn-save" />
+                <q-btn flat label="Cancelar" @click="cancelarSkinEvaluation" color="grey-8" class="minimal-btn" />
+                <q-btn label="Guardar Evaluación Cutánea" color="primary" @click="guardarSkinEvaluation" :loading="guardandoSkinEvaluation" class="minimal-btn-save" />
+              </div>
+            </q-tab-panel>
+            <q-tab-panel name="salud-habitos">
+              <!-- Ficha de Salud, Seguridad y Hábitos -->
+              <HealthSafetyHabitsForm
+                ref="healthSafetyHabitsFormRef"
+                :initial-data="healthSafetyHabitsBackup"
+              />
+
+              <div class="row q-gutter-sm justify-end q-mt-lg">
+                <q-btn flat label="Cancelar" @click="cancelarHealthSafetyHabits" color="grey-8" class="minimal-btn" />
+                <q-btn label="Guardar Salud & Hábitos" color="primary" @click="guardarHealthSafetyHabits" :loading="guardandoHealthSafetyHabits" class="minimal-btn-save" />
               </div>
             </q-tab-panel>
             <q-tab-panel name="rutina">
@@ -682,14 +694,20 @@
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
-import { PATIENTS_URL, ROUTINES_ENDPOINT, SessionsAPI, ConsentsAPI, AnamnesisAPI, WhatsappMessagesAPI } from "../services/api";
+import { PATIENTS_URL, ROUTINES_ENDPOINT, SessionsAPI, ConsentsAPI, SkinEvaluationAPI, HealthSafetyHabitsAPI, WhatsappMessagesAPI } from "../services/api";
 import axios from "axios";
 import { useQuasar } from "quasar";
 import RoutineGenerator from '../components/RoutineGenerator.vue';
-import AnamnesisForm from '../components/AnamnesisForm.vue';
+import SkinEvaluationForm from '../components/SkinEvaluationForm.vue';
+import HealthSafetyHabitsForm from '../components/HealthSafetyHabitsForm.vue';
 
-const anamnesisFormRef = ref(null);
-const anamnesisBackup = ref(null);
+const skinEvaluationFormRef = ref(null);
+const skinEvaluationBackup = ref(null);
+const guardandoSkinEvaluation = ref(false);
+
+const healthSafetyHabitsFormRef = ref(null);
+const healthSafetyHabitsBackup = ref(null);
+const guardandoHealthSafetyHabits = ref(false);
 
 const $q = useQuasar();
 const route = useRoute();
@@ -719,7 +737,7 @@ const cropContainer = ref(null);
 const cropZoom = ref(1);
 const cropImage = ref(null);
 const cropOffset = ref({x: 0, y: 0});
-const tab = ref($q.screen.gt.sm ? 'observaciones' : 'perfil');
+const tab = ref($q.screen.gt.sm ? 'evaluacion-cutanea' : 'perfil');
 const isSidebarCollapsed = ref(false);
 
 function toggleSidebar() {
@@ -747,7 +765,7 @@ onMounted(() => {
 
 watch(() => $q.screen.gt.sm, (isDesktop) => {
   if (isDesktop && tab.value === 'perfil') {
-    tab.value = 'observaciones';
+    tab.value = 'evaluacion-cutanea';
   }
 });
 
@@ -759,8 +777,11 @@ function isPatientDirty() {
 }
 
 function hasTabUnsavedChanges(tabName) {
-  if (tabName === 'observaciones') {
-    return Boolean(anamnesisFormRef.value?.isDirty?.());
+  if (tabName === 'evaluacion-cutanea') {
+    return Boolean(skinEvaluationFormRef.value?.isDirty?.());
+  }
+  if (tabName === 'salud-habitos') {
+    return Boolean(healthSafetyHabitsFormRef.value?.isDirty?.());
   }
   if (tabName === 'rutina') {
     return Boolean(routineEditor.value?.isDirty?.());
@@ -773,7 +794,8 @@ function hasTabUnsavedChanges(tabName) {
 
 function hasAnyUnsavedChanges() {
   return isPatientDirty() ||
-    Boolean(anamnesisFormRef.value?.isDirty?.()) ||
+    Boolean(skinEvaluationFormRef.value?.isDirty?.()) ||
+    Boolean(healthSafetyHabitsFormRef.value?.isDirty?.()) ||
     Boolean(routineEditor.value?.isDirty?.());
 }
 
@@ -805,7 +827,8 @@ function handleTabChange(newTab) {
 
   if (hasTabUnsavedChanges(tab.value)) {
     confirmDiscardChanges(() => {
-      if (tab.value === 'observaciones') cancelarAnamnesis();
+      if (tab.value === 'evaluacion-cutanea') cancelarSkinEvaluation();
+      else if (tab.value === 'salud-habitos') cancelarHealthSafetyHabits();
       else if (tab.value === 'rutina') cancelarRutina();
       else if (tab.value === 'perfil') cancelPatientEdit();
 
@@ -821,7 +844,8 @@ onBeforeRouteLeave((to, from, next) => {
     confirmDiscardChanges(
       () => {
         if (isPatientDirty()) cancelPatientEdit();
-        if (anamnesisFormRef.value?.isDirty?.()) cancelarAnamnesis();
+        if (skinEvaluationFormRef.value?.isDirty?.()) cancelarSkinEvaluation();
+        if (healthSafetyHabitsFormRef.value?.isDirty?.()) cancelarHealthSafetyHabits();
         if (routineEditor.value?.isDirty?.()) cancelarRutina();
         next();
       },
@@ -851,10 +875,16 @@ onBeforeUnmount(() => {
 });
 
 watch(tab, (newTab) => {
-  if (newTab === 'observaciones') {
-    if (anamnesisBackup.value) {
+  if (newTab === 'evaluacion-cutanea') {
+    if (skinEvaluationBackup.value) {
       nextTick(() => {
-        anamnesisFormRef.value?.loadData(anamnesisBackup.value);
+        skinEvaluationFormRef.value?.loadData(skinEvaluationBackup.value);
+      });
+    }
+  } else if (newTab === 'salud-habitos') {
+    if (healthSafetyHabitsBackup.value) {
+      nextTick(() => {
+        healthSafetyHabitsFormRef.value?.loadData(healthSafetyHabitsBackup.value);
       });
     }
   } else if (newTab === 'rutina') {
@@ -1108,8 +1138,6 @@ async function addSession() {
   }
 }
 
-const guardandoAnamnesis = ref(false);
-
 // ─── WhatsApp Mensajes Predefinidos ───
 const whatsappMessages = ref([]);
 const loadingWhatsappMessages = ref(false);
@@ -1209,7 +1237,8 @@ function confirmSendWhatsappMessage(msg) {
 onMounted(async () => {
   if (route.params.id) {
     await findPatientById(route.params.id);
-    await fetchAnamnesis(route.params.id);
+    await fetchSkinEvaluation(route.params.id);
+    await fetchHealthSafetyHabits(route.params.id);
     await fetchRoutine(route.params.id);
     await fetchSessions(route.params.id);
     await fetchConsentStatus(route.params.id);
@@ -1387,54 +1416,105 @@ function findPatientById(id) {
     });
 }
 
-async function fetchAnamnesis(id) {
+async function fetchSkinEvaluation(id) {
   try {
-    const response = await AnamnesisAPI.get(id);
-    anamnesisBackup.value = response.data;
-    anamnesisFormRef.value?.loadData(response.data);
+    const response = await SkinEvaluationAPI.get(id);
+    skinEvaluationBackup.value = response.data;
+    skinEvaluationFormRef.value?.loadData(response.data);
   } catch (error) {
     if (error.response && error.response.status === 404) {
-      console.log('Anamnesis not found (404), ficha en blanco.');
+      console.log('Skin evaluation not found (404), ficha en blanco.');
       return;
     }
-    console.error('Error fetching anamnesis:', error);
+    console.error('Error fetching skin evaluation:', error);
     $q.notify({
       type: 'negative',
-      message: 'Error al cargar anamnesis',
+      message: 'Error al cargar evaluación cutánea',
       position: 'top'
     });
   }
 }
 
-async function guardarAnamnesis() {
+async function guardarSkinEvaluation() {
   try {
-    guardandoAnamnesis.value = true;
-    const payload = anamnesisFormRef.value?.toBackendPayload();
-    const response = await AnamnesisAPI.save(route.params.id, payload);
-    anamnesisBackup.value = response.data;
-    anamnesisFormRef.value?.loadData(response.data);
+    guardandoSkinEvaluation.value = true;
+    const payload = skinEvaluationFormRef.value?.toBackendPayload();
+    const response = await SkinEvaluationAPI.save(route.params.id, payload);
+    skinEvaluationBackup.value = response.data;
+    skinEvaluationFormRef.value?.loadData(response.data);
     $q.notify({
       type: 'positive',
-      message: 'Anamnesis guardada correctamente',
+      message: 'Evaluación cutánea guardada correctamente',
       position: 'top'
     });
   } catch (error) {
-    console.error('Error guardando anamnesis:', error);
+    console.error('Error guardando evaluación cutánea:', error);
     $q.notify({
       type: 'negative',
-      message: 'Error al guardar anamnesis',
+      message: 'Error al guardar evaluación cutánea',
       position: 'top'
     });
   } finally {
-    guardandoAnamnesis.value = false;
+    guardandoSkinEvaluation.value = false;
   }
 }
 
-function cancelarAnamnesis() {
-  if (anamnesisBackup.value) {
-    anamnesisFormRef.value?.loadData(anamnesisBackup.value);
+function cancelarSkinEvaluation() {
+  if (skinEvaluationBackup.value) {
+    skinEvaluationFormRef.value?.loadData(skinEvaluationBackup.value);
   } else {
-    anamnesisFormRef.value?.resetData();
+    skinEvaluationFormRef.value?.resetData();
+  }
+}
+
+async function fetchHealthSafetyHabits(id) {
+  try {
+    const response = await HealthSafetyHabitsAPI.get(id);
+    healthSafetyHabitsBackup.value = response.data;
+    healthSafetyHabitsFormRef.value?.loadData(response.data);
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      console.log('Health safety habits not found (404), ficha en blanco.');
+      return;
+    }
+    console.error('Error fetching health safety habits:', error);
+    $q.notify({
+      type: 'negative',
+      message: 'Error al cargar salud, seguridad y hábitos',
+      position: 'top'
+    });
+  }
+}
+
+async function guardarHealthSafetyHabits() {
+  try {
+    guardandoHealthSafetyHabits.value = true;
+    const payload = healthSafetyHabitsFormRef.value?.toBackendPayload();
+    const response = await HealthSafetyHabitsAPI.save(route.params.id, payload);
+    healthSafetyHabitsBackup.value = response.data;
+    healthSafetyHabitsFormRef.value?.loadData(response.data);
+    $q.notify({
+      type: 'positive',
+      message: 'Salud, seguridad y hábitos guardados correctamente',
+      position: 'top'
+    });
+  } catch (error) {
+    console.error('Error guardando salud y hábitos:', error);
+    $q.notify({
+      type: 'negative',
+      message: 'Error al guardar salud, seguridad y hábitos',
+      position: 'top'
+    });
+  } finally {
+    guardandoHealthSafetyHabits.value = false;
+  }
+}
+
+function cancelarHealthSafetyHabits() {
+  if (healthSafetyHabitsBackup.value) {
+    healthSafetyHabitsFormRef.value?.loadData(healthSafetyHabitsBackup.value);
+  } else {
+    healthSafetyHabitsFormRef.value?.resetData();
   }
 }
 
