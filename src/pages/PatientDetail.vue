@@ -331,8 +331,18 @@
                   <q-tooltip>Nueva Sesión</q-tooltip>
                 </q-btn>
               </div>
-              <q-table :rows="sesionesOrdenadas" :columns="columns" row-key="id" flat dense hide-bottom class="q-mb-md"
-                @row-click="(evt, row) => verSesion(row)">
+              <q-table
+                :rows="sesionesOrdenadas"
+                :columns="columns"
+                row-key="id"
+                flat
+                dense
+                v-model:pagination="sesionesPagination"
+                :rows-per-page-options="[10, 20, 50, 0]"
+                rows-per-page-label="Sesiones por página:"
+                class="q-mb-md"
+                @row-click="(evt, row) => verSesion(row)"
+              >
                 <template #body-cell-date="props">
                   <q-td>{{ formatDate(props.row.date) }}</q-td>
                 </template>
@@ -877,6 +887,7 @@ const columns = [
 const sesionesOrdenadas = computed(() =>
   [...sesiones.value].sort((a, b) => b.date.localeCompare(a.date))
 );
+const sesionesPagination = ref({ page: 1, rowsPerPage: 10 });
 const showSesionDialog = ref(false);
 const sesionActual = reactive({ id: null, date: '', observation: '', treatment: '' });
 
