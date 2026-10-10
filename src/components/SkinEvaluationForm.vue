@@ -8,7 +8,7 @@
           Evaluación Cutánea & Fototipo
         </div>
         <div class="text-caption text-grey-8">
-          Ficha clínica digital de evaluación dermatocosmiátrica y perfil de piel
+          Ficha clínica digital de evaluación dermatocosmiátrica, fototipo y lesiones de la piel
         </div>
       </div>
     </div>
@@ -16,9 +16,11 @@
     <div class="row q-col-gutter-lg items-start">
       <!-- Columna Principal -->
       <div class="col-12 col-lg-8 q-gutter-y-md">
+
+        <!-- 1. FOTOTIPO, BIOTIPO & CONDICIONES -->
         <q-card flat bordered class="skin-card">
           <q-card-section>
-            <!-- 1. Fototipo Fitzpatrick Interactivo -->
+            <!-- Fototipo Fitzpatrick Interactivo -->
             <div class="q-mb-md q-pa-sm bg-grey-1 rounded-borders">
               <div class="text-subtitle2 text-grey-9 q-mb-xs">
                 Fototipo - Clasificación de Fitzpatrick:
@@ -43,7 +45,7 @@
               </div>
             </div>
 
-            <!-- 2. Biotipo Cutáneo -->
+            <!-- Biotipo Cutáneo -->
             <div class="q-mb-md">
               <div class="scale-item q-py-xs q-px-xs">
                 <div class="row items-center justify-between scale-row">
@@ -66,11 +68,10 @@
               </div>
             </div>
 
-            <!-- 3. Condiciones de la Piel -->
+            <!-- Condiciones de la Piel -->
             <div class="q-mb-md">
               <div class="text-subtitle2 text-grey-8 q-mb-xs">Condiciones de la Piel</div>
               <div class="condiciones-grid q-gutter-y-xs">
-                <!-- Fila 1 -->
                 <div class="row q-gutter-x-sm no-wrap items-center justify-between">
                   <q-btn
                     v-for="cond in ['Sensible / Reactiva', 'Deshidratada', 'Acneica']"
@@ -85,7 +86,6 @@
                     {{ cond }}
                   </q-btn>
                 </div>
-                <!-- Fila 2: Frase larga central -->
                 <div class="row items-center">
                   <q-btn
                     no-caps
@@ -98,7 +98,6 @@
                     Discromia (Hipopigmentaciones / hiperpigmentaciones)
                   </q-btn>
                 </div>
-                <!-- Fila 3 -->
                 <div class="row q-gutter-x-sm no-wrap items-center justify-between">
                   <q-btn
                     v-for="cond in ['Madura', 'Fotoenvejecida']"
@@ -116,8 +115,8 @@
               </div>
             </div>
 
-            <!-- 4. Antecedentes Dérmicos Específicos (Herpes & Cicatrización) -->
-            <div class="row q-col-gutter-md q-mb-md">
+            <!-- Antecedentes Dérmicos (Herpes & Cicatrización irregular) -->
+            <div class="row q-col-gutter-md">
               <div class="col-12 col-sm-6 text-center">
                 <div class="text-caption text-grey-8">¿Herpes Simple?</div>
                 <div class="row justify-center">
@@ -154,20 +153,104 @@
                 </div>
               </div>
             </div>
+          </q-card-section>
+        </q-card>
 
-            <!-- 5. Afección Cutánea Actual -->
-            <div class="q-mt-sm">
-              <div class="text-subtitle2 text-grey-8 q-mb-xs">Afección Cutánea Actual / Motivo de Consulta</div>
-              <q-input
-                v-model="formData.afeccionActual"
-                type="textarea"
-                autogrow
-                placeholder="Describí el estado actual de la piel, lesiones activas, deshidratación, sensibilidad observada o motivo de consulta..."
-                class="minimal-input"
-                borderless
+        <!-- 2. ALTERACIONES PRIMARIAS / LESIONES DE LA PIEL -->
+        <q-card flat bordered class="skin-card">
+          <q-card-section
+            class="cursor-pointer row items-center justify-between no-wrap q-py-sm header-collapsible"
+            @click="collapsedLesiones = !collapsedLesiones"
+          >
+            <div class="row items-center no-wrap">
+              <q-avatar size="34px" color="indigo-1" text-color="indigo-9" icon="healing" class="q-mr-sm flex-shrink-0" />
+              <div>
+                <div class="text-subtitle1 text-weight-bold">Alteraciones primarias / Lesiones de la piel</div>
+                <div class="text-caption text-grey-7">Comedones, pápulas, pústulas, hiperpigmentaciones, cicatrices y signos cutáneos</div>
+              </div>
+            </div>
+            <div class="row items-center no-wrap q-gutter-x-xs">
+              <q-badge color="indigo" :label="`${totalLesionesActivas} activas`" v-if="totalLesionesActivas > 0" />
+              <q-btn
+                flat
+                round
                 dense
+                color="grey-7"
+                :icon="collapsedLesiones ? 'expand_more' : 'expand_less'"
+                @click.stop="collapsedLesiones = !collapsedLesiones"
               />
             </div>
+          </q-card-section>
+
+          <q-slide-transition>
+            <div v-show="!collapsedLesiones">
+              <q-separator />
+              <q-card-section>
+                <div class="row q-col-gutter-sm">
+                  <div
+                    v-for="(item, key) in lesionesList"
+                    :key="key"
+                    class="col-12 col-md-6"
+                  >
+                    <div
+                      class="hybrid-subitem q-py-sm q-px-md rounded-borders"
+                      :class="{ 'bg-blue-1 border-primary-subtle': formData.lesiones[key]?.aplica }"
+                    >
+                      <div class="row items-center justify-between q-gutter-x-sm">
+                        <div class="col">
+                          <div class="text-body2 text-weight-medium text-grey-9 lh-snug">{{ item.label }}</div>
+                          <div v-if="item.subtitle" class="text-caption text-primary text-weight-medium">
+                            {{ item.subtitle }}
+                          </div>
+                        </div>
+                        <div class="col-auto">
+                          <q-btn-toggle
+                            v-model="formData.lesiones[key].aplica"
+                            no-caps
+                            rounded
+                            dense
+                            unelevated
+                            class="toggle-hybrid"
+                            toggle-color="primary"
+                            color="grey-2"
+                            text-color="grey-8"
+                            :options="[{ label: 'No', value: false }, { label: 'Sí', value: true }]"
+                          />
+                        </div>
+                      </div>
+
+                      <q-slide-transition>
+                        <div v-if="formData.lesiones[key]?.aplica" class="q-mt-sm">
+                          <q-input
+                            v-model="formData.lesiones[key].detalle"
+                            :placeholder="item.placeholder || 'Detalle, localización o grado...'"
+                            class="minimal-input"
+                            borderless
+                            dense
+                          />
+                        </div>
+                      </q-slide-transition>
+                    </div>
+                  </div>
+                </div>
+              </q-card-section>
+            </div>
+          </q-slide-transition>
+        </q-card>
+
+        <!-- 3. AFECCIÓN CUTÁNEA ACTUAL / MOTIVO DE CONSULTA -->
+        <q-card flat bordered class="skin-card">
+          <q-card-section>
+            <div class="text-subtitle2 text-grey-8 q-mb-xs">Afección Cutánea Actual / Motivo de Consulta</div>
+            <q-input
+              v-model="formData.afeccionActual"
+              type="textarea"
+              autogrow
+              placeholder="Describí el estado actual de la piel, lesiones activas preponderantes, sensibilidad observada o motivo de consulta..."
+              class="minimal-input"
+              borderless
+              dense
+            />
           </q-card-section>
         </q-card>
       </div>
@@ -190,7 +273,9 @@
               </div>
             </q-card-section>
             <q-separator />
+
             <q-card-section class="q-gutter-y-sm">
+              <!-- Fototipo -->
               <div>
                 <div class="text-caption text-weight-bold text-grey-8">FOTOTIPO</div>
                 <div v-if="formData.fototipo" class="row items-center q-mt-xs">
@@ -207,6 +292,7 @@
 
               <q-separator />
 
+              <!-- Biotipo -->
               <div>
                 <div class="text-caption text-weight-bold text-grey-8">BIOTIPO</div>
                 <q-badge color="blue-2" text-color="primary" class="text-weight-bold q-mt-xs" v-if="formData.biotipo">
@@ -217,6 +303,7 @@
 
               <q-separator />
 
+              <!-- Condiciones Activas -->
               <div>
                 <div class="text-caption text-weight-bold text-grey-8">CONDICIONES ACTIVAS</div>
                 <div v-if="formData.condiciones.length > 0" class="row q-gutter-xs q-mt-xs">
@@ -234,6 +321,28 @@
 
               <q-separator />
 
+              <!-- Lesiones y Alteraciones Detectadas -->
+              <div>
+                <div class="text-caption text-weight-bold text-grey-8">LESIONES / ALTERACIONES DETECTADAS</div>
+                <div v-if="lesionesActivasResumen.length > 0" class="row q-gutter-xs q-mt-xs">
+                  <q-badge
+                    v-for="(les, idx) in lesionesActivasResumen"
+                    :key="idx"
+                    color="indigo-1"
+                    text-color="indigo-9"
+                    class="q-pa-xs text-caption"
+                  >
+                    <q-icon name="circle" size="6px" class="q-mr-xs text-indigo" />
+                    {{ les.label }}
+                    <span v-if="les.detalle" class="text-weight-regular text-grey-8 q-ml-xs">({{ les.detalle }})</span>
+                  </q-badge>
+                </div>
+                <div v-else class="text-caption text-grey-5 italic q-mt-xs">Sin alteraciones primarias declaradas</div>
+              </div>
+
+              <q-separator />
+
+              <!-- Antecedentes Dérmicos -->
               <div>
                 <div class="text-caption text-weight-bold text-grey-8">ANTECEDENTES DÉRMICOS</div>
                 <div class="q-gutter-y-xs q-mt-xs text-caption">
@@ -269,12 +378,114 @@ const props = defineProps({
   }
 });
 
+const collapsedLesiones = ref(false);
+
 const biotiposOptions = [
   { label: 'Eutrófica', value: 'Eutrófica' },
   { label: 'Seca / Alípica', value: 'Seca / Alípica' },
   { label: 'Grasa', value: 'Grasa' },
   { label: 'Mixta', value: 'Mixta' }
 ];
+
+const lesionesList = {
+  openComedones: {
+    label: 'Comedones abiertos',
+    detailKey: 'open_comedones_detail',
+    placeholder: 'Localización (zona T, mejillas, etc.)...'
+  },
+  closedComedones: {
+    label: 'Comedones cerrados',
+    detailKey: 'closed_comedones_detail',
+    placeholder: 'Localización o cantidad...'
+  },
+  papules: {
+    label: 'Pápulas',
+    detailKey: 'papules_detail',
+    placeholder: 'Zonas afectadas...'
+  },
+  pustules: {
+    label: 'Pústulas',
+    detailKey: 'pustules_detail',
+    placeholder: 'Zonas afectadas o evolución...'
+  },
+  miliumCysts: {
+    label: 'Quistes de milium',
+    detailKey: 'milium_cysts_detail',
+    placeholder: 'Zona periocular, mejillas, etc...'
+  },
+  sebaceousCysts: {
+    label: 'Quistes sebáceos',
+    detailKey: 'sebaceous_cysts_detail',
+    placeholder: 'Localización y tamaño...'
+  },
+  hyperpigmentation: {
+    label: 'Hiperpigmentaciones',
+    subtitle: '(máculas / lentigos / melasma)',
+    detailKey: 'hyperpigmentation_detail',
+    placeholder: 'Especificar tipo (máculas, lentigos, melasma), zona...'
+  },
+  erythema: {
+    label: 'Eritema',
+    detailKey: 'erythema_detail',
+    placeholder: 'Difuso, localizado, zona malar...'
+  },
+  telangiectasias: {
+    label: 'Telangiectasias',
+    subtitle: '¿dónde?',
+    detailKey: 'telangiectasias_detail',
+    placeholder: '¿Dónde? Alas nasales, pómulos, mentón...'
+  },
+  flaking: {
+    label: 'Escamación (Escamas)',
+    detailKey: 'flaking_detail',
+    placeholder: 'Zona periocular, perinasal, etc...'
+  },
+  atrophicScars: {
+    label: 'Cicatrices atróficas',
+    detailKey: 'atrophic_scars_detail',
+    placeholder: 'Secuelas de acné, zona...'
+  },
+  hypertrophicScars: {
+    label: 'Cicatrices hipertróficas',
+    detailKey: 'hypertrophic_scars_detail',
+    placeholder: 'Localización...'
+  },
+  acne: {
+    label: 'Acné',
+    detailKey: 'acne_detail',
+    placeholder: 'Grado (I, II, III), activo, comedónico, inflamatorio...'
+  },
+  hyperkeratosis: {
+    label: 'Hiperqueratosis',
+    detailKey: 'hyperkeratosis_detail',
+    placeholder: 'Zonas de engrosamiento...'
+  },
+  expressionLines: {
+    label: 'Líneas de expresión',
+    detailKey: 'expression_lines_detail',
+    placeholder: 'Frente, entrecejo, perioculares...'
+  },
+  wrinkles: {
+    label: 'Arrugas',
+    detailKey: 'wrinkles_detail',
+    placeholder: 'Finas, profundas, gravídicas...'
+  },
+  dermatitis: {
+    label: 'Dermatitis',
+    detailKey: 'dermatitis_detail',
+    placeholder: 'Atópica, seborreica, por contacto...'
+  },
+  flaccidity: {
+    label: 'Flacidez',
+    detailKey: 'flaccidity_detail',
+    placeholder: 'Óvalo facial, cuello, párpados...'
+  },
+  otherLesions: {
+    label: 'Otros',
+    detailKey: 'other_lesions_detail',
+    placeholder: 'Especificar otras alteraciones o lesiones...'
+  }
+};
 
 function getFototipoColor(n) {
   const colors = {
@@ -294,7 +505,47 @@ const formData = reactive({
   condiciones: [],
   herpesSimple: false,
   cicatrizacionQueloides: false,
-  afeccionActual: ''
+  afeccionActual: '',
+
+  // Alteraciones primarias / Lesiones de la piel
+  lesiones: {
+    openComedones: { aplica: false, detalle: '' },
+    closedComedones: { aplica: false, detalle: '' },
+    papules: { aplica: false, detalle: '' },
+    pustules: { aplica: false, detalle: '' },
+    miliumCysts: { aplica: false, detalle: '' },
+    sebaceousCysts: { aplica: false, detalle: '' },
+    hyperpigmentation: { aplica: false, detalle: '' },
+    erythema: { aplica: false, detalle: '' },
+    telangiectasias: { aplica: false, detalle: '' },
+    flaking: { aplica: false, detalle: '' },
+    atrophicScars: { aplica: false, detalle: '' },
+    hypertrophicScars: { aplica: false, detalle: '' },
+    acne: { aplica: false, detalle: '' },
+    hyperkeratosis: { aplica: false, detalle: '' },
+    expressionLines: { aplica: false, detalle: '' },
+    wrinkles: { aplica: false, detalle: '' },
+    dermatitis: { aplica: false, detalle: '' },
+    flaccidity: { aplica: false, detalle: '' },
+    otherLesions: { aplica: false, detalle: '' }
+  }
+});
+
+const totalLesionesActivas = computed(() => {
+  return Object.values(formData.lesiones).filter(item => item.aplica).length;
+});
+
+const lesionesActivasResumen = computed(() => {
+  const result = [];
+  for (const [key, conf] of Object.entries(lesionesList)) {
+    if (formData.lesiones[key]?.aplica) {
+      result.push({
+        label: conf.label,
+        detalle: formData.lesiones[key].detalle || ''
+      });
+    }
+  }
+  return result;
 });
 
 const fototipoDescripcion = computed(() => {
@@ -333,6 +584,12 @@ function resetData() {
   formData.herpesSimple = false;
   formData.cicatrizacionQueloides = false;
   formData.afeccionActual = '';
+
+  Object.keys(formData.lesiones).forEach(k => {
+    formData.lesiones[k].aplica = false;
+    formData.lesiones[k].detalle = '';
+  });
+
   updateSnapshot();
 }
 
@@ -362,6 +619,64 @@ function loadData(data) {
   formData.cicatrizacionQueloides = !!val('has_keloids_irregular_scarring', 'hasKeloidsIrregularScarring', false);
   formData.afeccionActual = val('current_skin_condition', 'currentSkinCondition', '') || '';
 
+  // Alteraciones primarias / Lesiones de la piel
+  formData.lesiones.openComedones.aplica = !!val('has_open_comedones', 'hasOpenComedones', false);
+  formData.lesiones.openComedones.detalle = val('open_comedones_detail', 'openComedonesDetail', '') || '';
+
+  formData.lesiones.closedComedones.aplica = !!val('has_closed_comedones', 'hasClosedComedones', false);
+  formData.lesiones.closedComedones.detalle = val('closed_comedones_detail', 'closedComedonesDetail', '') || '';
+
+  formData.lesiones.papules.aplica = !!val('has_papules', 'hasPapules', false);
+  formData.lesiones.papules.detalle = val('papules_detail', 'papulesDetail', '') || '';
+
+  formData.lesiones.pustules.aplica = !!val('has_pustules', 'hasPustules', false);
+  formData.lesiones.pustules.detalle = val('pustules_detail', 'pustulesDetail', '') || '';
+
+  formData.lesiones.miliumCysts.aplica = !!val('has_milium_cysts', 'hasMiliumCysts', false);
+  formData.lesiones.miliumCysts.detalle = val('milium_cysts_detail', 'miliumCystsDetail', '') || '';
+
+  formData.lesiones.sebaceousCysts.aplica = !!val('has_sebaceous_cysts', 'hasSebaceousCysts', false);
+  formData.lesiones.sebaceousCysts.detalle = val('sebaceous_cysts_detail', 'sebaceousCystsDetail', '') || '';
+
+  formData.lesiones.hyperpigmentation.aplica = !!val('has_hyperpigmentation', 'hasHyperpigmentation', false);
+  formData.lesiones.hyperpigmentation.detalle = val('hyperpigmentation_detail', 'hyperpigmentationDetail', '') || '';
+
+  formData.lesiones.erythema.aplica = !!val('has_erythema', 'hasErythema', false);
+  formData.lesiones.erythema.detalle = val('erythema_detail', 'erythemaDetail', '') || '';
+
+  formData.lesiones.telangiectasias.aplica = !!val('has_telangiectasias', 'hasTelangiectasias', false);
+  formData.lesiones.telangiectasias.detalle = val('telangiectasias_detail', 'telangiectasiasDetail', '') || '';
+
+  formData.lesiones.flaking.aplica = !!val('has_flaking', 'hasFlaking', false);
+  formData.lesiones.flaking.detalle = val('flaking_detail', 'flakingDetail', '') || '';
+
+  formData.lesiones.atrophicScars.aplica = !!val('has_atrophic_scars', 'hasAtrophicScars', false);
+  formData.lesiones.atrophicScars.detalle = val('atrophic_scars_detail', 'atrophicScarsDetail', '') || '';
+
+  formData.lesiones.hypertrophicScars.aplica = !!val('has_hypertrophic_scars', 'hasHypertrophicScars', false);
+  formData.lesiones.hypertrophicScars.detalle = val('hypertrophic_scars_detail', 'hypertrophicScarsDetail', '') || '';
+
+  formData.lesiones.acne.aplica = !!val('has_acne', 'hasAcne', false);
+  formData.lesiones.acne.detalle = val('acne_detail', 'acneDetail', '') || '';
+
+  formData.lesiones.hyperkeratosis.aplica = !!val('has_hyperkeratosis', 'hasHyperkeratosis', false);
+  formData.lesiones.hyperkeratosis.detalle = val('hyperkeratosis_detail', 'hyperkeratosisDetail', '') || '';
+
+  formData.lesiones.expressionLines.aplica = !!val('has_expression_lines', 'hasExpressionLines', false);
+  formData.lesiones.expressionLines.detalle = val('expression_lines_detail', 'expressionLinesDetail', '') || '';
+
+  formData.lesiones.wrinkles.aplica = !!val('has_wrinkles', 'hasWrinkles', false);
+  formData.lesiones.wrinkles.detalle = val('wrinkles_detail', 'wrinklesDetail', '') || '';
+
+  formData.lesiones.dermatitis.aplica = !!val('has_dermatitis', 'hasDermatitis', false);
+  formData.lesiones.dermatitis.detalle = val('dermatitis_detail', 'dermatitisDetail', '') || '';
+
+  formData.lesiones.flaccidity.aplica = !!val('has_flaccidity', 'hasFlaccidity', false);
+  formData.lesiones.flaccidity.detalle = val('flaccidity_detail', 'flaccidityDetail', '') || '';
+
+  formData.lesiones.otherLesions.aplica = !!val('has_other_lesions', 'hasOtherLesions', false);
+  formData.lesiones.otherLesions.detalle = val('other_lesions_detail', 'otherLesionsDetail', '') || '';
+
   updateSnapshot();
 }
 
@@ -372,7 +687,65 @@ function toBackendPayload() {
     skin_conditions: (formData.condiciones || []).join(', '),
     has_herpes_simplex: formData.herpesSimple,
     has_keloids_irregular_scarring: formData.cicatrizacionQueloides,
-    current_skin_condition: formData.afeccionActual || ''
+    current_skin_condition: formData.afeccionActual || '',
+
+    // Alteraciones primarias / Lesiones de la piel
+    has_open_comedones: formData.lesiones.openComedones.aplica,
+    open_comedones_detail: formData.lesiones.openComedones.aplica ? formData.lesiones.openComedones.detalle : '',
+
+    has_closed_comedones: formData.lesiones.closedComedones.aplica,
+    closed_comedones_detail: formData.lesiones.closedComedones.aplica ? formData.lesiones.closedComedones.detalle : '',
+
+    has_papules: formData.lesiones.papules.aplica,
+    papules_detail: formData.lesiones.papules.aplica ? formData.lesiones.papules.detalle : '',
+
+    has_pustules: formData.lesiones.pustules.aplica,
+    pustules_detail: formData.lesiones.pustules.aplica ? formData.lesiones.pustules.detalle : '',
+
+    has_milium_cysts: formData.lesiones.miliumCysts.aplica,
+    milium_cysts_detail: formData.lesiones.miliumCysts.aplica ? formData.lesiones.miliumCysts.detalle : '',
+
+    has_sebaceous_cysts: formData.lesiones.sebaceousCysts.aplica,
+    sebaceous_cysts_detail: formData.lesiones.sebaceousCysts.aplica ? formData.lesiones.sebaceousCysts.detalle : '',
+
+    has_hyperpigmentation: formData.lesiones.hyperpigmentation.aplica,
+    hyperpigmentation_detail: formData.lesiones.hyperpigmentation.aplica ? formData.lesiones.hyperpigmentation.detalle : '',
+
+    has_erythema: formData.lesiones.erythema.aplica,
+    erythema_detail: formData.lesiones.erythema.aplica ? formData.lesiones.erythema.detalle : '',
+
+    has_telangiectasias: formData.lesiones.telangiectasias.aplica,
+    telangiectasias_detail: formData.lesiones.telangiectasias.aplica ? formData.lesiones.telangiectasias.detalle : '',
+
+    has_flaking: formData.lesiones.flaking.aplica,
+    flaking_detail: formData.lesiones.flaking.aplica ? formData.lesiones.flaking.detalle : '',
+
+    has_atrophic_scars: formData.lesiones.atrophicScars.aplica,
+    atrophic_scars_detail: formData.lesiones.atrophicScars.aplica ? formData.lesiones.atrophicScars.detalle : '',
+
+    has_hypertrophic_scars: formData.lesiones.hypertrophicScars.aplica,
+    hypertrophic_scars_detail: formData.lesiones.hypertrophicScars.aplica ? formData.lesiones.hypertrophicScars.detalle : '',
+
+    has_acne: formData.lesiones.acne.aplica,
+    acne_detail: formData.lesiones.acne.aplica ? formData.lesiones.acne.detalle : '',
+
+    has_hyperkeratosis: formData.lesiones.hyperkeratosis.aplica,
+    hyperkeratosis_detail: formData.lesiones.hyperkeratosis.aplica ? formData.lesiones.hyperkeratosis.detalle : '',
+
+    has_expression_lines: formData.lesiones.expressionLines.aplica,
+    expression_lines_detail: formData.lesiones.expressionLines.aplica ? formData.lesiones.expressionLines.detalle : '',
+
+    has_wrinkles: formData.lesiones.wrinkles.aplica,
+    wrinkles_detail: formData.lesiones.wrinkles.aplica ? formData.lesiones.wrinkles.detalle : '',
+
+    has_dermatitis: formData.lesiones.dermatitis.aplica,
+    dermatitis_detail: formData.lesiones.dermatitis.aplica ? formData.lesiones.dermatitis.detalle : '',
+
+    has_flaccidity: formData.lesiones.flaccidity.aplica,
+    flaccidity_detail: formData.lesiones.flaccidity.aplica ? formData.lesiones.flaccidity.detalle : '',
+
+    has_other_lesions: formData.lesiones.otherLesions.aplica,
+    other_lesions_detail: formData.lesiones.otherLesions.aplica ? formData.lesiones.otherLesions.detalle : ''
   };
 }
 
@@ -427,6 +800,26 @@ defineExpose({
   border-radius: 12px;
   border-color: #e0e0e0;
   background-color: #fafbfc;
+}
+
+.header-collapsible {
+  background-color: #f1f5f9;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.hybrid-subitem {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.hybrid-subitem:hover {
+  border-color: #cbd5e1;
+}
+
+.border-primary-subtle {
+  border-color: #bfdbfe !important;
 }
 
 .live-summary-card {
@@ -501,6 +894,19 @@ defineExpose({
   box-shadow: 0 2px 6px rgba(25, 118, 210, 0.25);
 }
 
+.toggle-hybrid {
+  border: 1px solid #d0d7de;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.toggle-hybrid :deep(.q-btn) {
+  min-width: 50px;
+  padding: 4px 10px;
+  font-weight: 600;
+  font-size: 12.5px;
+}
+
 .toggle-custom {
   border: 1px solid #d0d7de;
   border-radius: 20px;
@@ -512,7 +918,7 @@ defineExpose({
   border-radius: 12px;
   border: 1px solid #e0e4ea !important;
   box-shadow: none !important;
-  font-size: 14px;
+  font-size: 13.5px;
   padding: 4px 12px;
   transition: all 0.2s ease;
 }
