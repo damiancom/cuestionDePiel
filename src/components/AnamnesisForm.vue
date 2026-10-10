@@ -275,6 +275,7 @@ function resetData() {
   formData.contraindicaciones.tratamientoOncologico = false;
   formData.contraindicaciones.heridasInfecciones = false;
   formData.contraindicaciones.anticoagulantesSinAutorizacion = false;
+  updateSnapshot();
 }
 
 function loadData(data) {
@@ -377,17 +378,8 @@ function loadData(data) {
   formData.contraindicaciones.tratamientoOncologico = !!val('has_active_oncological_treatment', 'hasActiveOncologicalTreatment', false);
   formData.contraindicaciones.heridasInfecciones = !!val('has_open_wounds_infections', 'hasOpenWoundsInfections', false);
   formData.contraindicaciones.anticoagulantesSinAutorizacion = !!val('has_unauthorized_anticoagulants', 'hasUnauthorizedAnticoagulants', false);
+  updateSnapshot();
 }
-
-watch(
-  () => props.initialData,
-  (newVal) => {
-    if (newVal) {
-      loadData(newVal);
-    }
-  },
-  { immediate: true }
-);
 
 function toBackendPayload() {
   return {
@@ -477,11 +469,45 @@ function toBackendPayload() {
   };
 }
 
+const lastSavedSnapshot = ref('');
+
+function updateSnapshot() {
+  try {
+    lastSavedSnapshot.value = JSON.stringify(toBackendPayload());
+  } catch (e) {
+    console.warn('Error calculando snapshot de anamnesis', e);
+  }
+}
+
+function isDirty() {
+  if (!lastSavedSnapshot.value) return false;
+  try {
+    return JSON.stringify(toBackendPayload()) !== lastSavedSnapshot.value;
+  } catch (e) {
+    return false;
+  }
+}
+
+// Inicializar snapshot por defecto
+updateSnapshot();
+
+watch(
+  () => props.initialData,
+  (newVal) => {
+    if (newVal) {
+      loadData(newVal);
+    }
+  },
+  { immediate: true }
+);
+
 defineExpose({
   formData,
   loadData,
   toBackendPayload,
-  resetData
+  resetData,
+  isDirty,
+  updateSnapshot
 });
 </script>
 
