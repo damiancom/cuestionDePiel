@@ -48,7 +48,7 @@
                   size="sm"
                   color="positive"
                   icon="fa-brands fa-whatsapp"
-                  @click="tab = 'mensajes'"
+                  @click="handleTabChange('mensajes')"
                 >
                   <q-tooltip>Enviar mensaje predefinido de WhatsApp</q-tooltip>
                 </q-btn>
@@ -59,7 +59,7 @@
                 <q-badge
                   :color="consentStatus.is_signed ? 'positive' : (consentStatus.signed_version ? 'warning' : 'negative')"
                   class="q-pa-xs cursor-pointer text-caption text-weight-bold"
-                  @click="tab = 'consentimiento'"
+                  @click="handleTabChange('consentimiento')"
                 >
                   <q-icon :name="consentStatus.is_signed ? 'verified' : (consentStatus.signed_version ? 'update' : 'draw')" class="q-mr-xs" />
                   {{ consentStatus.is_signed ? `Consentimiento OK (v${consentStatus.signed_version})` : (consentStatus.signed_version ? 'Consentimiento Desactualizado' : 'Falta Consentimiento') }}
@@ -121,7 +121,7 @@
                 color="positive"
                 size="18px"
                 class="q-ml-xs cursor-pointer"
-                @click.stop="tab = 'consentimiento'"
+                @click.stop="handleTabChange('consentimiento')"
               >
                 <q-tooltip>Consentimiento firmado (v{{ consentStatus.signed_version }})</q-tooltip>
               </q-icon>
@@ -131,7 +131,7 @@
                 color="warning"
                 size="18px"
                 class="q-ml-xs cursor-pointer"
-                @click.stop="tab = 'consentimiento'"
+                @click.stop="handleTabChange('consentimiento')"
               >
                 <q-tooltip>Consentimiento desactualizado (pendiente v{{ consentStatus.current_version }})</q-tooltip>
               </q-icon>
@@ -141,14 +141,14 @@
                 color="negative"
                 size="18px"
                 class="q-ml-xs cursor-pointer"
-                @click.stop="tab = 'consentimiento'"
+                @click.stop="handleTabChange('consentimiento')"
               >
                 <q-tooltip>Falta consentimiento informado</q-tooltip>
               </q-icon>
               <q-tooltip>Mostrar detalle del paciente</q-tooltip>
             </q-btn>
 
-            <q-tabs v-model="tab" class="text-primary col" align="left" dense mobile-arrows outside-arrows>
+            <q-tabs :model-value="tab" @update:model-value="handleTabChange" class="text-primary col" align="left" dense mobile-arrows outside-arrows>
               <!-- Tab Perfil: Sólo visible en mobile (lt-md) -->
               <q-tab name="perfil" class="lt-md" no-caps>
                 <div class="row items-center no-wrap">
@@ -165,7 +165,7 @@
                     color="positive"
                     size="18px"
                     class="q-ml-xs cursor-pointer"
-                    @click.stop="tab = 'consentimiento'"
+                    @click.stop="handleTabChange('consentimiento')"
                   >
                     <q-tooltip>Consentimiento firmado (v{{ consentStatus.signed_version }})</q-tooltip>
                   </q-icon>
@@ -175,7 +175,7 @@
                     color="warning"
                     size="18px"
                     class="q-ml-xs cursor-pointer"
-                    @click.stop="tab = 'consentimiento'"
+                    @click.stop="handleTabChange('consentimiento')"
                   >
                     <q-tooltip>Consentimiento desactualizado (pendiente v{{ consentStatus.current_version }})</q-tooltip>
                   </q-icon>
@@ -185,7 +185,7 @@
                     color="negative"
                     size="18px"
                     class="q-ml-xs cursor-pointer"
-                    @click.stop="tab = 'consentimiento'"
+                    @click.stop="handleTabChange('consentimiento')"
                   >
                     <q-tooltip>Falta consentimiento informado</q-tooltip>
                   </q-icon>
@@ -245,7 +245,7 @@
                         size="sm"
                         color="positive"
                         icon="fa-brands fa-whatsapp"
-                        @click="tab = 'mensajes'"
+                        @click="handleTabChange('mensajes')"
                       >
                         <q-tooltip>Enviar mensaje de WhatsApp</q-tooltip>
                       </q-btn>
@@ -257,7 +257,7 @@
                     <q-badge
                       :color="consentStatus.is_signed ? 'positive' : (consentStatus.signed_version ? 'warning' : 'negative')"
                       class="q-pa-xs cursor-pointer text-caption text-weight-bold"
-                      @click="tab = 'consentimiento'"
+                      @click="handleTabChange('consentimiento')"
                     >
                       <q-icon :name="consentStatus.is_signed ? 'verified' : (consentStatus.signed_version ? 'update' : 'draw')" class="q-mr-xs" />
                       {{ consentStatus.is_signed ? `Consentimiento OK (v${consentStatus.signed_version})` : (consentStatus.signed_version ? 'Consentimiento Desactualizado' : 'Falta Consentimiento') }}
@@ -670,8 +670,8 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
+import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
 import { PATIENTS_URL, ROUTINES_ENDPOINT, SessionsAPI, ConsentsAPI, AnamnesisAPI, WhatsappMessagesAPI } from "../services/api";
 import axios from "axios";
 import { useQuasar } from "quasar";
@@ -742,6 +742,103 @@ watch(() => $q.screen.gt.sm, (isDesktop) => {
 });
 
 const routineEditor = ref(null);
+
+function isPatientDirty() {
+  if (!editing.value) return false;
+  return Object.keys(patient).some(key => patient[key] !== patientEdit[key]);
+}
+
+function hasTabUnsavedChanges(tabName) {
+  if (tabName === 'observaciones') {
+    return Boolean(anamnesisFormRef.value?.isDirty?.());
+  }
+  if (tabName === 'rutina') {
+    return Boolean(routineEditor.value?.isDirty?.());
+  }
+  if (tabName === 'perfil') {
+    return isPatientDirty();
+  }
+  return false;
+}
+
+function hasAnyUnsavedChanges() {
+  return isPatientDirty() ||
+    Boolean(anamnesisFormRef.value?.isDirty?.()) ||
+    Boolean(routineEditor.value?.isDirty?.());
+}
+
+function confirmDiscardChanges(onConfirm, onCancel) {
+  $q.dialog({
+    title: 'Cambios sin guardar',
+    message: 'Tenés modificaciones sin guardar en esta sección. ¿Deseás salir sin guardar o quedarte para guardarlas?',
+    ok: {
+      label: 'Salir sin guardar',
+      color: 'negative',
+      flat: true,
+      class: 'minimal-btn'
+    },
+    cancel: {
+      label: 'Continuar editando',
+      color: 'primary',
+      class: 'minimal-btn-save'
+    },
+    persistent: true
+  }).onOk(() => {
+    onConfirm && onConfirm();
+  }).onCancel(() => {
+    onCancel && onCancel();
+  });
+}
+
+function handleTabChange(newTab) {
+  if (newTab === tab.value) return;
+
+  if (hasTabUnsavedChanges(tab.value)) {
+    confirmDiscardChanges(() => {
+      if (tab.value === 'observaciones') cancelarAnamnesis();
+      else if (tab.value === 'rutina') cancelarRutina();
+      else if (tab.value === 'perfil') cancelPatientEdit();
+
+      tab.value = newTab;
+    });
+  } else {
+    tab.value = newTab;
+  }
+}
+
+onBeforeRouteLeave((to, from, next) => {
+  if (hasAnyUnsavedChanges()) {
+    confirmDiscardChanges(
+      () => {
+        if (isPatientDirty()) cancelPatientEdit();
+        if (anamnesisFormRef.value?.isDirty?.()) cancelarAnamnesis();
+        if (routineEditor.value?.isDirty?.()) cancelarRutina();
+        next();
+      },
+      () => {
+        next(false);
+      }
+    );
+  } else {
+    next();
+  }
+});
+
+function handleBeforeUnload(e) {
+  if (hasAnyUnsavedChanges()) {
+    e.preventDefault();
+    e.returnValue = '';
+    return '';
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('beforeunload', handleBeforeUnload);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('beforeunload', handleBeforeUnload);
+});
 
 watch(tab, (newTab) => {
   if (newTab === 'observaciones') {
@@ -1429,6 +1526,8 @@ async function handleRoutineSave(routineData) {
     routineState.daySteps = payload.daySteps;
     routineState.nightSteps = payload.nightSteps;
     routineState.notes = payload.notes;
+
+    routineEditor.value?.updateSnapshot?.();
 
     $q.notify({
       type: 'positive',

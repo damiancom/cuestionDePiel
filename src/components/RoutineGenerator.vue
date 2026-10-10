@@ -253,7 +253,34 @@ watch(() => props.initialRoutine, (newVal) => {
     routineData.notes = newVal.notes ?? '';
     if (newVal.patientName !== undefined) routineData.patientName = newVal.patientName;
   }
+  updateSnapshot();
 }, { immediate: true, deep: true });
+
+const getRoutineSnapshot = () => {
+  try {
+    return JSON.stringify({
+      day: routineData.day,
+      night: routineData.night,
+      notes: routineData.notes || ''
+    });
+  } catch (e) {
+    return '';
+  }
+};
+
+const lastSavedSnapshot = ref('');
+
+const updateSnapshot = () => {
+  lastSavedSnapshot.value = getRoutineSnapshot();
+};
+
+const isDirty = () => {
+  if (!lastSavedSnapshot.value) return false;
+  return getRoutineSnapshot() !== lastSavedSnapshot.value;
+};
+
+// Snapshot inicial
+updateSnapshot();
 
 // Menú de menciones (@)
 const availableProducts = ref([]);
@@ -487,13 +514,16 @@ function resetToInitial() {
     routineData.notes = '';
     routineData.patientName = '';
   }
+  updateSnapshot();
 }
 
 defineExpose({
   saveRoutine,
   downloadPDF,
   resetToInitial,
-  recargarProductos
+  recargarProductos,
+  isDirty,
+  updateSnapshot
 });
 </script>
 
