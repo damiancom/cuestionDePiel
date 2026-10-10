@@ -74,6 +74,8 @@
                           <q-input
                             v-model="formData.antecedentes[key].detalle"
                             label="Especificar diagnóstico, evolución o tratamiento..."
+                            type="textarea"
+                            autogrow
                             class="minimal-input"
                             borderless
                             dense
@@ -218,6 +220,8 @@
                           <q-input
                             v-model="formData.alergias[key].detalle"
                             label="Indicar sustancias, componentes o reacción..."
+                            type="textarea"
+                            autogrow
                             class="minimal-input"
                             borderless
                             dense
@@ -332,6 +336,8 @@
                           <q-input
                             v-model="formData.medicacion[key].detalle"
                             label="Fármaco, dosis, tiempo de uso o zona..."
+                            type="textarea"
+                            autogrow
                             class="minimal-input"
                             borderless
                             dense
@@ -677,10 +683,10 @@
                   <div
                     v-for="(alerta, idx) in alertasCriticas"
                     :key="idx"
-                    class="row items-center no-wrap q-py-xs q-px-sm bg-red-1 rounded-borders text-negative"
+                    class="row items-start no-wrap q-py-xs q-px-sm bg-red-1 rounded-borders text-negative"
                   >
-                    <q-icon name="report_problem" size="18px" class="q-mr-xs flex-shrink-0" />
-                    <span class="text-caption text-weight-bold lh-snug">{{ alerta }}</span>
+                    <q-icon name="report_problem" size="18px" class="q-mr-xs flex-shrink-0 q-mt-xs" />
+                    <span class="text-caption text-weight-bold lh-snug col" style="word-break: break-word; overflow-wrap: break-word;">{{ alerta }}</span>
                   </div>
                 </div>
                 <div v-else class="text-caption text-positive flex items-center">
@@ -698,10 +704,10 @@
                   <div
                     v-for="(med, idx) in alertasMedicacion"
                     :key="idx"
-                    class="row items-center no-wrap q-py-xs q-px-sm bg-amber-1 rounded-borders text-amber-9"
+                    class="row items-start no-wrap q-py-xs q-px-sm bg-amber-1 rounded-borders text-amber-9"
                   >
-                    <q-icon name="medication" size="18px" class="q-mr-xs flex-shrink-0" />
-                    <span class="text-caption text-weight-medium lh-snug">{{ med }}</span>
+                    <q-icon name="medication" size="18px" class="q-mr-xs flex-shrink-0 q-mt-xs" />
+                    <span class="text-caption text-weight-medium lh-snug col" style="word-break: break-word; overflow-wrap: break-word;">{{ med }}</span>
                   </div>
                 </div>
                 <div v-else class="text-caption text-grey-5 italic">Sin medicación de impacto inmediato</div>
@@ -716,10 +722,10 @@
                   <div
                     v-for="(al, idx) in alertasAlergias"
                     :key="idx"
-                    class="row items-center no-wrap q-py-xs q-px-sm bg-orange-1 rounded-borders text-orange-9"
+                    class="row items-start no-wrap q-py-xs q-px-sm bg-orange-1 rounded-borders text-orange-9"
                   >
-                    <q-icon name="warning" size="18px" class="q-mr-xs flex-shrink-0" />
-                    <span class="text-caption text-weight-medium lh-snug">{{ al }}</span>
+                    <q-icon name="warning" size="18px" class="q-mr-xs flex-shrink-0 q-mt-xs" />
+                    <span class="text-caption text-weight-medium lh-snug col" style="word-break: break-word; overflow-wrap: break-word;">{{ al }}</span>
                   </div>
                 </div>
                 <div v-else class="text-caption text-grey-5 italic">Sin alergias declaradas</div>
@@ -1233,5 +1239,12 @@ defineExpose({
   border-color: #1976d2 !important;
   background: #ffffff !important;
   box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1) !important;
+}
+
+.minimal-input :deep(textarea) {
+  resize: none;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.4;
 }
 </style>

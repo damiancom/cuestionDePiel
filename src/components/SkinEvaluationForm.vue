@@ -197,9 +197,9 @@
                       :class="{ 'bg-blue-1 border-primary-subtle': formData.lesiones[key]?.aplica }"
                     >
                       <div class="row items-center justify-between q-gutter-x-sm">
-                        <div class="col">
+                        <div class="col" style="min-width: 0; word-break: break-word; overflow-wrap: break-word;">
                           <div class="text-body2 text-weight-medium text-grey-9 lh-snug">{{ item.label }}</div>
-                          <div v-if="item.subtitle" class="text-caption text-primary text-weight-medium">
+                          <div v-if="item.subtitle" class="text-caption text-primary text-weight-medium" style="word-break: break-word; overflow-wrap: break-word;">
                             {{ item.subtitle }}
                           </div>
                         </div>
@@ -224,6 +224,8 @@
                           <q-input
                             v-model="formData.lesiones[key].detalle"
                             :placeholder="item.placeholder || 'Detalle, localización o grado...'"
+                            type="textarea"
+                            autogrow
                             class="minimal-input"
                             borderless
                             dense
@@ -330,10 +332,10 @@
                     :key="idx"
                     color="indigo-1"
                     text-color="indigo-9"
-                    class="q-pa-xs text-caption"
+                    class="q-pa-xs text-caption lesion-summary-badge"
                   >
-                    <q-icon name="circle" size="6px" class="q-mr-xs text-indigo" />
-                    {{ les.label }}
+                    <q-icon name="circle" size="6px" class="q-mr-xs text-indigo flex-shrink-0" />
+                    <span>{{ les.label }}</span>
                     <span v-if="les.detalle" class="text-weight-regular text-grey-8 q-ml-xs">({{ les.detalle }})</span>
                   </q-badge>
                 </div>
@@ -431,9 +433,8 @@ const lesionesList = {
   },
   telangiectasias: {
     label: 'Telangiectasias',
-    subtitle: '¿dónde?',
     detailKey: 'telangiectasias_detail',
-    placeholder: '¿Dónde? Alas nasales, pómulos, mentón...'
+    placeholder: 'Alas nasales, pómulos, mentón...'
   },
   flaking: {
     label: 'Escamación (Escamas)',
@@ -812,6 +813,8 @@ defineExpose({
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
   transition: all 0.2s ease;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .hybrid-subitem:hover {
@@ -827,6 +830,12 @@ defineExpose({
   border-color: #d1d5db;
   background-color: #ffffff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.live-summary-card :deep(.q-badge) {
+  white-space: normal !important;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .sticky-summary {
@@ -927,5 +936,23 @@ defineExpose({
   border-color: #1976d2 !important;
   background: #ffffff !important;
   box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1) !important;
+}
+
+.minimal-input :deep(textarea) {
+  resize: none;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.4;
+}
+
+.lesion-summary-badge {
+  white-space: normal !important;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.35;
+  text-align: left;
+  display: inline-flex;
+  align-items: flex-start;
+  max-width: 100%;
 }
 </style>
