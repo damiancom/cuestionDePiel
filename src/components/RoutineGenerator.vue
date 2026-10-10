@@ -242,6 +242,30 @@ const routineData = reactive({
   patientName: ''
 });
 
+// Snapshot para detección de cambios sin guardar
+const lastSavedSnapshot = ref('');
+
+function getRoutineSnapshot() {
+  try {
+    return JSON.stringify({
+      day: routineData.day,
+      night: routineData.night,
+      notes: routineData.notes || ''
+    });
+  } catch (e) {
+    return '';
+  }
+}
+
+function updateSnapshot() {
+  lastSavedSnapshot.value = getRoutineSnapshot();
+}
+
+function isDirty() {
+  if (!lastSavedSnapshot.value) return false;
+  return getRoutineSnapshot() !== lastSavedSnapshot.value;
+}
+
 watch(() => props.initialRoutine, (newVal) => {
   if (newVal) {
     routineData.day = Array.isArray(newVal.day) 
@@ -255,32 +279,6 @@ watch(() => props.initialRoutine, (newVal) => {
   }
   updateSnapshot();
 }, { immediate: true, deep: true });
-
-const getRoutineSnapshot = () => {
-  try {
-    return JSON.stringify({
-      day: routineData.day,
-      night: routineData.night,
-      notes: routineData.notes || ''
-    });
-  } catch (e) {
-    return '';
-  }
-};
-
-const lastSavedSnapshot = ref('');
-
-const updateSnapshot = () => {
-  lastSavedSnapshot.value = getRoutineSnapshot();
-};
-
-const isDirty = () => {
-  if (!lastSavedSnapshot.value) return false;
-  return getRoutineSnapshot() !== lastSavedSnapshot.value;
-};
-
-// Snapshot inicial
-updateSnapshot();
 
 // Menú de menciones (@)
 const availableProducts = ref([]);

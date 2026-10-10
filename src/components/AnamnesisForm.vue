@@ -381,16 +381,6 @@ function loadData(data) {
   updateSnapshot();
 }
 
-watch(
-  () => props.initialData,
-  (newVal) => {
-    if (newVal) {
-      loadData(newVal);
-    }
-  },
-  { immediate: true }
-);
-
 function toBackendPayload() {
   return {
     // 1. Antecedentes personales y hereditarios
@@ -500,6 +490,16 @@ function isDirty() {
 
 // Inicializar snapshot por defecto
 updateSnapshot();
+
+watch(
+  () => props.initialData,
+  (newVal) => {
+    if (newVal) {
+      loadData(newVal);
+    }
+  },
+  { immediate: true }
+);
 
 defineExpose({
   formData,
