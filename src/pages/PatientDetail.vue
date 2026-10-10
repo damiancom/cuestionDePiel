@@ -200,7 +200,7 @@
           </div>
           <q-separator />
           
-          <q-tab-panels v-model="tab" animated>
+          <q-tab-panels v-model="tab" animated keep-alive>
             <!-- Tab Panel Perfil: Sólo visible en mobile (lt-md) -->
             <q-tab-panel name="perfil" class="lt-md">
               <div class="row items-center justify-between q-mb-md">
@@ -291,7 +291,11 @@
             </q-tab-panel>
             <q-tab-panel name="observaciones">
               <!-- Nueva Ficha de Anamnesis Dermatocosmiátrica -->
-              <AnamnesisForm ref="anamnesisFormRef" :is-sidebar-collapsed="isSidebarCollapsed" />
+              <AnamnesisForm
+                ref="anamnesisFormRef"
+                :initial-data="anamnesisBackup"
+                :is-sidebar-collapsed="isSidebarCollapsed"
+              />
 
               <div class="row q-gutter-sm justify-end q-mt-lg">
                 <q-btn flat label="Cancelar" @click="cancelarAnamnesis" color="grey-8" class="minimal-btn" />
@@ -675,6 +679,7 @@ import RoutineGenerator from '../components/RoutineGenerator.vue';
 import AnamnesisForm from '../components/AnamnesisForm.vue';
 
 const anamnesisFormRef = ref(null);
+const anamnesisBackup = ref(null);
 
 const $q = useQuasar();
 const route = useRoute();
@@ -737,6 +742,22 @@ watch(() => $q.screen.gt.sm, (isDesktop) => {
 });
 
 const routineEditor = ref(null);
+
+watch(tab, (newTab) => {
+  if (newTab === 'observaciones') {
+    if (anamnesisBackup.value) {
+      nextTick(() => {
+        anamnesisFormRef.value?.loadData(anamnesisBackup.value);
+      });
+    }
+  } else if (newTab === 'rutina') {
+    nextTick(() => {
+      routineEditor.value?.recargarProductos?.();
+    });
+  } else if (newTab === 'mensajes') {
+    fetchWhatsappMessages();
+  }
+});
 
 function guardarRutina() {
   routineEditor.value && routineEditor.value.saveRoutine();
@@ -979,7 +1000,6 @@ async function addSession() {
   }
 }
 
-const anamnesisBackup = ref(null);
 const guardandoAnamnesis = ref(false);
 
 // ─── WhatsApp Mensajes Predefinidos ───

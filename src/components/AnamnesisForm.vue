@@ -30,6 +30,10 @@ import { ref, reactive, watch } from 'vue';
 import AnamnesisHybridView from './anamnesis/AnamnesisHybridView.vue';
 
 const props = defineProps({
+  initialData: {
+    type: Object,
+    default: null
+  },
   patient: {
     type: Object,
     default: () => ({})
@@ -374,6 +378,16 @@ function loadData(data) {
   formData.contraindicaciones.heridasInfecciones = !!val('has_open_wounds_infections', 'hasOpenWoundsInfections', false);
   formData.contraindicaciones.anticoagulantesSinAutorizacion = !!val('has_unauthorized_anticoagulants', 'hasUnauthorizedAnticoagulants', false);
 }
+
+watch(
+  () => props.initialData,
+  (newVal) => {
+    if (newVal) {
+      loadData(newVal);
+    }
+  },
+  { immediate: true }
+);
 
 function toBackendPayload() {
   return {
