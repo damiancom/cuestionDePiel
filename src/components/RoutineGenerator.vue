@@ -262,13 +262,17 @@ const showMentionMenu = ref(false);
 const mentionQuery = ref('');
 const mentionStartIndex = ref(-1);
 
-onMounted(async () => {
+const recargarProductos = async () => {
   try {
     const res = await RecommendedProductsAPI.list();
-    availableProducts.value = res.data;
+    availableProducts.value = res.data || [];
   } catch (e) {
     console.error('Error cargando productos para autocompletar', e);
   }
+};
+
+onMounted(() => {
+  recargarProductos();
 });
 
 const filteredMentionProducts = computed(() => {
@@ -488,7 +492,8 @@ function resetToInitial() {
 defineExpose({
   saveRoutine,
   downloadPDF,
-  resetToInitial
+  resetToInitial,
+  recargarProductos
 });
 </script>
 
