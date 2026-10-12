@@ -48,7 +48,7 @@
                   size="sm"
                   color="positive"
                   icon="fa-brands fa-whatsapp"
-                  @click="tab = 'mensajes'"
+                  @click="handleTabChange('mensajes')"
                 >
                   <q-tooltip>Enviar mensaje predefinido de WhatsApp</q-tooltip>
                 </q-btn>
@@ -59,7 +59,7 @@
                 <q-badge
                   :color="consentStatus.is_signed ? 'positive' : (consentStatus.signed_version ? 'warning' : 'negative')"
                   class="q-pa-xs cursor-pointer text-caption text-weight-bold"
-                  @click="tab = 'consentimiento'"
+                  @click="handleTabChange('consentimiento')"
                 >
                   <q-icon :name="consentStatus.is_signed ? 'verified' : (consentStatus.signed_version ? 'update' : 'draw')" class="q-mr-xs" />
                   {{ consentStatus.is_signed ? `Consentimiento OK (v${consentStatus.signed_version})` : (consentStatus.signed_version ? 'Consentimiento Desactualizado' : 'Falta Consentimiento') }}
@@ -121,7 +121,7 @@
                 color="positive"
                 size="18px"
                 class="q-ml-xs cursor-pointer"
-                @click.stop="tab = 'consentimiento'"
+                @click.stop="handleTabChange('consentimiento')"
               >
                 <q-tooltip>Consentimiento firmado (v{{ consentStatus.signed_version }})</q-tooltip>
               </q-icon>
@@ -131,7 +131,7 @@
                 color="warning"
                 size="18px"
                 class="q-ml-xs cursor-pointer"
-                @click.stop="tab = 'consentimiento'"
+                @click.stop="handleTabChange('consentimiento')"
               >
                 <q-tooltip>Consentimiento desactualizado (pendiente v{{ consentStatus.current_version }})</q-tooltip>
               </q-icon>
@@ -141,14 +141,14 @@
                 color="negative"
                 size="18px"
                 class="q-ml-xs cursor-pointer"
-                @click.stop="tab = 'consentimiento'"
+                @click.stop="handleTabChange('consentimiento')"
               >
                 <q-tooltip>Falta consentimiento informado</q-tooltip>
               </q-icon>
               <q-tooltip>Mostrar detalle del paciente</q-tooltip>
             </q-btn>
 
-            <q-tabs v-model="tab" class="text-primary col" align="left" dense mobile-arrows outside-arrows>
+            <q-tabs :model-value="tab" @update:model-value="handleTabChange" class="text-primary col" align="left" dense mobile-arrows outside-arrows>
               <!-- Tab Perfil: Sólo visible en mobile (lt-md) -->
               <q-tab name="perfil" class="lt-md" no-caps>
                 <div class="row items-center no-wrap">
@@ -165,7 +165,7 @@
                     color="positive"
                     size="18px"
                     class="q-ml-xs cursor-pointer"
-                    @click.stop="tab = 'consentimiento'"
+                    @click.stop="handleTabChange('consentimiento')"
                   >
                     <q-tooltip>Consentimiento firmado (v{{ consentStatus.signed_version }})</q-tooltip>
                   </q-icon>
@@ -175,7 +175,7 @@
                     color="warning"
                     size="18px"
                     class="q-ml-xs cursor-pointer"
-                    @click.stop="tab = 'consentimiento'"
+                    @click.stop="handleTabChange('consentimiento')"
                   >
                     <q-tooltip>Consentimiento desactualizado (pendiente v{{ consentStatus.current_version }})</q-tooltip>
                   </q-icon>
@@ -185,13 +185,14 @@
                     color="negative"
                     size="18px"
                     class="q-ml-xs cursor-pointer"
-                    @click.stop="tab = 'consentimiento'"
+                    @click.stop="handleTabChange('consentimiento')"
                   >
                     <q-tooltip>Falta consentimiento informado</q-tooltip>
                   </q-icon>
                 </div>
               </q-tab>
-              <q-tab name="observaciones" label="Anamnesis Dermatocosmiátrica" />
+              <q-tab name="evaluacion-cutanea" label="Evaluación Cutánea & Fototipo" />
+              <q-tab name="salud-habitos" label="Salud, Seguridad y Hábitos" />
               <q-tab name="mapeo_facial" label="Mapa Facial" />
               <q-tab name="rutina" label="Rutina" />
               <q-tab name="sesiones" label="Sesiones" />
@@ -201,7 +202,7 @@
           </div>
           <q-separator />
           
-          <q-tab-panels v-model="tab" animated>
+          <q-tab-panels v-model="tab" animated keep-alive>
             <!-- Tab Panel Perfil: Sólo visible en mobile (lt-md) -->
             <q-tab-panel name="perfil" class="lt-md">
               <div class="row items-center justify-between q-mb-md">
@@ -246,7 +247,7 @@
                         size="sm"
                         color="positive"
                         icon="fa-brands fa-whatsapp"
-                        @click="tab = 'mensajes'"
+                        @click="handleTabChange('mensajes')"
                       >
                         <q-tooltip>Enviar mensaje de WhatsApp</q-tooltip>
                       </q-btn>
@@ -258,7 +259,7 @@
                     <q-badge
                       :color="consentStatus.is_signed ? 'positive' : (consentStatus.signed_version ? 'warning' : 'negative')"
                       class="q-pa-xs cursor-pointer text-caption text-weight-bold"
-                      @click="tab = 'consentimiento'"
+                      @click="handleTabChange('consentimiento')"
                     >
                       <q-icon :name="consentStatus.is_signed ? 'verified' : (consentStatus.signed_version ? 'update' : 'draw')" class="q-mr-xs" />
                       {{ consentStatus.is_signed ? `Consentimiento OK (v${consentStatus.signed_version})` : (consentStatus.signed_version ? 'Consentimiento Desactualizado' : 'Falta Consentimiento') }}
@@ -290,13 +291,28 @@
                 </div>
               </div>
             </q-tab-panel>
-            <q-tab-panel name="observaciones">
-              <!-- Nueva Ficha de Anamnesis Dermatocosmiátrica -->
-              <AnamnesisForm ref="anamnesisFormRef" :is-sidebar-collapsed="isSidebarCollapsed" />
+            <q-tab-panel name="evaluacion-cutanea">
+              <!-- Ficha de Evaluación Cutánea & Fototipo -->
+              <SkinEvaluationForm
+                ref="skinEvaluationFormRef"
+                :initial-data="skinEvaluationBackup"
+              />
 
               <div class="row q-gutter-sm justify-end q-mt-lg">
-                <q-btn flat label="Cancelar" @click="cancelarAnamnesis" color="grey-8" class="minimal-btn" />
-                <q-btn label="Guardar Anamnesis" color="primary" @click="guardarAnamnesis" :loading="guardandoAnamnesis" class="minimal-btn-save" />
+                <q-btn flat label="Cancelar" @click="cancelarSkinEvaluation" color="grey-8" class="minimal-btn" />
+                <q-btn label="Guardar Evaluación Cutánea" color="primary" @click="guardarSkinEvaluation" :loading="guardandoSkinEvaluation" class="minimal-btn-save" />
+              </div>
+            </q-tab-panel>
+            <q-tab-panel name="salud-habitos">
+              <!-- Ficha de Salud, Seguridad y Hábitos -->
+              <HealthSafetyHabitsForm
+                ref="healthSafetyHabitsFormRef"
+                :initial-data="healthSafetyHabitsBackup"
+              />
+
+              <div class="row q-gutter-sm justify-end q-mt-lg">
+                <q-btn flat label="Cancelar" @click="cancelarHealthSafetyHabits" color="grey-8" class="minimal-btn" />
+                <q-btn label="Guardar Salud & Hábitos" color="primary" @click="guardarHealthSafetyHabits" :loading="guardandoHealthSafetyHabits" class="minimal-btn-save" />
               </div>
             </q-tab-panel>
             <q-tab-panel name="mapeo_facial">
@@ -331,8 +347,18 @@
                   <q-tooltip>Nueva Sesión</q-tooltip>
                 </q-btn>
               </div>
-              <q-table :rows="sesionesOrdenadas" :columns="columns" row-key="id" flat dense hide-bottom class="q-mb-md"
-                @row-click="(evt, row) => verSesion(row)">
+              <q-table
+                :rows="sesionesOrdenadas"
+                :columns="columns"
+                row-key="id"
+                flat
+                dense
+                v-model:pagination="sesionesPagination"
+                :rows-per-page-options="[10, 20, 50, 0]"
+                rows-per-page-label="Sesiones por página:"
+                class="q-mb-md"
+                @row-click="(evt, row) => verSesion(row)"
+              >
                 <template #body-cell-date="props">
                   <q-td>{{ formatDate(props.row.date) }}</q-td>
                 </template>
@@ -670,16 +696,23 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { PATIENTS_URL, ROUTINES_ENDPOINT, SessionsAPI, ConsentsAPI, AnamnesisAPI, WhatsappMessagesAPI } from "../services/api";
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
+import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
+import { PATIENTS_URL, ROUTINES_ENDPOINT, SessionsAPI, ConsentsAPI, SkinEvaluationAPI, HealthSafetyHabitsAPI, WhatsappMessagesAPI } from "../services/api";
 import axios from "axios";
 import { useQuasar } from "quasar";
 import RoutineGenerator from '../components/RoutineGenerator.vue';
-import AnamnesisForm from '../components/AnamnesisForm.vue';
+import SkinEvaluationForm from '../components/SkinEvaluationForm.vue';
+import HealthSafetyHabitsForm from '../components/HealthSafetyHabitsForm.vue';
 import FacialMapping from '../components/FacialMapping.vue';
 
-const anamnesisFormRef = ref(null);
+const skinEvaluationFormRef = ref(null);
+const skinEvaluationBackup = ref(null);
+const guardandoSkinEvaluation = ref(false);
+
+const healthSafetyHabitsFormRef = ref(null);
+const healthSafetyHabitsBackup = ref(null);
+const guardandoHealthSafetyHabits = ref(false);
 
 const $q = useQuasar();
 const route = useRoute();
@@ -709,7 +742,7 @@ const cropContainer = ref(null);
 const cropZoom = ref(1);
 const cropImage = ref(null);
 const cropOffset = ref({x: 0, y: 0});
-const tab = ref($q.screen.gt.sm ? 'observaciones' : 'perfil');
+const tab = ref($q.screen.gt.sm ? 'evaluacion-cutanea' : 'perfil');
 const isSidebarCollapsed = ref(false);
 
 function toggleSidebar() {
@@ -737,11 +770,136 @@ onMounted(() => {
 
 watch(() => $q.screen.gt.sm, (isDesktop) => {
   if (isDesktop && tab.value === 'perfil') {
-    tab.value = 'observaciones';
+    tab.value = 'evaluacion-cutanea';
   }
 });
 
 const routineEditor = ref(null);
+
+function isPatientDirty() {
+  if (!editing.value) return false;
+  return Object.keys(patient).some(key => patient[key] !== patientEdit[key]);
+}
+
+function hasTabUnsavedChanges(tabName) {
+  if (tabName === 'evaluacion-cutanea') {
+    return Boolean(skinEvaluationFormRef.value?.isDirty?.());
+  }
+  if (tabName === 'salud-habitos') {
+    return Boolean(healthSafetyHabitsFormRef.value?.isDirty?.());
+  }
+  if (tabName === 'rutina') {
+    return Boolean(routineEditor.value?.isDirty?.());
+  }
+  if (tabName === 'perfil') {
+    return isPatientDirty();
+  }
+  return false;
+}
+
+function hasAnyUnsavedChanges() {
+  return isPatientDirty() ||
+    Boolean(skinEvaluationFormRef.value?.isDirty?.()) ||
+    Boolean(healthSafetyHabitsFormRef.value?.isDirty?.()) ||
+    Boolean(routineEditor.value?.isDirty?.());
+}
+
+function confirmDiscardChanges(onConfirm, onCancel) {
+  $q.dialog({
+    title: 'Cambios sin guardar',
+    message: 'Tenés modificaciones sin guardar en esta sección. ¿Deseás salir sin guardar o quedarte para guardarlas?',
+    ok: {
+      label: 'Salir sin guardar',
+      color: 'negative',
+      flat: true,
+      class: 'minimal-btn'
+    },
+    cancel: {
+      label: 'Continuar editando',
+      color: 'primary',
+      class: 'minimal-btn-save'
+    },
+    persistent: true
+  }).onOk(() => {
+    onConfirm && onConfirm();
+  }).onCancel(() => {
+    onCancel && onCancel();
+  });
+}
+
+function handleTabChange(newTab) {
+  if (newTab === tab.value) return;
+
+  if (hasTabUnsavedChanges(tab.value)) {
+    confirmDiscardChanges(() => {
+      if (tab.value === 'evaluacion-cutanea') cancelarSkinEvaluation();
+      else if (tab.value === 'salud-habitos') cancelarHealthSafetyHabits();
+      else if (tab.value === 'rutina') cancelarRutina();
+      else if (tab.value === 'perfil') cancelPatientEdit();
+
+      tab.value = newTab;
+    });
+  } else {
+    tab.value = newTab;
+  }
+}
+
+onBeforeRouteLeave((to, from, next) => {
+  if (hasAnyUnsavedChanges()) {
+    confirmDiscardChanges(
+      () => {
+        if (isPatientDirty()) cancelPatientEdit();
+        if (skinEvaluationFormRef.value?.isDirty?.()) cancelarSkinEvaluation();
+        if (healthSafetyHabitsFormRef.value?.isDirty?.()) cancelarHealthSafetyHabits();
+        if (routineEditor.value?.isDirty?.()) cancelarRutina();
+        next();
+      },
+      () => {
+        next(false);
+      }
+    );
+  } else {
+    next();
+  }
+});
+
+function handleBeforeUnload(e) {
+  if (hasAnyUnsavedChanges()) {
+    e.preventDefault();
+    e.returnValue = '';
+    return '';
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('beforeunload', handleBeforeUnload);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('beforeunload', handleBeforeUnload);
+});
+
+watch(tab, (newTab) => {
+  if (newTab === 'evaluacion-cutanea') {
+    if (skinEvaluationBackup.value) {
+      nextTick(() => {
+        skinEvaluationFormRef.value?.loadData(skinEvaluationBackup.value);
+      });
+    }
+  } else if (newTab === 'salud-habitos') {
+    if (healthSafetyHabitsBackup.value) {
+      nextTick(() => {
+        healthSafetyHabitsFormRef.value?.loadData(healthSafetyHabitsBackup.value);
+      });
+    }
+  } else if (newTab === 'rutina') {
+    nextTick(() => {
+      routineEditor.value?.recargarProductos?.();
+    });
+  } else if (newTab === 'mensajes') {
+    fetchWhatsappMessages();
+  }
+});
 
 function guardarRutina() {
   routineEditor.value && routineEditor.value.saveRoutine();
@@ -764,6 +922,7 @@ const columns = [
 const sesionesOrdenadas = computed(() =>
   [...sesiones.value].sort((a, b) => b.date.localeCompare(a.date))
 );
+const sesionesPagination = ref({ page: 1, rowsPerPage: 10 });
 const showSesionDialog = ref(false);
 const sesionActual = reactive({ id: null, date: '', observation: '', treatment: '' });
 
@@ -984,9 +1143,6 @@ async function addSession() {
   }
 }
 
-const anamnesisBackup = ref(null);
-const guardandoAnamnesis = ref(false);
-
 // ─── WhatsApp Mensajes Predefinidos ───
 const whatsappMessages = ref([]);
 const loadingWhatsappMessages = ref(false);
@@ -1086,7 +1242,8 @@ function confirmSendWhatsappMessage(msg) {
 onMounted(async () => {
   if (route.params.id) {
     await findPatientById(route.params.id);
-    await fetchAnamnesis(route.params.id);
+    await fetchSkinEvaluation(route.params.id);
+    await fetchHealthSafetyHabits(route.params.id);
     await fetchRoutine(route.params.id);
     await fetchSessions(route.params.id);
     await fetchConsentStatus(route.params.id);
@@ -1264,54 +1421,105 @@ function findPatientById(id) {
     });
 }
 
-async function fetchAnamnesis(id) {
+async function fetchSkinEvaluation(id) {
   try {
-    const response = await AnamnesisAPI.get(id);
-    anamnesisBackup.value = response.data;
-    anamnesisFormRef.value?.loadData(response.data);
+    const response = await SkinEvaluationAPI.get(id);
+    skinEvaluationBackup.value = response.data;
+    skinEvaluationFormRef.value?.loadData(response.data);
   } catch (error) {
     if (error.response && error.response.status === 404) {
-      console.log('Anamnesis not found (404), ficha en blanco.');
+      console.log('Skin evaluation not found (404), ficha en blanco.');
       return;
     }
-    console.error('Error fetching anamnesis:', error);
+    console.error('Error fetching skin evaluation:', error);
     $q.notify({
       type: 'negative',
-      message: 'Error al cargar anamnesis',
+      message: 'Error al cargar evaluación cutánea',
       position: 'top'
     });
   }
 }
 
-async function guardarAnamnesis() {
+async function guardarSkinEvaluation() {
   try {
-    guardandoAnamnesis.value = true;
-    const payload = anamnesisFormRef.value?.toBackendPayload();
-    const response = await AnamnesisAPI.save(route.params.id, payload);
-    anamnesisBackup.value = response.data;
-    anamnesisFormRef.value?.loadData(response.data);
+    guardandoSkinEvaluation.value = true;
+    const payload = skinEvaluationFormRef.value?.toBackendPayload();
+    const response = await SkinEvaluationAPI.save(route.params.id, payload);
+    skinEvaluationBackup.value = response.data;
+    skinEvaluationFormRef.value?.loadData(response.data);
     $q.notify({
       type: 'positive',
-      message: 'Anamnesis guardada correctamente',
+      message: 'Evaluación cutánea guardada correctamente',
       position: 'top'
     });
   } catch (error) {
-    console.error('Error guardando anamnesis:', error);
+    console.error('Error guardando evaluación cutánea:', error);
     $q.notify({
       type: 'negative',
-      message: 'Error al guardar anamnesis',
+      message: 'Error al guardar evaluación cutánea',
       position: 'top'
     });
   } finally {
-    guardandoAnamnesis.value = false;
+    guardandoSkinEvaluation.value = false;
   }
 }
 
-function cancelarAnamnesis() {
-  if (anamnesisBackup.value) {
-    anamnesisFormRef.value?.loadData(anamnesisBackup.value);
+function cancelarSkinEvaluation() {
+  if (skinEvaluationBackup.value) {
+    skinEvaluationFormRef.value?.loadData(skinEvaluationBackup.value);
   } else {
-    anamnesisFormRef.value?.resetData();
+    skinEvaluationFormRef.value?.resetData();
+  }
+}
+
+async function fetchHealthSafetyHabits(id) {
+  try {
+    const response = await HealthSafetyHabitsAPI.get(id);
+    healthSafetyHabitsBackup.value = response.data;
+    healthSafetyHabitsFormRef.value?.loadData(response.data);
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      console.log('Health safety habits not found (404), ficha en blanco.');
+      return;
+    }
+    console.error('Error fetching health safety habits:', error);
+    $q.notify({
+      type: 'negative',
+      message: 'Error al cargar salud, seguridad y hábitos',
+      position: 'top'
+    });
+  }
+}
+
+async function guardarHealthSafetyHabits() {
+  try {
+    guardandoHealthSafetyHabits.value = true;
+    const payload = healthSafetyHabitsFormRef.value?.toBackendPayload();
+    const response = await HealthSafetyHabitsAPI.save(route.params.id, payload);
+    healthSafetyHabitsBackup.value = response.data;
+    healthSafetyHabitsFormRef.value?.loadData(response.data);
+    $q.notify({
+      type: 'positive',
+      message: 'Salud, seguridad y hábitos guardados correctamente',
+      position: 'top'
+    });
+  } catch (error) {
+    console.error('Error guardando salud y hábitos:', error);
+    $q.notify({
+      type: 'negative',
+      message: 'Error al guardar salud, seguridad y hábitos',
+      position: 'top'
+    });
+  } finally {
+    guardandoHealthSafetyHabits.value = false;
+  }
+}
+
+function cancelarHealthSafetyHabits() {
+  if (healthSafetyHabitsBackup.value) {
+    healthSafetyHabitsFormRef.value?.loadData(healthSafetyHabitsBackup.value);
+  } else {
+    healthSafetyHabitsFormRef.value?.resetData();
   }
 }
 
@@ -1414,6 +1622,8 @@ async function handleRoutineSave(routineData) {
     routineState.daySteps = payload.daySteps;
     routineState.nightSteps = payload.nightSteps;
     routineState.notes = payload.notes;
+
+    routineEditor.value?.updateSnapshot?.();
 
     $q.notify({
       type: 'positive',
