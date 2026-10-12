@@ -1,0 +1,460 @@
+/* ==========================================================================
+   SISTEMA DE REDISEÑOS MINIMALISTAS - CUESTIÓN DE PIEL
+   3 Alternativas Estéticas sin pérdida de funcionalidad ni de información
+   ========================================================================== */
+
+/* Variables por defecto (Tema 1: Clínico Nórdico) */
+:root {
+  --app-bg: #f8fafc;
+  --surface-card: #ffffff;
+  --border-subtle: #e2e8f0;
+  --border-hover: #cbd5e1;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --primary-color: #0d9488;
+  --primary-hover: #0f766e;
+  --primary-subtle: #f0fdfa;
+  --card-radius: 10px;
+  --btn-radius: 8px;
+  --shadow-subtle: 0 1px 3px 0 rgba(15, 23, 42, 0.04);
+}
+
+/* --------------------------------------------------------------------------
+   TEMA 1: CLÍNICO NÓRDICO (Clean Nordic Clinic)
+   Minimalista, fresco, sereno. Reduce la fatiga visual con tonos salvia & slate.
+   -------------------------------------------------------------------------- */
+[data-theme="clean-nordic"] {
+  --app-bg: #f8fafc;
+  --surface-card: #ffffff;
+  --border-subtle: #e2e8f0;
+  --border-hover: #cbd5e1;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --primary-color: #0d9488;
+  --primary-hover: #0f766e;
+  --primary-subtle: #f0fdfa;
+  --card-radius: 10px;
+  --btn-radius: 8px;
+  --shadow-subtle: 0 1px 3px 0 rgba(15, 23, 42, 0.04);
+
+  body {
+    background-color: var(--app-bg) !important;
+    color: var(--text-main);
+  }
+
+  /* Header limpio y refinado */
+  .minimal-header {
+    background: #ffffff !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+    box-shadow: none !important;
+  }
+
+  /* Tarjetas con bordes ultra-finos y sombras suaves */
+  .q-card,
+  .minimal-card,
+  .patient-sidebar,
+  .hybrid-card,
+  .minimal-create-card {
+    background: var(--surface-card) !important;
+    border: 1px solid var(--border-subtle) !important;
+    border-radius: var(--card-radius) !important;
+    box-shadow: var(--shadow-subtle) !important;
+  }
+
+  /* Botones principales */
+  .minimal-btn-save {
+    background: var(--primary-color) !important;
+    border-radius: var(--btn-radius) !important;
+    box-shadow: none !important;
+    color: #ffffff !important;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--primary-hover) !important;
+      opacity: 0.95;
+    }
+  }
+
+  /* Tablas: Eliminación del zebra striping agresivo por filas diáfanas con separador sutil */
+  .q-table tbody tr:nth-child(even),
+  .q-table tbody tr:nth-child(odd) {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .q-table tbody tr:hover,
+  .q-table tbody tr:hover td {
+    background-color: #f8fafc !important;
+  }
+
+  /* Barra de búsqueda con encapsulado limpio */
+  .minimal-search-input .q-field__control {
+    border: 1px solid var(--border-subtle) !important;
+    border-radius: 20px !important;
+    background: #ffffff !important;
+    padding: 0 14px !important;
+    transition: all 0.2s ease;
+  }
+
+  .minimal-search-input:focus-within .q-field__control {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1) !important;
+  }
+
+  /* Pestañas (Tabs) */
+  .q-tabs {
+    color: var(--text-muted);
+  }
+  .q-tab--active {
+    color: var(--primary-color) !important;
+  }
+
+  /* Navegación de escritorio */
+  .nav-btn-minimal {
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: #475569;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: var(--primary-subtle);
+      color: var(--primary-color);
+    }
+    &.q-router-link--exact-active,
+    &.q-router-link--active {
+      background: var(--primary-subtle);
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+  }
+}
+
+/* --------------------------------------------------------------------------
+   TEMA 2: DERMO SOFT WARM (Soft Warm Atelier)
+   Cálido, cosmecéutico, boutique. Sensación orgánica con tonos terracota & lino.
+   -------------------------------------------------------------------------- */
+[data-theme="soft-warm"] {
+  --app-bg: #fbf9f5;
+  --surface-card: #ffffff;
+  --border-subtle: #eee8df;
+  --border-hover: #e0d7cb;
+  --text-main: #292524;
+  --text-muted: #78716c;
+  --primary-color: #9e6b55;
+  --primary-hover: #855541;
+  --primary-subtle: #fbf4ef;
+  --card-radius: 14px;
+  --btn-radius: 10px;
+  --shadow-subtle: 0 4px 20px -2px rgba(120, 113, 108, 0.05);
+
+  body {
+    background-color: var(--app-bg) !important;
+    color: var(--text-main);
+  }
+
+  /* Header cálido marfil */
+  .minimal-header {
+    background: #fdfcf9 !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+    box-shadow: none !important;
+  }
+
+  /* Tarjetas con radio más envolvente y sombra cálida difusa */
+  .q-card,
+  .minimal-card,
+  .patient-sidebar,
+  .hybrid-card,
+  .minimal-create-card {
+    background: var(--surface-card) !important;
+    border: 1px solid var(--border-subtle) !important;
+    border-radius: var(--card-radius) !important;
+    box-shadow: var(--shadow-subtle) !important;
+  }
+
+  /* Botones principales en terracota suave */
+  .minimal-btn-save {
+    background: var(--primary-color) !important;
+    border-radius: var(--btn-radius) !important;
+    box-shadow: none !important;
+    color: #ffffff !important;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--primary-hover) !important;
+      opacity: 0.95;
+    }
+  }
+
+  /* Tablas: Filas suaves con separador color lino */
+  .q-table tbody tr:nth-child(even),
+  .q-table tbody tr:nth-child(odd) {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #f5efe8;
+  }
+
+  .q-table tbody tr:hover,
+  .q-table tbody tr:hover td {
+    background-color: #faf7f2 !important;
+  }
+
+  /* Barra de búsqueda con bordes suaves */
+  .minimal-search-input .q-field__control {
+    border: 1px solid var(--border-subtle) !important;
+    border-radius: 20px !important;
+    background: #ffffff !important;
+    padding: 0 14px !important;
+    transition: all 0.2s ease;
+  }
+
+  .minimal-search-input:focus-within .q-field__control {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(158, 107, 85, 0.12) !important;
+  }
+
+  .minimal-input:focus-within {
+    box-shadow: 0 0 0 3px rgba(158, 107, 85, 0.12) !important;
+  }
+
+  /* Pestañas (Tabs) */
+  .q-tabs {
+    color: var(--text-muted);
+  }
+  .q-tab--active {
+    color: var(--primary-color) !important;
+  }
+
+  /* Navegación de escritorio */
+  .nav-btn-minimal {
+    border-radius: 8px;
+    padding: 6px 10px;
+    color: #57534e;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: var(--primary-subtle);
+      color: var(--primary-color);
+    }
+    &.q-router-link--exact-active,
+    &.q-router-link--active {
+      background: var(--primary-subtle);
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+  }
+}
+
+/* --------------------------------------------------------------------------
+   TEMA 3: MODERN TECH MINIMAL (Modern Tech Indigo)
+   Alta precisión, estilo Apple Health & Notion. Foco absoluto en el dato clínico.
+   -------------------------------------------------------------------------- */
+[data-theme="modern-tech"] {
+  --app-bg: #f4f4f5;
+  --surface-card: #ffffff;
+  --border-subtle: #e4e4e7;
+  --border-hover: #d4d4d8;
+  --text-main: #18181b;
+  --text-muted: #71717a;
+  --primary-color: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-subtle: #eef2ff;
+  --card-radius: 8px;
+  --btn-radius: 6px;
+  --shadow-subtle: none;
+
+  body {
+    background-color: var(--app-bg) !important;
+    color: var(--text-main);
+  }
+
+  /* Header plano de alta precisión */
+  .minimal-header {
+    background: #ffffff !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+    box-shadow: none !important;
+  }
+
+  /* Tarjetas planas frameless con bordes nítidos */
+  .q-card,
+  .minimal-card,
+  .patient-sidebar,
+  .hybrid-card,
+  .minimal-create-card {
+    background: var(--surface-card) !important;
+    border: 1px solid var(--border-subtle) !important;
+    border-radius: var(--card-radius) !important;
+    box-shadow: none !important;
+  }
+
+  /* Botones principales índigo geométricos */
+  .minimal-btn-save {
+    background: var(--primary-color) !important;
+    border-radius: var(--btn-radius) !important;
+    box-shadow: none !important;
+    color: #ffffff !important;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: var(--primary-hover) !important;
+      opacity: 0.95;
+    }
+  }
+
+  /* Tablas: Estilo spreadsheet contemporáneo nítido */
+  .q-table tbody tr:nth-child(even),
+  .q-table tbody tr:nth-child(odd) {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #f4f4f5;
+  }
+
+  .q-table tbody tr:hover,
+  .q-table tbody tr:hover td {
+    background-color: #f8fafc !important;
+  }
+
+  /* Barra de búsqueda */
+  .minimal-search-input .q-field__control {
+    border: 1px solid var(--border-subtle) !important;
+    border-radius: 6px !important;
+    background: #ffffff !important;
+    padding: 0 12px !important;
+    transition: all 0.15s ease;
+  }
+
+  .minimal-search-input:focus-within .q-field__control {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.12) !important;
+  }
+
+  .minimal-input:focus-within {
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.12) !important;
+  }
+
+  /* Pestañas (Tabs) */
+  .q-tabs {
+    color: var(--text-muted);
+  }
+  .q-tab--active {
+    color: var(--primary-color) !important;
+  }
+
+  /* Navegación de escritorio */
+  .nav-btn-minimal {
+    border-radius: 5px;
+    padding: 5px 8px;
+    color: #3f3f46;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: var(--primary-subtle);
+      color: var(--primary-color);
+    }
+    &.q-router-link--exact-active,
+    &.q-router-link--active {
+      background: var(--primary-subtle);
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+  }
+}
+
+/* --------------------------------------------------------------------------
+   TEMA 4: ORIGINAL (Clásico de Referencia)
+   Preserva intacto el look previo para contrastar.
+   -------------------------------------------------------------------------- */
+[data-theme="original"] {
+  /* No sobreescribe variables para conservar la vista original intacta */
+}
+
+/* --------------------------------------------------------------------------
+   MEJORAS GENERALES COMPARTIDAS PARA MINIMALISMO
+   Aplica a todos los temas para mejorar legibilidad y orden
+   -------------------------------------------------------------------------- */
+[data-theme="clean-nordic"],
+[data-theme="soft-warm"],
+[data-theme="modern-tech"] {
+  /* Jerarquía de texto limpia en datos del paciente */
+  .patient-info-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .patient-info-value {
+    font-size: 14px;
+    color: var(--text-main);
+  }
+
+  /* Reemplazo de listas con zebra striping por filas con divisores tenues */
+  .patient-messages-list :deep(.q-item),
+  .patient-messages-list .q-item,
+  .zebra-list :deep(.q-item),
+  .zebra-list .q-item {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+    transition: background-color 0.15s ease;
+  }
+
+  .patient-messages-list :deep(.q-item:hover),
+  .patient-messages-list .q-item:hover,
+  .zebra-list :deep(.q-item:hover),
+  .zebra-list .q-item:hover {
+    background-color: var(--primary-subtle) !important;
+  }
+
+  /* Campos de texto encapsulados y limpios */
+  .minimal-input {
+    border: 1px solid var(--border-subtle) !important;
+    border-radius: var(--btn-radius) !important;
+    background: #ffffff !important;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .minimal-input:focus-within {
+    border-color: var(--primary-color) !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1) !important;
+  }
+
+  /* Contenedores de avatar con tono de fondo armónico */
+  .patient-sidebar .bg-blue-1 {
+    background-color: var(--primary-subtle) !important;
+    color: var(--primary-color) !important;
+  }
+
+  /* Diálogos y modales alineados al tema */
+  .q-dialog .q-card {
+    border-radius: var(--card-radius) !important;
+    border: 1px solid var(--border-subtle) !important;
+  }
+
+  .q-dialog-plugin .q-card__actions .q-btn--flat.text-primary {
+    background: var(--primary-color) !important;
+    color: #ffffff !important;
+  }
+
+  .q-dialog-plugin .q-card__actions .q-btn--flat.text-primary:hover {
+    background: var(--primary-hover) !important;
+  }
+
+  /* Pestañas (Tabs) con indicador sutil */
+  .q-tab--active .q-tab__indicator {
+    background: var(--primary-color) !important;
+    height: 2px !important;
+  }
+
+  /* Separadores sutiles */
+  .q-separator {
+    background-color: var(--border-subtle) !important;
+    opacity: 0.7;
+  }
+
+  /* Badges suaves en vez de fluorescentes */
+  .q-badge {
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+  }
+}

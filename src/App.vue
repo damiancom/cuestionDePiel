@@ -2,18 +2,26 @@
   <component :is="layout">
     <router-view />
   </component>
+  <ThemeSelector />
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import MainLayout from './layouts/MainLayout.vue';
 import AuthLayout from './layouts/AuthLayout.vue';
+import ThemeSelector from './components/ThemeSelector.vue';
+import { useThemeSelector } from './composables/useThemeSelector';
 
 const route = useRoute();
 const layout = computed(() => {
   if (route.meta && route.meta.layout === 'auth') return AuthLayout;
   return MainLayout;
+});
+
+const { initTheme } = useThemeSelector();
+onMounted(() => {
+  initTheme();
 });
 </script>
 

@@ -12,31 +12,31 @@
         <!-- Navegación Escritorio -->
         <q-toolbar-title class="text-center q-pt-sm q-pl-none q-pr-none" v-if="$q.screen.gt.sm">
           <div class="row justify-center items-center q-gutter-md">
-            <q-btn flat round dense icon="people" to="/pacientes">
+            <q-btn flat round dense icon="people" to="/pacientes" class="nav-btn-minimal">
               <div class="text-caption">Pacientes</div>
             </q-btn>
-            <q-btn flat round dense icon="person_add" to="/pacientes/nuevo">
+            <q-btn flat round dense icon="person_add" to="/pacientes/nuevo" class="nav-btn-minimal">
               <div class="text-caption">Alta</div>
             </q-btn>
-            <q-btn flat round dense icon="event" to="/agenda">
+            <q-btn flat round dense icon="event" to="/agenda" class="nav-btn-minimal">
               <div class="text-caption">Agenda</div>
             </q-btn>
-            <q-btn flat round dense icon="medical_services" to="/servicios">
+            <q-btn flat round dense icon="medical_services" to="/servicios" class="nav-btn-minimal">
               <div class="text-caption">Servicios</div>
             </q-btn>
-            <q-btn flat round dense icon="inventory_2" to="/catalogo">
+            <q-btn flat round dense icon="inventory_2" to="/catalogo" class="nav-btn-minimal">
               <div class="text-caption">Productos</div>
             </q-btn>
-            <q-btn flat round dense icon="point_of_sale" to="/ventas">
+            <q-btn flat round dense icon="point_of_sale" to="/ventas" class="nav-btn-minimal">
               <div class="text-caption">Ventas</div>
             </q-btn>
-            <q-btn flat round dense icon="gavel" to="/consentimiento">
+            <q-btn flat round dense icon="gavel" to="/consentimiento" class="nav-btn-minimal">
               <div class="text-caption">Consentimiento</div>
             </q-btn>
-            <q-btn flat round dense icon="chat" to="/mensajes-whatsapp">
+            <q-btn flat round dense icon="chat" to="/mensajes-whatsapp" class="nav-btn-minimal">
               <div class="text-caption">Mensajes</div>
             </q-btn>
-            <q-btn flat round dense icon="contact_phone" to="/proveedores">
+            <q-btn flat round dense icon="contact_phone" to="/proveedores" class="nav-btn-minimal">
               <div class="text-caption">Proveedores</div>
             </q-btn>
           </div>
@@ -44,6 +44,44 @@
         <q-space v-else />
 
         <div class="row items-center q-gutter-sm q-mr-md">
+          <!-- Selector rápido de rediseño en la cabecera -->
+          <q-btn
+            flat
+            dense
+            no-caps
+            class="theme-header-btn q-px-sm"
+            :title="'Rediseño: ' + activeTheme.name"
+          >
+            <span class="theme-header-dot q-mr-xs" :style="{ backgroundColor: activeTheme.colorPreview }" />
+            <span class="gt-sm text-caption text-weight-medium">{{ activeTheme.name }}</span>
+            <q-icon name="arrow_drop_down" size="18px" />
+            <q-menu auto-close class="q-pa-xs shadow-3" style="min-width: 250px; border-radius: 12px;">
+              <q-list dense>
+                <q-item-label header class="text-weight-bold text-caption text-grey-8">Propuestas de Rediseño</q-item-label>
+                <q-item
+                  v-for="t in themes"
+                  :key="t.id"
+                  clickable
+                  :active="currentThemeId === t.id"
+                  active-class="bg-grey-2 text-primary text-weight-bold"
+                  @click="applyTheme(t.id)"
+                  class="rounded-borders q-my-xs"
+                >
+                  <q-item-section avatar style="min-width: 28px;">
+                    <span class="theme-header-dot" :style="{ backgroundColor: t.colorPreview }" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label class="text-body2">{{ t.name }}</q-item-label>
+                    <q-item-label caption class="text-xs">{{ t.subtitle }}</q-item-label>
+                  </q-item-section>
+                  <q-item-section side v-if="currentThemeId === t.id">
+                    <q-icon name="check" size="16px" color="primary" />
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
+
           <q-avatar size="32px" class="q-mr-xs" v-if="$q.screen.gt.xs">
             <img src="/user-avatar.png" alt="Usuario" />
           </q-avatar>
@@ -84,9 +122,18 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { logout } from '../services/auth';
+import { useThemeSelector } from '../composables/useThemeSelector';
+
 const router = useRouter();
+const { currentThemeId, themes, applyTheme } = useThemeSelector();
+
+const activeTheme = computed(() => {
+  return themes.find(t => t.id === currentThemeId.value) || themes[0];
+});
+
 async function handleLogout() {
   await logout();
   router.push('/login');
@@ -96,5 +143,28 @@ async function handleLogout() {
 <style scoped>
 .minimal-header {
   border-bottom: 1px solid #e0e4ea;
+}
+
+.theme-header-btn {
+  border-radius: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
+}
+
+.theme-header-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.theme-header-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.text-xs {
+  font-size: 11px;
 }
 </style>
