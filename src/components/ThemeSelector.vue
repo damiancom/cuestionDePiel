@@ -94,6 +94,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { Notify } from 'quasar';
 import { useThemeSelector } from '../composables/useThemeSelector';
 
 const { currentThemeId, themes, applyTheme } = useThemeSelector();
@@ -105,6 +106,17 @@ const activeTheme = computed(() => {
 
 function selectTheme(id) {
   applyTheme(id);
+  const selected = themes.find(t => t.id === id);
+  if (selected) {
+    Notify.create({
+      message: `Estilo aplicado: ${selected.name}`,
+      caption: selected.subtitle,
+      icon: selected.icon,
+      color: 'dark',
+      timeout: 1200,
+      position: 'top'
+    });
+  }
 }
 </script>
 

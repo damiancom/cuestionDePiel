@@ -56,13 +56,13 @@ body {
 }
 
 .minimal-btn-save {
-  background: #1976d2;
+  background: var(--q-primary, #1976d2);
   color: #fff;
-  transition: background 0.15s;
+  transition: background 0.15s, filter 0.15s;
 }
 
 .minimal-btn-save:hover {
-  background: #125ea7;
+  filter: brightness(0.92);
 }
 
 .minimal-btn-delete {
@@ -96,13 +96,13 @@ body {
 }
 
 .q-dialog-plugin .q-card__actions .q-btn--flat.text-primary {
-  background: #1976d2 !important;
+  background: var(--q-primary, #1976d2) !important;
   color: #fff !important;
   transition: background 0.15s;
 }
 
 .q-dialog-plugin .q-card__actions .q-btn--flat.text-primary:hover {
-  background: #125ea7 !important;
+  filter: brightness(0.92) !important;
 }
 
 /* Campo de búsqueda de cabecera unificado */
@@ -122,7 +122,7 @@ body {
 }
 
 .minimal-search-input:focus-within .q-field__control {
-  border-color: #1976d2 !important;
+  border-color: var(--q-primary, #1976d2) !important;
 }
 
 @media (max-width: 599px) {

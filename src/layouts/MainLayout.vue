@@ -10,35 +10,17 @@
         </div>
         
         <!-- Navegación Escritorio -->
-        <q-toolbar-title class="text-center q-pt-sm q-pl-none q-pr-none" v-if="$q.screen.gt.sm">
-          <div class="row justify-center items-center q-gutter-md">
-            <q-btn flat round dense icon="people" to="/pacientes" class="nav-btn-minimal">
-              <div class="text-caption">Pacientes</div>
-            </q-btn>
-            <q-btn flat round dense icon="person_add" to="/pacientes/nuevo" class="nav-btn-minimal">
-              <div class="text-caption">Alta</div>
-            </q-btn>
-            <q-btn flat round dense icon="event" to="/agenda" class="nav-btn-minimal">
-              <div class="text-caption">Agenda</div>
-            </q-btn>
-            <q-btn flat round dense icon="medical_services" to="/servicios" class="nav-btn-minimal">
-              <div class="text-caption">Servicios</div>
-            </q-btn>
-            <q-btn flat round dense icon="inventory_2" to="/catalogo" class="nav-btn-minimal">
-              <div class="text-caption">Productos</div>
-            </q-btn>
-            <q-btn flat round dense icon="point_of_sale" to="/ventas" class="nav-btn-minimal">
-              <div class="text-caption">Ventas</div>
-            </q-btn>
-            <q-btn flat round dense icon="gavel" to="/consentimiento" class="nav-btn-minimal">
-              <div class="text-caption">Consentimiento</div>
-            </q-btn>
-            <q-btn flat round dense icon="chat" to="/mensajes-whatsapp" class="nav-btn-minimal">
-              <div class="text-caption">Mensajes</div>
-            </q-btn>
-            <q-btn flat round dense icon="contact_phone" to="/proveedores" class="nav-btn-minimal">
-              <div class="text-caption">Proveedores</div>
-            </q-btn>
+        <q-toolbar-title class="text-center q-pt-none q-pl-none q-pr-none" v-if="$q.screen.gt.sm">
+          <div class="row justify-center items-center q-gutter-xs">
+            <q-btn flat dense no-caps icon="people" label="Pacientes" to="/pacientes" class="nav-btn-minimal" />
+            <q-btn flat dense no-caps icon="person_add" label="Alta" to="/pacientes/nuevo" class="nav-btn-minimal" />
+            <q-btn flat dense no-caps icon="event" label="Agenda" to="/agenda" class="nav-btn-minimal" />
+            <q-btn flat dense no-caps icon="medical_services" label="Servicios" to="/servicios" class="nav-btn-minimal" />
+            <q-btn flat dense no-caps icon="inventory_2" label="Productos" to="/catalogo" class="nav-btn-minimal" />
+            <q-btn flat dense no-caps icon="point_of_sale" label="Ventas" to="/ventas" class="nav-btn-minimal" />
+            <q-btn flat dense no-caps icon="gavel" label="Consentimiento" to="/consentimiento" class="nav-btn-minimal" />
+            <q-btn flat dense no-caps icon="chat" label="Mensajes" to="/mensajes-whatsapp" class="nav-btn-minimal" />
+            <q-btn flat dense no-caps icon="contact_phone" label="Proveedores" to="/proveedores" class="nav-btn-minimal" />
           </div>
         </q-toolbar-title>
         <q-space v-else />

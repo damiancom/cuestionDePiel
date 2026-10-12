@@ -1,460 +1,473 @@
 /* ==========================================================================
    SISTEMA DE REDISEÑOS MINIMALISTAS - CUESTIÓN DE PIEL
-   3 Alternativas Estéticas sin pérdida de funcionalidad ni de información
+   Transformación visual integral sin alterar lógica, datos ni funcionalidad.
    ========================================================================== */
 
-/* Variables por defecto (Tema 1: Clínico Nórdico) */
-:root {
-  --app-bg: #f8fafc;
-  --surface-card: #ffffff;
-  --border-subtle: #e2e8f0;
-  --border-hover: #cbd5e1;
-  --text-main: #0f172a;
-  --text-muted: #64748b;
-  --primary-color: #0d9488;
-  --primary-hover: #0f766e;
-  --primary-subtle: #f0fdfa;
-  --card-radius: 10px;
-  --btn-radius: 8px;
-  --shadow-subtle: 0 1px 3px 0 rgba(15, 23, 42, 0.04);
+/* --------------------------------------------------------------------------
+   PROPUESTA 1: CLÍNICO NÓRDICO (Clean Nordic Clinic)
+   Minimalismo sereno, paleta salvia y slate. Elimina fatiga visual y ruido.
+   -------------------------------------------------------------------------- */
+body[data-theme="clean-nordic"],
+html[data-theme="clean-nordic"] body {
+  background-color: #f8fafc !important;
+  color: #0f172a;
 }
 
-/* --------------------------------------------------------------------------
-   TEMA 1: CLÍNICO NÓRDICO (Clean Nordic Clinic)
-   Minimalista, fresco, sereno. Reduce la fatiga visual con tonos salvia & slate.
-   -------------------------------------------------------------------------- */
-[data-theme="clean-nordic"] {
-  --app-bg: #f8fafc;
-  --surface-card: #ffffff;
-  --border-subtle: #e2e8f0;
-  --border-hover: #cbd5e1;
-  --text-main: #0f172a;
-  --text-muted: #64748b;
-  --primary-color: #0d9488;
-  --primary-hover: #0f766e;
-  --primary-subtle: #f0fdfa;
-  --card-radius: 10px;
-  --btn-radius: 8px;
-  --shadow-subtle: 0 1px 3px 0 rgba(15, 23, 42, 0.04);
+body[data-theme="clean-nordic"] #q-app,
+body[data-theme="clean-nordic"] .q-layout,
+body[data-theme="clean-nordic"] .q-page-container,
+body[data-theme="clean-nordic"] .q-page {
+  background-color: #f8fafc !important;
+}
 
-  body {
-    background-color: var(--app-bg) !important;
-    color: var(--text-main);
+/* Header Clínico */
+body[data-theme="clean-nordic"] .minimal-header {
+  background: #ffffff !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  box-shadow: none !important;
+}
+
+/* Colores de marca Quasar */
+body[data-theme="clean-nordic"] .text-primary {
+  color: #0d9488 !important;
+}
+
+body[data-theme="clean-nordic"] .bg-primary {
+  background-color: #0d9488 !important;
+}
+
+/* Navegación superior: Pastillas diáfanas */
+body[data-theme="clean-nordic"] .nav-btn-minimal {
+  border-radius: 8px !important;
+  padding: 6px 12px !important;
+  color: #475569 !important;
+  transition: all 0.15s ease !important;
+  margin: 0 2px !important;
+
+  &:hover {
+    background: #f0fdfa !important;
+    color: #0d9488 !important;
   }
 
-  /* Header limpio y refinado */
-  .minimal-header {
-    background: #ffffff !important;
-    border-bottom: 1px solid var(--border-subtle) !important;
-    box-shadow: none !important;
-  }
-
-  /* Tarjetas con bordes ultra-finos y sombras suaves */
-  .q-card,
-  .minimal-card,
-  .patient-sidebar,
-  .hybrid-card,
-  .minimal-create-card {
-    background: var(--surface-card) !important;
-    border: 1px solid var(--border-subtle) !important;
-    border-radius: var(--card-radius) !important;
-    box-shadow: var(--shadow-subtle) !important;
-  }
-
-  /* Botones principales */
-  .minimal-btn-save {
-    background: var(--primary-color) !important;
-    border-radius: var(--btn-radius) !important;
-    box-shadow: none !important;
-    color: #ffffff !important;
-    transition: all 0.2s ease;
-
-    &:hover {
-      background: var(--primary-hover) !important;
-      opacity: 0.95;
-    }
-  }
-
-  /* Tablas: Eliminación del zebra striping agresivo por filas diáfanas con separador sutil */
-  .q-table tbody tr:nth-child(even),
-  .q-table tbody tr:nth-child(odd) {
-    background-color: #ffffff !important;
-    border-bottom: 1px solid #f1f5f9;
-  }
-
-  .q-table tbody tr:hover,
-  .q-table tbody tr:hover td {
-    background-color: #f8fafc !important;
-  }
-
-  /* Barra de búsqueda con encapsulado limpio */
-  .minimal-search-input .q-field__control {
-    border: 1px solid var(--border-subtle) !important;
-    border-radius: 20px !important;
-    background: #ffffff !important;
-    padding: 0 14px !important;
-    transition: all 0.2s ease;
-  }
-
-  .minimal-search-input:focus-within .q-field__control {
-    border-color: var(--primary-color) !important;
-    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1) !important;
-  }
-
-  /* Pestañas (Tabs) */
-  .q-tabs {
-    color: var(--text-muted);
-  }
-  .q-tab--active {
-    color: var(--primary-color) !important;
-  }
-
-  /* Navegación de escritorio */
-  .nav-btn-minimal {
-    border-radius: 6px;
-    padding: 6px 10px;
-    color: #475569;
-    transition: all 0.15s ease;
-
-    &:hover {
-      background: var(--primary-subtle);
-      color: var(--primary-color);
-    }
-    &.q-router-link--exact-active,
-    &.q-router-link--active {
-      background: var(--primary-subtle);
-      color: var(--primary-color);
-      font-weight: 600;
-    }
+  &.q-router-link--exact-active,
+  &.q-router-link--active {
+    background: #ccfbf1 !important;
+    color: #0f766e !important;
+    font-weight: 600 !important;
   }
 }
 
-/* --------------------------------------------------------------------------
-   TEMA 2: DERMO SOFT WARM (Soft Warm Atelier)
-   Cálido, cosmecéutico, boutique. Sensación orgánica con tonos terracota & lino.
-   -------------------------------------------------------------------------- */
-[data-theme="soft-warm"] {
-  --app-bg: #fbf9f5;
-  --surface-card: #ffffff;
-  --border-subtle: #eee8df;
-  --border-hover: #e0d7cb;
-  --text-main: #292524;
-  --text-muted: #78716c;
-  --primary-color: #9e6b55;
-  --primary-hover: #855541;
-  --primary-subtle: #fbf4ef;
-  --card-radius: 14px;
-  --btn-radius: 10px;
-  --shadow-subtle: 0 4px 20px -2px rgba(120, 113, 108, 0.05);
+/* Tarjetas */
+body[data-theme="clean-nordic"] .q-card,
+body[data-theme="clean-nordic"] .minimal-card,
+body[data-theme="clean-nordic"] .patient-sidebar,
+body[data-theme="clean-nordic"] .hybrid-card,
+body[data-theme="clean-nordic"] .minimal-create-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04) !important;
+}
 
-  body {
-    background-color: var(--app-bg) !important;
-    color: var(--text-main);
-  }
+/* Botones principales de acción */
+body[data-theme="clean-nordic"] .minimal-btn-save {
+  background: #0d9488 !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  color: #ffffff !important;
+  font-weight: 500 !important;
 
-  /* Header cálido marfil */
-  .minimal-header {
-    background: #fdfcf9 !important;
-    border-bottom: 1px solid var(--border-subtle) !important;
-    box-shadow: none !important;
-  }
-
-  /* Tarjetas con radio más envolvente y sombra cálida difusa */
-  .q-card,
-  .minimal-card,
-  .patient-sidebar,
-  .hybrid-card,
-  .minimal-create-card {
-    background: var(--surface-card) !important;
-    border: 1px solid var(--border-subtle) !important;
-    border-radius: var(--card-radius) !important;
-    box-shadow: var(--shadow-subtle) !important;
-  }
-
-  /* Botones principales en terracota suave */
-  .minimal-btn-save {
-    background: var(--primary-color) !important;
-    border-radius: var(--btn-radius) !important;
-    box-shadow: none !important;
-    color: #ffffff !important;
-    transition: all 0.2s ease;
-
-    &:hover {
-      background: var(--primary-hover) !important;
-      opacity: 0.95;
-    }
-  }
-
-  /* Tablas: Filas suaves con separador color lino */
-  .q-table tbody tr:nth-child(even),
-  .q-table tbody tr:nth-child(odd) {
-    background-color: #ffffff !important;
-    border-bottom: 1px solid #f5efe8;
-  }
-
-  .q-table tbody tr:hover,
-  .q-table tbody tr:hover td {
-    background-color: #faf7f2 !important;
-  }
-
-  /* Barra de búsqueda con bordes suaves */
-  .minimal-search-input .q-field__control {
-    border: 1px solid var(--border-subtle) !important;
-    border-radius: 20px !important;
-    background: #ffffff !important;
-    padding: 0 14px !important;
-    transition: all 0.2s ease;
-  }
-
-  .minimal-search-input:focus-within .q-field__control {
-    border-color: var(--primary-color) !important;
-    box-shadow: 0 0 0 3px rgba(158, 107, 85, 0.12) !important;
-  }
-
-  .minimal-input:focus-within {
-    box-shadow: 0 0 0 3px rgba(158, 107, 85, 0.12) !important;
-  }
-
-  /* Pestañas (Tabs) */
-  .q-tabs {
-    color: var(--text-muted);
-  }
-  .q-tab--active {
-    color: var(--primary-color) !important;
-  }
-
-  /* Navegación de escritorio */
-  .nav-btn-minimal {
-    border-radius: 8px;
-    padding: 6px 10px;
-    color: #57534e;
-    transition: all 0.15s ease;
-
-    &:hover {
-      background: var(--primary-subtle);
-      color: var(--primary-color);
-    }
-    &.q-router-link--exact-active,
-    &.q-router-link--active {
-      background: var(--primary-subtle);
-      color: var(--primary-color);
-      font-weight: 600;
-    }
+  &:hover {
+    background: #0f766e !important;
   }
 }
 
+/* Tablas: Eliminación total del zebra striping agresivo */
+body[data-theme="clean-nordic"] .q-table tbody tr:nth-child(even),
+body[data-theme="clean-nordic"] .q-table tbody tr:nth-child(odd) {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+body[data-theme="clean-nordic"] .q-table tbody tr:hover,
+body[data-theme="clean-nordic"] .q-table tbody tr:hover td {
+  background-color: #f8fafc !important;
+}
+
+/* Listas sin zebra striping */
+body[data-theme="clean-nordic"] .patient-messages-list :deep(.q-item),
+body[data-theme="clean-nordic"] .patient-messages-list .q-item,
+body[data-theme="clean-nordic"] .zebra-list :deep(.q-item),
+body[data-theme="clean-nordic"] .zebra-list .q-item {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+body[data-theme="clean-nordic"] .patient-messages-list :deep(.q-item:hover),
+body[data-theme="clean-nordic"] .patient-messages-list .q-item:hover,
+body[data-theme="clean-nordic"] .zebra-list :deep(.q-item:hover),
+body[data-theme="clean-nordic"] .zebra-list .q-item:hover {
+  background-color: #f0fdfa !important;
+}
+
+/* Barra de búsqueda */
+body[data-theme="clean-nordic"] .minimal-search-input .q-field__control {
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 20px !important;
+  background: #ffffff !important;
+  padding: 0 14px !important;
+}
+
+body[data-theme="clean-nordic"] .minimal-search-input:focus-within .q-field__control {
+  border-color: #0d9488 !important;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12) !important;
+}
+
+/* Inputs limpios */
+body[data-theme="clean-nordic"] .minimal-input {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+}
+
+body[data-theme="clean-nordic"] .minimal-input:focus-within {
+  border-color: #0d9488 !important;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12) !important;
+}
+
+/* Pestañas */
+body[data-theme="clean-nordic"] .q-tab--active {
+  color: #0d9488 !important;
+}
+body[data-theme="clean-nordic"] .q-tab--active .q-tab__indicator {
+  background: #0d9488 !important;
+  height: 2px !important;
+}
+
+/* Avatar de perfil con fondo salvia suave */
+body[data-theme="clean-nordic"] .patient-sidebar .bg-blue-1 {
+  background-color: #f0fdfa !important;
+  color: #0d9488 !important;
+}
+
+
 /* --------------------------------------------------------------------------
-   TEMA 3: MODERN TECH MINIMAL (Modern Tech Indigo)
-   Alta precisión, estilo Apple Health & Notion. Foco absoluto en el dato clínico.
+   PROPUESTA 2: DERMO SOFT WARM (Soft Warm Atelier Boutique)
+   Sensación acogedora, marcas de cosmecéutica de lujo (Aesop). Tonos cálidos.
    -------------------------------------------------------------------------- */
-[data-theme="modern-tech"] {
-  --app-bg: #f4f4f5;
-  --surface-card: #ffffff;
-  --border-subtle: #e4e4e7;
-  --border-hover: #d4d4d8;
-  --text-main: #18181b;
-  --text-muted: #71717a;
-  --primary-color: #4f46e5;
-  --primary-hover: #4338ca;
-  --primary-subtle: #eef2ff;
-  --card-radius: 8px;
-  --btn-radius: 6px;
-  --shadow-subtle: none;
+body[data-theme="soft-warm"],
+html[data-theme="soft-warm"] body {
+  background-color: #fbf8f3 !important;
+  color: #292524;
+}
 
-  body {
-    background-color: var(--app-bg) !important;
-    color: var(--text-main);
+body[data-theme="soft-warm"] #q-app,
+body[data-theme="soft-warm"] .q-layout,
+body[data-theme="soft-warm"] .q-page-container,
+body[data-theme="soft-warm"] .q-page {
+  background-color: #fbf8f3 !important;
+}
+
+/* Header Marfil */
+body[data-theme="soft-warm"] .minimal-header {
+  background: #fdfbf7 !important;
+  border-bottom: 1px solid #ebdcd0 !important;
+  box-shadow: none !important;
+}
+
+/* Colores de marca Quasar: Terracota suave */
+body[data-theme="soft-warm"] .text-primary {
+  color: #965842 !important;
+}
+
+body[data-theme="soft-warm"] .bg-primary {
+  background-color: #965842 !important;
+}
+
+/* Navegación superior: Píldoras cálidas tono crema */
+body[data-theme="soft-warm"] .nav-btn-minimal {
+  border-radius: 12px !important;
+  padding: 6px 12px !important;
+  color: #57534e !important;
+  transition: all 0.15s ease !important;
+  margin: 0 2px !important;
+
+  &:hover {
+    background: #f5ede4 !important;
+    color: #965842 !important;
   }
 
-  /* Header plano de alta precisión */
-  .minimal-header {
-    background: #ffffff !important;
-    border-bottom: 1px solid var(--border-subtle) !important;
-    box-shadow: none !important;
-  }
-
-  /* Tarjetas planas frameless con bordes nítidos */
-  .q-card,
-  .minimal-card,
-  .patient-sidebar,
-  .hybrid-card,
-  .minimal-create-card {
-    background: var(--surface-card) !important;
-    border: 1px solid var(--border-subtle) !important;
-    border-radius: var(--card-radius) !important;
-    box-shadow: none !important;
-  }
-
-  /* Botones principales índigo geométricos */
-  .minimal-btn-save {
-    background: var(--primary-color) !important;
-    border-radius: var(--btn-radius) !important;
-    box-shadow: none !important;
-    color: #ffffff !important;
-    transition: all 0.15s ease;
-
-    &:hover {
-      background: var(--primary-hover) !important;
-      opacity: 0.95;
-    }
-  }
-
-  /* Tablas: Estilo spreadsheet contemporáneo nítido */
-  .q-table tbody tr:nth-child(even),
-  .q-table tbody tr:nth-child(odd) {
-    background-color: #ffffff !important;
-    border-bottom: 1px solid #f4f4f5;
-  }
-
-  .q-table tbody tr:hover,
-  .q-table tbody tr:hover td {
-    background-color: #f8fafc !important;
-  }
-
-  /* Barra de búsqueda */
-  .minimal-search-input .q-field__control {
-    border: 1px solid var(--border-subtle) !important;
-    border-radius: 6px !important;
-    background: #ffffff !important;
-    padding: 0 12px !important;
-    transition: all 0.15s ease;
-  }
-
-  .minimal-search-input:focus-within .q-field__control {
-    border-color: var(--primary-color) !important;
-    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.12) !important;
-  }
-
-  .minimal-input:focus-within {
-    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.12) !important;
-  }
-
-  /* Pestañas (Tabs) */
-  .q-tabs {
-    color: var(--text-muted);
-  }
-  .q-tab--active {
-    color: var(--primary-color) !important;
-  }
-
-  /* Navegación de escritorio */
-  .nav-btn-minimal {
-    border-radius: 5px;
-    padding: 5px 8px;
-    color: #3f3f46;
-    transition: all 0.15s ease;
-
-    &:hover {
-      background: var(--primary-subtle);
-      color: var(--primary-color);
-    }
-    &.q-router-link--exact-active,
-    &.q-router-link--active {
-      background: var(--primary-subtle);
-      color: var(--primary-color);
-      font-weight: 600;
-    }
+  &.q-router-link--exact-active,
+  &.q-router-link--active {
+    background: #faeae0 !important;
+    color: #804634 !important;
+    font-weight: 600 !important;
   }
 }
 
+/* Tarjetas: Esquinas redondeadas orgánicas y bordes arena */
+body[data-theme="soft-warm"] .q-card,
+body[data-theme="soft-warm"] .minimal-card,
+body[data-theme="soft-warm"] .patient-sidebar,
+body[data-theme="soft-warm"] .hybrid-card,
+body[data-theme="soft-warm"] .minimal-create-card {
+  background: #ffffff !important;
+  border: 1px solid #e8ddd2 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 20px -2px rgba(120, 113, 108, 0.05) !important;
+}
+
+/* Botones principales en terracota boutique */
+body[data-theme="soft-warm"] .minimal-btn-save {
+  background: #965842 !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+  color: #ffffff !important;
+  font-weight: 500 !important;
+
+  &:hover {
+    background: #804634 !important;
+  }
+}
+
+/* Tablas: Filas con divisores color lino y hover mantecoso */
+body[data-theme="soft-warm"] .q-table tbody tr:nth-child(even),
+body[data-theme="soft-warm"] .q-table tbody tr:nth-child(odd) {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #f4ece3 !important;
+}
+
+body[data-theme="soft-warm"] .q-table tbody tr:hover,
+body[data-theme="soft-warm"] .q-table tbody tr:hover td {
+  background-color: #fbf8f2 !important;
+}
+
+/* Listas sin zebra striping */
+body[data-theme="soft-warm"] .patient-messages-list :deep(.q-item),
+body[data-theme="soft-warm"] .patient-messages-list .q-item,
+body[data-theme="soft-warm"] .zebra-list :deep(.q-item),
+body[data-theme="soft-warm"] .zebra-list .q-item {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #f4ece3 !important;
+}
+
+body[data-theme="soft-warm"] .patient-messages-list :deep(.q-item:hover),
+body[data-theme="soft-warm"] .patient-messages-list .q-item:hover,
+body[data-theme="soft-warm"] .zebra-list :deep(.q-item:hover),
+body[data-theme="soft-warm"] .zebra-list .q-item:hover {
+  background-color: #f8f1ea !important;
+}
+
+/* Barra de búsqueda */
+body[data-theme="soft-warm"] .minimal-search-input .q-field__control {
+  border: 1px solid #ded3c5 !important;
+  border-radius: 20px !important;
+  background: #ffffff !important;
+  padding: 0 14px !important;
+}
+
+body[data-theme="soft-warm"] .minimal-search-input:focus-within .q-field__control {
+  border-color: #965842 !important;
+  box-shadow: 0 0 0 3px rgba(150, 88, 66, 0.15) !important;
+}
+
+/* Inputs limpios */
+body[data-theme="soft-warm"] .minimal-input {
+  border: 1px solid #e8ddd2 !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+}
+
+body[data-theme="soft-warm"] .minimal-input:focus-within {
+  border-color: #965842 !important;
+  box-shadow: 0 0 0 3px rgba(150, 88, 66, 0.15) !important;
+}
+
+/* Pestañas */
+body[data-theme="soft-warm"] .q-tab--active {
+  color: #965842 !important;
+}
+body[data-theme="soft-warm"] .q-tab--active .q-tab__indicator {
+  background: #965842 !important;
+  height: 2px !important;
+}
+
+/* Avatar de perfil con fondo cálido blush */
+body[data-theme="soft-warm"] .patient-sidebar .bg-blue-1 {
+  background-color: #fbf1e8 !important;
+  color: #965842 !important;
+}
+
+
 /* --------------------------------------------------------------------------
-   TEMA 4: ORIGINAL (Clásico de Referencia)
-   Preserva intacto el look previo para contrastar.
+   PROPUESTA 3: MODERN TECH (Alta Precisión & Índigo)
+   Inspirado en Apple Health y Notion. Precisión geométrica de 1px.
    -------------------------------------------------------------------------- */
-[data-theme="original"] {
-  /* No sobreescribe variables para conservar la vista original intacta */
+body[data-theme="modern-tech"],
+html[data-theme="modern-tech"] body {
+  background-color: #f1f3f5 !important;
+  color: #18181b;
+}
+
+body[data-theme="modern-tech"] #q-app,
+body[data-theme="modern-tech"] .q-layout,
+body[data-theme="modern-tech"] .q-page-container,
+body[data-theme="modern-tech"] .q-page {
+  background-color: #f1f3f5 !important;
+}
+
+/* Header Blanco Tecnológico */
+body[data-theme="modern-tech"] .minimal-header {
+  background: #ffffff !important;
+  border-bottom: 1px solid #e4e4e7 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Colores de marca Quasar: Índigo moderno */
+body[data-theme="modern-tech"] .text-primary {
+  color: #4338ca !important;
+}
+
+body[data-theme="modern-tech"] .bg-primary {
+  background-color: #4338ca !important;
+}
+
+/* Navegación superior: Micro-links nítidos */
+body[data-theme="modern-tech"] .nav-btn-minimal {
+  border-radius: 6px !important;
+  padding: 5px 10px !important;
+  color: #3f3f46 !important;
+  transition: all 0.15s ease !important;
+  margin: 0 1px !important;
+
+  &:hover {
+    background: #eef2ff !important;
+    color: #4338ca !important;
+  }
+
+  &.q-router-link--exact-active,
+  &.q-router-link--active {
+    background: #e0e7ff !important;
+    color: #3730a3 !important;
+    font-weight: 600 !important;
+  }
+}
+
+/* Tarjetas: Frameless planas con bordes nítidos de 1px */
+body[data-theme="modern-tech"] .q-card,
+body[data-theme="modern-tech"] .minimal-card,
+body[data-theme="modern-tech"] .patient-sidebar,
+body[data-theme="modern-tech"] .hybrid-card,
+body[data-theme="modern-tech"] .minimal-create-card {
+  background: #ffffff !important;
+  border: 1px solid #e4e4e7 !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+
+/* Botones principales índigo geométricos */
+body[data-theme="modern-tech"] .minimal-btn-save {
+  background: #4338ca !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+  color: #ffffff !important;
+  font-weight: 500 !important;
+
+  &:hover {
+    background: #3730a3 !important;
+  }
+}
+
+/* Tablas: Formato spreadsheet nítido */
+body[data-theme="modern-tech"] .q-table tbody tr:nth-child(even),
+body[data-theme="modern-tech"] .q-table tbody tr:nth-child(odd) {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #f4f4f5 !important;
+}
+
+body[data-theme="modern-tech"] .q-table tbody tr:hover,
+body[data-theme="modern-tech"] .q-table tbody tr:hover td {
+  background-color: #f8fafc !important;
+}
+
+/* Listas sin zebra striping */
+body[data-theme="modern-tech"] .patient-messages-list :deep(.q-item),
+body[data-theme="modern-tech"] .patient-messages-list .q-item,
+body[data-theme="modern-tech"] .zebra-list :deep(.q-item),
+body[data-theme="modern-tech"] .zebra-list .q-item {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #f4f4f5 !important;
+}
+
+body[data-theme="modern-tech"] .patient-messages-list :deep(.q-item:hover),
+body[data-theme="modern-tech"] .patient-messages-list .q-item:hover,
+body[data-theme="modern-tech"] .zebra-list :deep(.q-item:hover),
+body[data-theme="modern-tech"] .zebra-list .q-item:hover {
+  background-color: #eef2ff !important;
+}
+
+/* Barra de búsqueda */
+body[data-theme="modern-tech"] .minimal-search-input .q-field__control {
+  border: 1px solid #d4d4d8 !important;
+  border-radius: 6px !important;
+  background: #ffffff !important;
+  padding: 0 12px !important;
+}
+
+body[data-theme="modern-tech"] .minimal-search-input:focus-within .q-field__control {
+  border-color: #4338ca !important;
+  box-shadow: 0 0 0 2px rgba(67, 56, 202, 0.15) !important;
+}
+
+/* Inputs limpios */
+body[data-theme="modern-tech"] .minimal-input {
+  border: 1px solid #e4e4e7 !important;
+  border-radius: 6px !important;
+  background: #ffffff !important;
+}
+
+body[data-theme="modern-tech"] .minimal-input:focus-within {
+  border-color: #4338ca !important;
+  box-shadow: 0 0 0 2px rgba(67, 56, 202, 0.15) !important;
+}
+
+/* Pestañas */
+body[data-theme="modern-tech"] .q-tab--active {
+  color: #4338ca !important;
+}
+body[data-theme="modern-tech"] .q-tab--active .q-tab__indicator {
+  background: #4338ca !important;
+  height: 2px !important;
+}
+
+/* Avatar de perfil con fondo índigo suave */
+body[data-theme="modern-tech"] .patient-sidebar .bg-blue-1 {
+  background-color: #eef2ff !important;
+  color: #4338ca !important;
+}
+
+/* Footer Móvil por Tema */
+body[data-theme="clean-nordic"] .minimal-footer {
+  background: #ffffff !important;
+  border-top: 1px solid #e2e8f0 !important;
+  box-shadow: none !important;
+}
+
+body[data-theme="soft-warm"] .minimal-footer {
+  background: #fdfbf7 !important;
+  border-top: 1px solid #ebdcd0 !important;
+  box-shadow: none !important;
+}
+
+body[data-theme="modern-tech"] .minimal-footer {
+  background: #ffffff !important;
+  border-top: 1px solid #e4e4e7 !important;
+  box-shadow: none !important;
 }
 
 /* --------------------------------------------------------------------------
-   MEJORAS GENERALES COMPARTIDAS PARA MINIMALISMO
-   Aplica a todos los temas para mejorar legibilidad y orden
+   ORIGINAL: Look Clásico para contraste
    -------------------------------------------------------------------------- */
-[data-theme="clean-nordic"],
-[data-theme="soft-warm"],
-[data-theme="modern-tech"] {
-  /* Jerarquía de texto limpia en datos del paciente */
-  .patient-info-label {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--text-muted);
-    font-weight: 600;
-  }
-
-  .patient-info-value {
-    font-size: 14px;
-    color: var(--text-main);
-  }
-
-  /* Reemplazo de listas con zebra striping por filas con divisores tenues */
-  .patient-messages-list :deep(.q-item),
-  .patient-messages-list .q-item,
-  .zebra-list :deep(.q-item),
-  .zebra-list .q-item {
-    background-color: #ffffff !important;
-    border-bottom: 1px solid var(--border-subtle) !important;
-    transition: background-color 0.15s ease;
-  }
-
-  .patient-messages-list :deep(.q-item:hover),
-  .patient-messages-list .q-item:hover,
-  .zebra-list :deep(.q-item:hover),
-  .zebra-list .q-item:hover {
-    background-color: var(--primary-subtle) !important;
-  }
-
-  /* Campos de texto encapsulados y limpios */
-  .minimal-input {
-    border: 1px solid var(--border-subtle) !important;
-    border-radius: var(--btn-radius) !important;
-    background: #ffffff !important;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-
-  .minimal-input:focus-within {
-    border-color: var(--primary-color) !important;
-    background: #ffffff !important;
-    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1) !important;
-  }
-
-  /* Contenedores de avatar con tono de fondo armónico */
-  .patient-sidebar .bg-blue-1 {
-    background-color: var(--primary-subtle) !important;
-    color: var(--primary-color) !important;
-  }
-
-  /* Diálogos y modales alineados al tema */
-  .q-dialog .q-card {
-    border-radius: var(--card-radius) !important;
-    border: 1px solid var(--border-subtle) !important;
-  }
-
-  .q-dialog-plugin .q-card__actions .q-btn--flat.text-primary {
-    background: var(--primary-color) !important;
-    color: #ffffff !important;
-  }
-
-  .q-dialog-plugin .q-card__actions .q-btn--flat.text-primary:hover {
-    background: var(--primary-hover) !important;
-  }
-
-  /* Pestañas (Tabs) con indicador sutil */
-  .q-tab--active .q-tab__indicator {
-    background: var(--primary-color) !important;
-    height: 2px !important;
-  }
-
-  /* Separadores sutiles */
-  .q-separator {
-    background-color: var(--border-subtle) !important;
-    opacity: 0.7;
-  }
-
-  /* Badges suaves en vez de fluorescentes */
-  .q-badge {
-    border-radius: 6px;
-    padding: 3px 8px;
-    font-weight: 500;
-    letter-spacing: 0.2px;
-  }
+body[data-theme="original"] {
+  /* Mantiene los estilos por defecto sin sobreescrituras */
 }

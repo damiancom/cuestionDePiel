@@ -1701,7 +1701,7 @@ async function handleRoutineSave(routineData) {
 }
 
 .minimal-input:focus-within {
-  border-color: #1976d2 !important;
+  border-color: var(--q-primary, #1976d2) !important;
   background: #ffffff !important;
   box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1) !important;
 }
@@ -1722,13 +1722,13 @@ async function handleRoutineSave(routineData) {
 }
 
 .minimal-btn-save {
-  background: #1976d2;
-  color: #fff;
-  transition: background 0.15s;
+  background: var(--q-primary, #1976d2) !important;
+  color: #fff !important;
+  transition: background 0.15s, filter 0.15s;
 }
 
 .minimal-btn-save:hover {
-  background: #125ea7;
+  filter: brightness(0.92) !important;
 }
 
 
