@@ -3,8 +3,232 @@
     <input ref="inputFoto" type="file" accept="image/*" class="hidden" @change="onFotoSelected"/>
 
     <div class="row q-col-gutter-lg justify-center">
-      <!-- Sidebar Perfil Fijo (solo en desktop) -->
-      <div v-if="!isSidebarCollapsed" class="col-12 col-md-4 col-lg-3 gt-sm">
+      <!-- ─────────────────────────────────────────────────────────────
+           ORGANIZACIÓN 1: HERO BANNER (Propuesta 1)
+           Ficha horizontal superior que libera el 100% del ancho
+           ───────────────────────────────────────────────────────────── -->
+      <div v-if="isHeroBanner" class="col-12">
+        <q-card class="q-pa-md minimal-card patient-hero-banner shadow-1">
+          <div class="row items-center justify-between q-col-gutter-md">
+            <div class="col-12 col-md row items-center no-wrap">
+              <q-avatar size="64px" class="q-mr-md" :class="editing ? 'avatar-clickable' : 'bg-blue-1 text-primary'" @click="editing && seleccionarFoto()">
+                <img v-if="patient.profile_picture" :src="patient.profile_picture" alt="Foto" />
+                <q-icon v-else name="person" size="36px" color="grey-6" />
+                <div v-if="editing" class="avatar-overlay"><q-icon name="photo_camera" size="18px" color="white" /></div>
+              </q-avatar>
+              <div>
+                <div class="row items-center q-gutter-x-sm flex-wrap">
+                  <span class="text-h6 text-weight-bold text-primary">{{ patient.name }} {{ patient.last_name }}</span>
+                  <q-badge color="grey-3" text-color="grey-9" class="text-caption" v-if="calculateAge(patient.birth_date)">
+                    {{ calculateAge(patient.birth_date) }} años ({{ formatDate(patient.birth_date) }})
+                  </q-badge>
+                  <q-badge
+                    v-if="consentStatus"
+                    :color="consentStatus.is_signed ? 'positive' : (consentStatus.signed_version ? 'warning' : 'negative')"
+                    class="cursor-pointer text-caption"
+                    @click="handleTabChange('consentimiento')"
+                  >
+                    <q-icon :name="consentStatus.is_signed ? 'verified' : (consentStatus.signed_version ? 'update' : 'draw')" class="q-mr-xs" />
+                    {{ consentStatus.is_signed ? `Consentimiento OK` : (consentStatus.signed_version ? 'Consentimiento Pendiente' : 'Falta Consentimiento') }}
+                  </q-badge>
+                  <span class="text-caption text-grey-6">ID: {{ patient.id }}</span>
+                </div>
+                <!-- Pills de Contacto y Ubicación -->
+                <div class="row items-center q-gutter-x-md text-caption text-grey-8 q-mt-xs flex-wrap">
+                  <span v-if="patient.profession"><q-icon name="work_outline" size="14px" class="q-mr-xs text-grey-6" />{{ patient.profession }}</span>
+                  <span v-if="patient.address"><q-icon name="location_on" size="14px" class="q-mr-xs text-grey-6" />{{ patient.address }}</span>
+                  <span v-if="patient.cellphone" class="row items-center">
+                    <q-icon name="smartphone" size="14px" class="q-mr-xs text-grey-6" />
+                    {{ patient.cellphone }}
+                    <q-btn v-if="hasPhone" flat round dense size="xs" color="positive" icon="fa-brands fa-whatsapp" class="q-ml-xs" @click="handleTabChange('mensajes')">
+                      <q-tooltip>Abrir WhatsApp</q-tooltip>
+                    </q-btn>
+                  </span>
+                  <span v-if="patient.email"><q-icon name="mail_outline" size="14px" class="q-mr-xs text-grey-6" />{{ patient.email }}</span>
+                  <span v-if="patient.additional_note" class="text-primary text-weight-medium">
+                    <q-icon name="info" size="14px" class="q-mr-xs" />{{ patient.additional_note }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Acciones -->
+            <div class="col-12 col-md-auto row items-center q-gutter-sm justify-end">
+              <q-btn
+                :label="editing ? 'Cerrar Edición' : 'Editar Perfil'"
+                :icon="editing ? 'close' : 'edit'"
+                :color="editing ? 'grey-8' : 'primary'"
+                :flat="editing"
+                class="minimal-btn-save"
+                @click="editing = !editing"
+              />
+            </div>
+          </div>
+
+          <!-- Formulario de edición desplegable en Banner -->
+          <q-slide-transition>
+            <div v-if="editing" class="q-mt-md q-pt-md" style="border-top: 1px solid #e2e8f0;">
+              <div class="row q-col-gutter-sm">
+                <div class="col-12 col-sm-3"><q-input v-model="patientEdit.name" label="Nombre" dense class="minimal-input" borderless /></div>
+                <div class="col-12 col-sm-3"><q-input v-model="patientEdit.last_name" label="Apellido" dense class="minimal-input" borderless /></div>
+                <div class="col-12 col-sm-3"><q-input v-model="patientEdit.birth_date" label="Fecha de Nacimiento" dense class="minimal-input" borderless type="date" /></div>
+                <div class="col-12 col-sm-3"><q-input v-model="patientEdit.profession" label="Profesión" dense class="minimal-input" borderless /></div>
+                <div class="col-12 col-sm-4"><q-input v-model="patientEdit.address" label="Dirección" dense class="minimal-input" borderless /></div>
+                <div class="col-12 col-sm-2"><q-input v-model="patientEdit.locality" label="Localidad" dense class="minimal-input" borderless /></div>
+                <div class="col-12 col-sm-3"><q-input v-model="patientEdit.phone" label="Teléfono" dense class="minimal-input" borderless /></div>
+                <div class="col-12 col-sm-3"><q-input v-model="patientEdit.cellphone" label="Celular" dense class="minimal-input" borderless /></div>
+                <div class="col-12 col-sm-4"><q-input v-model="patientEdit.email" label="E-mail" dense class="minimal-input" borderless /></div>
+                <div class="col-12 col-sm-8"><q-input v-model="patientEdit.additional_note" label="Nota adicional" type="textarea" autogrow maxlength="200" counter class="minimal-input" borderless /></div>
+              </div>
+              <div class="row q-gutter-sm justify-end q-mt-sm">
+                <q-btn flat label="Cancelar" @click="cancelPatientEdit" color="grey-8" class="minimal-btn" />
+                <q-btn label="Guardar Cambios" color="primary" @click="updatePatientData" class="minimal-btn-save" />
+              </div>
+            </div>
+          </q-slide-transition>
+        </q-card>
+      </div>
+
+      <!-- ─────────────────────────────────────────────────────────────
+           ORGANIZACIÓN 3: BARRA DE CONTEXTO FOCO CLÍNICO (Propuesta 3)
+           Barra de 1 sola línea arriba para máxima concentración médica
+           ───────────────────────────────────────────────────────────── -->
+      <div v-if="isClinicalFocus" class="col-12">
+        <q-card class="q-px-md q-py-sm minimal-card clinical-context-bar shadow-1">
+          <div class="row items-center justify-between no-wrap">
+            <div class="row items-center no-wrap q-gutter-x-sm">
+              <q-avatar size="36px" color="blue-1" text-color="primary">
+                <img v-if="patient.profile_picture" :src="patient.profile_picture" />
+                <q-icon v-else name="person" size="20px" />
+              </q-avatar>
+              <span class="text-subtitle1 text-weight-bold text-primary">{{ patient.name }} {{ patient.last_name }}</span>
+              <span class="text-caption text-grey-7 gt-xs" v-if="calculateAge(patient.birth_date)">• {{ calculateAge(patient.birth_date) }} años</span>
+              <span class="text-caption text-grey-7 gt-sm" v-if="patient.cellphone">• Cel: {{ patient.cellphone }}</span>
+              <q-badge
+                v-if="consentStatus"
+                :color="consentStatus.is_signed ? 'positive' : 'negative'"
+                class="cursor-pointer text-xs"
+                @click="handleTabChange('consentimiento')"
+              >
+                {{ consentStatus.is_signed ? 'Consentimiento OK' : 'Falta Consentimiento' }}
+              </q-badge>
+            </div>
+
+            <q-btn
+              outline
+              color="primary"
+              icon="badge"
+              label="Ver Ficha Completa"
+              class="minimal-btn"
+              @click="showFocusDrawer = true"
+            />
+          </div>
+        </q-card>
+      </div>
+
+      <!-- ─────────────────────────────────────────────────────────────
+           ORGANIZACIÓN 4: BENTO GRID MODULAR (Propuesta 4)
+           Micro-tarjetas visuales organizadas
+           ───────────────────────────────────────────────────────────── -->
+      <div v-if="isBentoGrid" class="col-12">
+        <div class="row items-center justify-between q-mb-xs">
+          <span class="text-caption text-weight-bold text-grey-7">FICHA DEL PACIENTE (BENTO GRID)</span>
+          <q-btn
+            flat
+            dense
+            no-caps
+            size="sm"
+            color="primary"
+            :icon="bentoCollapsed ? 'expand_more' : 'expand_less'"
+            :label="bentoCollapsed ? 'Mostrar Ficha' : 'Ocultar Ficha'"
+            @click="bentoCollapsed = !bentoCollapsed"
+          />
+        </div>
+
+        <q-slide-transition>
+          <div v-show="!bentoCollapsed" class="row q-col-gutter-sm">
+            <!-- Card 1: Identidad -->
+            <div class="col-12 col-sm-4">
+              <q-card class="q-pa-sm minimal-card full-height">
+                <div class="row items-center no-wrap">
+                  <q-avatar size="52px" class="q-mr-sm" :class="editing ? 'avatar-clickable' : 'bg-blue-1 text-primary'" @click="editing && seleccionarFoto()">
+                    <img v-if="patient.profile_picture" :src="patient.profile_picture" />
+                    <q-icon v-else name="person" size="28px" />
+                  </q-avatar>
+                  <div>
+                    <div class="text-weight-bold text-primary">{{ patient.name }} {{ patient.last_name }}</div>
+                    <div class="text-caption text-grey-7">{{ calculateAge(patient.birth_date) }} años • {{ formatDate(patient.birth_date) }}</div>
+                    <div class="text-caption text-grey-6">{{ patient.profession || 'Sin profesión' }}</div>
+                  </div>
+                </div>
+              </q-card>
+            </div>
+
+            <!-- Card 2: Contacto -->
+            <div class="col-12 col-sm-4">
+              <q-card class="q-pa-sm minimal-card full-height">
+                <div class="text-caption text-weight-bold text-grey-7 q-mb-xs">Contacto</div>
+                <div class="text-caption"><q-icon name="smartphone" size="14px" class="q-mr-xs" />{{ patient.cellphone || '-' }}</div>
+                <div class="text-caption"><q-icon name="location_on" size="14px" class="q-mr-xs" />{{ patient.address || '-' }}</div>
+                <div class="text-caption"><q-icon name="email" size="14px" class="q-mr-xs" />{{ patient.email || '-' }}</div>
+              </q-card>
+            </div>
+
+            <!-- Card 3: Estado y Acciones -->
+            <div class="col-12 col-sm-4">
+              <q-card class="q-pa-sm minimal-card full-height column justify-between">
+                <div>
+                  <div class="row items-center justify-between">
+                    <span class="text-caption text-weight-bold text-grey-7">Estado</span>
+                    <span class="text-caption text-grey-6">ID: {{ patient.id }}</span>
+                  </div>
+                  <q-badge
+                    v-if="consentStatus"
+                    :color="consentStatus.is_signed ? 'positive' : 'negative'"
+                    class="cursor-pointer text-xs q-mt-xs"
+                    @click="handleTabChange('consentimiento')"
+                  >
+                    {{ consentStatus.is_signed ? 'Consentimiento OK' : 'Falta Consentimiento' }}
+                  </q-badge>
+                  <div v-if="patient.additional_note" class="text-caption text-grey-8 text-xs ellipsis q-mt-xs">
+                    Nota: {{ patient.additional_note }}
+                  </div>
+                </div>
+                <div class="row justify-end q-mt-xs">
+                  <q-btn size="sm" label="Editar" icon="edit" color="primary" class="minimal-btn-save" @click="editing = true" />
+                </div>
+              </q-card>
+            </div>
+          </div>
+        </q-slide-transition>
+
+        <!-- Formulario de edición si está en Bento Grid -->
+        <q-slide-transition>
+          <q-card v-if="editing" class="q-pa-md q-mt-sm minimal-card">
+            <div class="row q-col-gutter-sm">
+              <div class="col-12 col-sm-3"><q-input v-model="patientEdit.name" label="Nombre" dense class="minimal-input" borderless /></div>
+              <div class="col-12 col-sm-3"><q-input v-model="patientEdit.last_name" label="Apellido" dense class="minimal-input" borderless /></div>
+              <div class="col-12 col-sm-3"><q-input v-model="patientEdit.birth_date" label="Fecha de Nacimiento" dense class="minimal-input" borderless type="date" /></div>
+              <div class="col-12 col-sm-3"><q-input v-model="patientEdit.profession" label="Profesión" dense class="minimal-input" borderless /></div>
+              <div class="col-12 col-sm-4"><q-input v-model="patientEdit.address" label="Dirección" dense class="minimal-input" borderless /></div>
+              <div class="col-12 col-sm-2"><q-input v-model="patientEdit.locality" label="Localidad" dense class="minimal-input" borderless /></div>
+              <div class="col-12 col-sm-3"><q-input v-model="patientEdit.phone" label="Teléfono" dense class="minimal-input" borderless /></div>
+              <div class="col-12 col-sm-3"><q-input v-model="patientEdit.cellphone" label="Celular" dense class="minimal-input" borderless /></div>
+              <div class="col-12 col-sm-4"><q-input v-model="patientEdit.email" label="E-mail" dense class="minimal-input" borderless /></div>
+              <div class="col-12 col-sm-8"><q-input v-model="patientEdit.additional_note" label="Nota adicional" type="textarea" autogrow maxlength="200" counter class="minimal-input" borderless /></div>
+            </div>
+            <div class="row q-gutter-sm justify-end q-mt-sm">
+              <q-btn flat label="Cancelar" @click="cancelPatientEdit" color="grey-8" class="minimal-btn" />
+              <q-btn label="Guardar Cambios" color="primary" @click="updatePatientData" class="minimal-btn-save" />
+            </div>
+          </q-card>
+        </q-slide-transition>
+      </div>
+
+      <!-- ─────────────────────────────────────────────────────────────
+           SIDEBAR LATERAL CLÁSICO / DOSSIER (Para Propuesta 2 y Original)
+           ───────────────────────────────────────────────────────────── -->
+      <div v-if="(isAppSidebar || isOriginal) && !isSidebarCollapsed" class="col-12 col-md-4 col-lg-3 gt-sm">
         <q-card class="q-pa-md minimal-card patient-sidebar relative-position">
           <q-btn
             flat
@@ -28,33 +252,64 @@
             </q-avatar>
             
             <div v-if="!editing" class="full-width">
-              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Nombre:</span><br>{{ patient.name }}</div>
-              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Apellido:</span><br>{{ patient.last_name }}</div>
-              <div class="q-mb-sm">
-                <span class="text-weight-bold text-grey-8">Nacimiento:</span><br>
-                {{ formatDate(patient.birth_date) }}
-                <span v-if="calculateAge(patient.birth_date) !== ''" class="text-grey-7">({{ calculateAge(patient.birth_date) }} años)</span>
+              <!-- En Propuesta 2 (App Sidebar): Dossier estructurado por secciones -->
+              <div v-if="isAppSidebar" class="q-gutter-y-sm">
+                <!-- Bloque Identidad -->
+                <div class="q-pa-sm bg-grey-1 rounded-borders text-center">
+                  <div class="text-subtitle1 text-weight-bold text-primary">{{ patient.name }} {{ patient.last_name }}</div>
+                  <div class="text-caption text-grey-8">{{ calculateAge(patient.birth_date) }} años • {{ formatDate(patient.birth_date) }}</div>
+                </div>
+
+                <!-- Bloque Contacto -->
+                <div class="q-pa-xs">
+                  <div class="text-caption text-weight-bold text-grey-6 q-mb-xs">CONTACTO</div>
+                  <div class="row items-center justify-between no-wrap q-mb-xs">
+                    <span class="text-caption text-grey-9"><q-icon name="smartphone" size="14px" class="q-mr-xs" />{{ patient.cellphone || '-' }}</span>
+                    <q-btn v-if="hasPhone" flat round dense size="xs" color="positive" icon="fa-brands fa-whatsapp" @click="handleTabChange('mensajes')" />
+                  </div>
+                  <div class="text-caption text-grey-8 q-mb-xs"><q-icon name="location_on" size="14px" class="q-mr-xs" />{{ patient.address }}</div>
+                  <div class="text-caption text-grey-8"><q-icon name="email" size="14px" class="q-mr-xs" />{{ patient.email || '-' }}</div>
+                </div>
+
+                <!-- Bloque Médico -->
+                <div class="q-pa-xs">
+                  <div class="text-caption text-weight-bold text-grey-6 q-mb-xs">CLÍNICA</div>
+                  <div class="text-caption text-grey-8">Profesión: {{ patient.profession || '-' }}</div>
+                  <div v-if="patient.additional_note" class="text-caption text-grey-8">Nota: {{ patient.additional_note }}</div>
+                </div>
               </div>
-              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Profesión:</span><br>{{ patient.profession || '-' }}</div>
-              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Dirección:</span><br>{{ patient.address }}</div>
-              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Teléfono:</span><br>{{ patient.phone || '-' }}</div>
-              <div class="q-mb-sm row items-center justify-between no-wrap">
-                <div><span class="text-weight-bold text-grey-8">Celular:</span><br>{{ patient.cellphone || '-' }}</div>
-                <q-btn
-                  v-if="hasPhone"
-                  flat
-                  round
-                  dense
-                  size="sm"
-                  color="positive"
-                  icon="fa-brands fa-whatsapp"
-                  @click="handleTabChange('mensajes')"
-                >
-                  <q-tooltip>Enviar mensaje predefinido de WhatsApp</q-tooltip>
-                </q-btn>
+
+              <!-- En Original: Lista tradicional -->
+              <div v-else>
+                <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Nombre:</span><br>{{ patient.name }}</div>
+                <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Apellido:</span><br>{{ patient.last_name }}</div>
+                <div class="q-mb-sm">
+                  <span class="text-weight-bold text-grey-8">Nacimiento:</span><br>
+                  {{ formatDate(patient.birth_date) }}
+                  <span v-if="calculateAge(patient.birth_date) !== ''" class="text-grey-7">({{ calculateAge(patient.birth_date) }} años)</span>
+                </div>
+                <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Profesión:</span><br>{{ patient.profession || '-' }}</div>
+                <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Dirección:</span><br>{{ patient.address }}</div>
+                <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Teléfono:</span><br>{{ patient.phone || '-' }}</div>
+                <div class="q-mb-sm row items-center justify-between no-wrap">
+                  <div><span class="text-weight-bold text-grey-8">Celular:</span><br>{{ patient.cellphone || '-' }}</div>
+                  <q-btn
+                    v-if="hasPhone"
+                    flat
+                    round
+                    dense
+                    size="sm"
+                    color="positive"
+                    icon="fa-brands fa-whatsapp"
+                    @click="handleTabChange('mensajes')"
+                  >
+                    <q-tooltip>Enviar mensaje predefinido de WhatsApp</q-tooltip>
+                  </q-btn>
+                </div>
+                <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">E-mail:</span><br>{{ patient.email }}</div>
+                <div class="q-mb-sm" v-if="patient.additional_note"><span class="text-weight-bold text-grey-8">Nota adicional:</span><br><span style="white-space: pre-wrap;">{{ patient.additional_note }}</span></div>
               </div>
-              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">E-mail:</span><br>{{ patient.email }}</div>
-              <div class="q-mb-sm" v-if="patient.additional_note"><span class="text-weight-bold text-grey-8">Nota adicional:</span><br><span style="white-space: pre-wrap;">{{ patient.additional_note }}</span></div>
+
               <div class="q-my-sm text-center" v-if="consentStatus">
                 <q-badge
                   :color="consentStatus.is_signed ? 'positive' : (consentStatus.signed_version ? 'warning' : 'negative')"
@@ -93,13 +348,16 @@
         </q-card>
       </div>
 
-      <!-- Contenido Principal con Tabs -->
-      <div :class="isSidebarCollapsed ? 'col-12' : 'col-12 col-md-8 col-lg-9'" class="transition-width">
+      <!-- ─────────────────────────────────────────────────────────────
+           CONTENIDO PRINCIPAL CON TABS
+           (Ocupa col-12 en propuestas horizontales, o col-md-8 col-lg-9 en sidebar)
+           ───────────────────────────────────────────────────────────── -->
+      <div :class="(isHeroBanner || isClinicalFocus || isBentoGrid || isSidebarCollapsed) ? 'col-12' : 'col-12 col-md-8 col-lg-9'" class="transition-width">
         <q-card class="q-pa-md q-pa-sm-lg">
           <div class="row items-center no-wrap q-mb-md">
-            <!-- Botón para mostrar el detalle del paciente (solo en desktop cuando está colapsado) -->
+            <!-- Botón para mostrar el detalle del paciente (solo cuando está colapsado en modo sidebar) -->
             <q-btn
-              v-if="isSidebarCollapsed"
+              v-if="(isAppSidebar || isOriginal) && isSidebarCollapsed"
               flat
               dense
               no-caps
@@ -688,6 +946,102 @@
       </q-card>
     </q-dialog>
 
+    <!-- Diálogo Drawer Lateral de Foco Clínico (Propuesta 3) -->
+    <q-dialog v-model="showFocusDrawer" position="right" maximized>
+      <q-card class="column full-height" style="width: 420px; max-width: 90vw;">
+        <!-- Cabecera del Drawer -->
+        <q-card-section class="row items-center justify-between q-pb-none bg-grey-1" style="border-bottom: 1px solid #e2e8f0;">
+          <div class="row items-center q-gutter-x-sm">
+            <q-icon name="badge" color="primary" size="24px" />
+            <div class="text-subtitle1 text-weight-bold text-primary">Ficha del Paciente</div>
+          </div>
+          <q-btn flat round dense icon="close" v-close-popup color="grey-7" />
+        </q-card-section>
+
+        <!-- Cuerpo del Drawer con scroll -->
+        <q-card-section class="col scroll q-pa-md">
+          <div class="column items-center q-mb-md">
+            <q-avatar size="90px" class="q-mb-sm" :class="editing ? 'avatar-clickable' : 'bg-blue-1 text-primary'" @click="editing && seleccionarFoto()">
+              <img v-if="patient.profile_picture" :src="patient.profile_picture" alt="Foto de perfil" />
+              <q-icon v-else name="person" size="54px" color="grey-5" />
+              <div v-if="editing" class="avatar-overlay">
+                <q-icon name="photo_camera" size="22px" color="white" />
+              </div>
+            </q-avatar>
+            <div class="text-h6 text-weight-bold text-primary text-center">{{ patient.name }} {{ patient.last_name }}</div>
+            <div class="text-caption text-grey-7" v-if="calculateAge(patient.birth_date)">
+              {{ calculateAge(patient.birth_date) }} años • {{ formatDate(patient.birth_date) }}
+            </div>
+            <div class="text-caption text-grey-6">ID: {{ patient.id }}</div>
+
+            <div class="q-mt-xs" v-if="consentStatus">
+              <q-badge
+                :color="consentStatus.is_signed ? 'positive' : (consentStatus.signed_version ? 'warning' : 'negative')"
+                class="cursor-pointer text-caption"
+                @click="handleTabChange('consentimiento'); showFocusDrawer = false;"
+              >
+                <q-icon :name="consentStatus.is_signed ? 'verified' : (consentStatus.signed_version ? 'update' : 'draw')" class="q-mr-xs" />
+                {{ consentStatus.is_signed ? `Consentimiento OK` : (consentStatus.signed_version ? 'Consentimiento Pendiente' : 'Falta Consentimiento') }}
+              </q-badge>
+            </div>
+          </div>
+
+          <!-- Vista lectura o edición -->
+          <div v-if="!editing" class="q-gutter-y-md">
+            <!-- Bloque Datos Personales -->
+            <div class="q-pa-sm bg-grey-1 rounded-borders">
+              <div class="text-caption text-weight-bold text-grey-6 q-mb-xs">INFORMACIÓN PERSONAL</div>
+              <div class="text-caption text-grey-9 q-mb-xs"><span class="text-weight-medium">Profesión:</span> {{ patient.profession || '-' }}</div>
+              <div class="text-caption text-grey-9"><span class="text-weight-medium">Nacimiento:</span> {{ formatDate(patient.birth_date) }}</div>
+            </div>
+
+            <!-- Bloque Contacto -->
+            <div class="q-pa-sm bg-grey-1 rounded-borders">
+              <div class="text-caption text-weight-bold text-grey-6 q-mb-xs">CONTACTO</div>
+              <div class="row items-center justify-between no-wrap q-mb-xs">
+                <div class="text-caption text-grey-9"><span class="text-weight-medium">Celular:</span> {{ patient.cellphone || '-' }}</div>
+                <q-btn v-if="hasPhone" flat round dense size="xs" color="positive" icon="fa-brands fa-whatsapp" @click="handleTabChange('mensajes'); showFocusDrawer = false;">
+                  <q-tooltip>Abrir WhatsApp</q-tooltip>
+                </q-btn>
+              </div>
+              <div class="text-caption text-grey-9 q-mb-xs"><span class="text-weight-medium">Teléfono:</span> {{ patient.phone || '-' }}</div>
+              <div class="text-caption text-grey-9 q-mb-xs"><span class="text-weight-medium">E-mail:</span> {{ patient.email || '-' }}</div>
+              <div class="text-caption text-grey-9"><span class="text-weight-medium">Dirección:</span> {{ patient.address || '-' }} <span v-if="patient.locality">({{ patient.locality }})</span></div>
+            </div>
+
+            <!-- Bloque Notas -->
+            <div v-if="patient.additional_note" class="q-pa-sm bg-blue-1 rounded-borders text-primary">
+              <div class="text-caption text-weight-bold q-mb-xs"><q-icon name="info" size="14px" class="q-mr-xs" />NOTA ADICIONAL</div>
+              <div class="text-caption" style="white-space: pre-wrap;">{{ patient.additional_note }}</div>
+            </div>
+
+            <div class="q-mt-lg">
+              <q-btn label="Editar Perfil" color="primary" icon="edit" class="full-width minimal-btn-save" @click="editing = true" />
+            </div>
+          </div>
+
+          <!-- Modo edición -->
+          <div v-else class="q-gutter-y-sm">
+            <q-input v-model="patientEdit.name" label="Nombre" dense class="minimal-input" borderless />
+            <q-input v-model="patientEdit.last_name" label="Apellido" dense class="minimal-input" borderless />
+            <q-input v-model="patientEdit.birth_date" label="Fecha de Nacimiento" dense class="minimal-input" borderless type="date" />
+            <q-input v-model="patientEdit.profession" label="Profesión" dense class="minimal-input" borderless />
+            <q-input v-model="patientEdit.address" label="Dirección" dense class="minimal-input" borderless />
+            <q-input v-model="patientEdit.locality" label="Localidad" dense class="minimal-input" borderless />
+            <q-input v-model="patientEdit.phone" label="Teléfono" dense class="minimal-input" borderless />
+            <q-input v-model="patientEdit.cellphone" label="Celular" dense class="minimal-input" borderless />
+            <q-input v-model="patientEdit.email" label="E-mail" dense class="minimal-input" borderless />
+            <q-input v-model="patientEdit.additional_note" label="Nota adicional" type="textarea" autogrow maxlength="200" counter class="minimal-input" borderless />
+
+            <div class="row q-gutter-sm justify-end q-mt-md">
+              <q-btn flat label="Cancelar" @click="cancelPatientEdit" color="grey-8" class="minimal-btn" />
+              <q-btn label="Guardar" color="primary" @click="updatePatientData" class="minimal-btn-save" />
+            </div>
+          </div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
   </q-page>
 </template>
 
@@ -700,6 +1054,16 @@ import { useQuasar } from "quasar";
 import RoutineGenerator from '../components/RoutineGenerator.vue';
 import SkinEvaluationForm from '../components/SkinEvaluationForm.vue';
 import HealthSafetyHabitsForm from '../components/HealthSafetyHabitsForm.vue';
+import { useThemeSelector } from '../composables/useThemeSelector';
+
+const { currentThemeId } = useThemeSelector();
+const showFocusDrawer = ref(false);
+const bentoCollapsed = ref(false);
+const isHeroBanner = computed(() => currentThemeId.value === 'layout-hero-banner');
+const isAppSidebar = computed(() => currentThemeId.value === 'layout-app-sidebar');
+const isClinicalFocus = computed(() => currentThemeId.value === 'layout-clinical-focus');
+const isBentoGrid = computed(() => currentThemeId.value === 'layout-bento-grid');
+const isOriginal = computed(() => currentThemeId.value === 'original');
 
 const skinEvaluationFormRef = ref(null);
 const skinEvaluationBackup = ref(null);
@@ -1640,6 +2004,22 @@ async function handleRoutineSave(routineData) {
 <style scoped>
 .q-avatar {
   font-size: 48px;
+}
+
+.patient-hero-banner {
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.clinical-context-bar {
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.text-xs {
+  font-size: 11px;
 }
 
 .transition-width {
