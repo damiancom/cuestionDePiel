@@ -27,6 +27,9 @@
             <q-btn flat round dense icon="inventory_2" to="/catalogo">
               <div class="text-caption">Productos</div>
             </q-btn>
+            <q-btn flat round dense icon="calculate" to="/calculadora-precios">
+              <div class="text-caption">Calculadora</div>
+            </q-btn>
             <q-btn flat round dense icon="point_of_sale" to="/ventas">
               <div class="text-caption">Ventas</div>
             </q-btn>
@@ -74,6 +77,7 @@
         <q-route-tab icon="event" label="Agenda" to="/agenda" />
         <q-route-tab icon="medical_services" label="Servicios" to="/servicios" />
         <q-route-tab icon="inventory_2" label="Productos" to="/catalogo" />
+        <q-route-tab icon="calculate" label="Calculadora" to="/calculadora-precios" />
         <q-route-tab icon="point_of_sale" label="Ventas" to="/ventas" />
         <q-route-tab icon="gavel" label="Consentimiento" to="/consentimiento" />
         <q-route-tab icon="chat" label="Mensajes" to="/mensajes-whatsapp" />

@@ -48,6 +48,11 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/calculadora-precios',
+    component: () => import('../pages/PriceCalculator.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/consentimiento',
     component: () => import('../pages/ConsentAdmin.vue'),
     meta: { requiresAuth: true }

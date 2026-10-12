@@ -35,6 +35,16 @@
         </q-input>
 
         <q-btn
+          outline
+          color="primary"
+          icon="calculate"
+          :label="$q.screen.gt.xs ? 'Calculadora' : ''"
+          to="/calculadora-precios"
+        >
+          <q-tooltip>Calcular costos y precios con impuestos</q-tooltip>
+        </q-btn>
+
+        <q-btn
           color="primary"
           icon="add"
           :label="$q.screen.gt.xs ? 'Agregar' : ''"
@@ -345,7 +355,21 @@
                 dense
                 :rules="[val => !val || /^[0-9]+(,[0-9]{1,2})?$/.test(String(val).trim()) || 'Formato inválido (Ej: 150,50)']"
                 hide-bottom-space
-              />
+              >
+                <template #append>
+                  <q-btn
+                    flat
+                    round
+                    dense
+                    size="xs"
+                    icon="calculate"
+                    color="primary"
+                    to="/calculadora-precios"
+                  >
+                    <q-tooltip>Abrir calculadora de precios</q-tooltip>
+                  </q-btn>
+                </template>
+              </q-input>
             </div>
           </div>
 
