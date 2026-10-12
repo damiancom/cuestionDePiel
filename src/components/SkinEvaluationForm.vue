@@ -5,7 +5,7 @@
       <div>
         <div class="text-h6 text-primary flex items-center">
           <q-icon name="face" class="q-mr-sm" size="24px" />
-          Evaluación Cutánea & Fototipo
+          Evaluación Cosmiátrica
         </div>
         <div class="text-caption text-grey-8">
           Ficha clínica digital de evaluación dermatocosmiátrica, fototipo y lesiones de la piel
