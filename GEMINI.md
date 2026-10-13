@@ -1,6 +1,22 @@
-# Memoria de Diseño UI/UX y Estándares Frontend — Cuestión de Piel
+# Memoria del Proyecto, Flujo de Trabajo y Sistema de Diseño UI/UX — Cuestión de Piel
 
-Toda modificación, refactorización o nueva funcionalidad en el frontend (`cuestionDePiel`) **DEBE** respetar estrictamente este sistema de diseño normalizado.
+Toda modificación, refactorización o nueva funcionalidad en el proyecto **DEBE** respetar estrictamente estas reglas de arquitectura, flujo de trabajo y sistema de diseño normalizado.
+
+---
+
+## 0. Reglas Generales de Trabajo y Arquitectura del Workspace
+
+1. **Flujo de Ramas Git (Obligatorio)**:
+   - Todo cambio sobre el frontend (`cuestionDePiel`) o los servicios backend debe realizarse sobre una **branch específica creada a partir de `master`** (`feature/...` o `fix/...`). Nunca trabajar directamente sobre `master`.
+2. **Integridad de Datos y Funcionalidad**:
+   - En cualquier rediseño o refactorización de vistas, se debe conservar el **100% de los datos clínicos, campos, filtros y acciones existentes** (cero pérdida de información).
+3. **Verificación de Build**:
+   - Antes de finalizar cambios en `cuestionDePiel`, validar que `npm run build` compile sin errores.
+4. **Estructura del Workspace**:
+   - `cuestionDePiel/`: Frontend SPA (Vue 3 + Quasar + Vite, puerto `5173`).
+   - `cuestionDePielService/`: Backend API principal (Go + Echo + GORM, puerto `8080`).
+   - `cuestionDePielAuth/`: Microservicio de Autenticación (Go, puerto `8081`).
+   - `docs/`: Bóveda de documentación del sistema (incluyendo `docs/11-ui-ux/01-design-system.md`).
 
 ---
 
@@ -43,7 +59,7 @@ Configurada en `src/css/quasar.variables.scss` y `src/App.vue`:
 | :--- | :--- | :--- |
 | **Primary (`$primary`)** | `#1976d2` | Color institucional principal: títulos, íconos principales, botones primarios (`.minimal-btn-save`), bordes en foco, indicadores de pestañas activas. |
 | **Primary Hover** | `#125ea7` | Hover en botones primarios (`.minimal-btn-save:hover`). |
-| **Primary Soft / Tint** | `#eaf1fb` | Ítem activo del sidebar, hover de filas en tablas y listas cebra, fondos suaves informativos (`bg-blue-1`). |
+| **Primary Soft / Tint** | `#eaf1fb` | Ítem activo del sidebar, hover de filas en tablas y listas cebra, pestaña activa en ficha de paciente, fondos suaves informativos (`bg-blue-1`). |
 | **Primary Focus Ring** | `rgba(25, 118, 210, 0.1)` | Sombra exterior de foco (`box-shadow: 0 0 0 3px ...`) en `.minimal-input:focus-within`. |
 | **Secondary (`$secondary`)** | `#26a69a` | Acciones secundarias complementarias (ej. exportación/descarga). |
 | **Positive (`$positive`)** | `#21ba45` | Confirmaciones de éxito, Consentimiento vigente (`Consentimiento OK`), botones de WhatsApp. |
@@ -59,15 +75,17 @@ Configurada en `src/css/quasar.variables.scss` y `src/App.vue`:
 - **Disposición en Desktop**:
   - **Columna Izquierda (`col-12 col-md-4 col-lg-3 gt-sm`)**: Tarjeta `.patient-sidebar` (`position: sticky; top: 20px; border-radius: 14px;`), colapsable con botón `chevron_left` (`toggleSidebar`) para permitir expandir el área clínica al 100% (`col-12`).
   - **Columna Derecha (`col-12 col-md-8 col-lg-9` o `col-12` al colapsar)**: Tarjeta principal con las pestañas clínicas.
+- **Disposición en Móvil (`lt-md`)**:
+  - Se habilita como primera pestaña `perfil` (**Ficha**), renderizando exactamente los mismos bloques del Dossier Clínico Estructurado.
 - **Estructura Interna del Dossier del Paciente (3 Bloques Temáticos)**:
   1. **Bloque Identidad**: Contenedor `q-pa-sm bg-grey-1 rounded-borders text-center` con Nombre y Apellido (`text-subtitle1 text-weight-bold text-primary`), Edad calculada y Fecha de nacimiento (`dd/mm/yyyy`).
   2. **Bloque `CONTACTO`**: Título `text-caption text-weight-bold text-grey-6`, Celular con ícono `smartphone` y botón directo a WhatsApp (`fa-brands fa-whatsapp`), Teléfono fijo (si existe), Dirección + Localidad (`location_on`), y E-mail (`email`).
   3. **Bloque `CLÍNICA`**: Título `text-caption text-weight-bold text-grey-6`, Profesión y Nota adicional (`white-space: pre-wrap`).
   4. **Pie del Dossier**: Badge interactivo de estado de Consentimiento Informado, `ID: {{ patient.id }}` y botón `"Editar Perfil"` (`class="full-width minimal-btn-save"`).
-- **Orden Oficial de Pestañas Clínicas**:
-  1. `salud-habitos` — **Antecedentes Clínicos**
+- **Orden y Nombres Oficiales de Pestañas Clínicas**:
+  1. `salud-habitos` — **Antecedentes Clínicos** (con sub-secciones internas mediante botones toggle: *Antecedentes Médicos*, *Hábitos y Estilo de Vida*, *Cuidado Cutáneo Actual*, *Historial Gineco-Endocrino*)
   2. `evaluacion-cutanea` — **Evaluación Cosmiátrica**
-  3. `mapeo_facial` — **Análisis Facial**
+  3. `mapeo_facial` — **Análisis Facial** (Mapa Facial interactivo SVG con zonas y hallazgos)
   4. `rutina` — **Rutina**
   5. `sesiones` — **Sesiones**
   6. `consentimiento` — **Consentimiento**
@@ -118,7 +136,7 @@ Definidos globalmente en `src/App.vue`:
 
 ---
 
-## 6. Formato Normalizado de Inputs y Buscadores
+## 6. Formato Normalizado de Inputs, Buscadores y Modales
 
 Definidos globalmente en `src/App.vue`:
 
@@ -144,3 +162,7 @@ Definidos globalmente en `src/App.vue`:
      - Dimensiones: `min-width: 140px; max-width: 240px;` (en móvil `< 600px`: `flex: 1; max-width: none;`).
    - **Estado Focus (`.minimal-search-input:focus-within .q-field__control`)**:
      - `border-color: #1976d2 !important`.
+
+3. **Tarjetas y Modales (`.minimal-card`, `.minimal-create-card`)**:
+   - Contenedores de tablas, listas o modales usan `.minimal-card` (`#ffffff`, `border: 1px solid #e0e4ea`, `border-radius: 12px`).
+   - Paneles desplegables de alta/edición inline usan `.minimal-create-card` (`#f9fafb`, `border: 1px solid #ececec`, `border-radius: 16px`).
