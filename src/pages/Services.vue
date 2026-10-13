@@ -484,9 +484,9 @@
             v-model="customMessage"
             type="textarea"
             rows="4"
-            outlined
+            borderless
             dense
-            class="bg-white"
+            class="minimal-input"
           />
           <div class="text-caption text-grey-6 q-mt-xs">
             Tip: <b>{nombre}</b> se reemplazará automáticamente por el nombre del paciente al enviar.
@@ -501,9 +501,9 @@
           v-model="searchPatient"
           label="Buscar paciente por nombre o teléfono..."
           dense
-          outlined
+          borderless
           clearable
-          class="q-mb-sm"
+          class="minimal-input q-mb-sm"
         >
           <template #prepend>
             <q-icon name="search" />
@@ -522,7 +522,7 @@
             <div>No hay pacientes con número de teléfono cargado</div>
           </div>
 
-          <q-list v-else separator>
+          <q-list v-else separator class="zebra-list">
             <q-item
               v-for="p in filteredPatientsForWa"
               :key="p.id"
@@ -1269,23 +1269,6 @@ onMounted(loadData);
   margin: auto;
 }
 
-.minimal-input {
-  background: transparent !important;
-  box-shadow: none !important;
-  font-size: 15px;
-}
-.minimal-input :deep(.q-field__control) {
-  border-bottom: 1.5px solid #e0e4ea !important;
-  transition: border-color 0.2s;
-  padding: 0 12px !important;
-}
-.minimal-input:focus-within :deep(.q-field__control) {
-  border-color: #1976d2 !important;
-}
-.minimal-input :deep(.q-field__bottom) {
-  padding-top: 12px !important;
-  padding-left: 12px !important;
-}
 .dialog-card {
   width: 480px;
   max-width: 95vw;
@@ -1321,9 +1304,6 @@ onMounted(loadData);
 }
 .simple-table :deep(tbody tr) {
   cursor: pointer;
-}
-.simple-table :deep(tbody tr:hover td) {
-  background: #f7faff;
 }
 
 /* Nombre: hasta 25% de ancho, con salto de línea */

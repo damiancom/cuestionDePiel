@@ -9,7 +9,6 @@ import { createPinia } from 'pinia';
 import 'quasar/dist/quasar.css';
 import '@quasar/extras/material-icons/material-icons.css';
 import '@quasar/extras/roboto-font/roboto-font.css';
-import './css/redesigns.scss';
 
 if (quasarLang && quasarLang.label) {
   quasarLang.label.ok = 'Confirmar';

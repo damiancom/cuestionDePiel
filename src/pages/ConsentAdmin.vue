@@ -50,7 +50,7 @@
             <q-input
               v-model="form.title"
               label="Título del Documento"
-              outlined
+              borderless
               dense
               maxlength="150"
               counter
@@ -61,7 +61,7 @@
               v-model="form.change_reason"
               label="Motivo del Cambio (Requerido para Auditoría)"
               hint="Ej: Actualización de foto-protección, ajuste por nueva normativa..."
-              outlined
+              borderless
               dense
               maxlength="255"
               counter
@@ -94,7 +94,7 @@
             </div>
 
             <!-- Botones de Acción Responsivos -->
-            <div class="row items-center justify-between q-col-gutter-sm q-pt-xs">
+            <div class="row items-center justify-end q-gutter-sm q-pt-xs">
               <div class="col-12 col-sm-auto">
                 <q-btn
                   flat
@@ -103,7 +103,7 @@
                   label="Restablecer texto vigente"
                   @click="resetToActive"
                   :disable="saving"
-                  class="full-width"
+                  class="minimal-btn full-width"
                 />
               </div>
               <div class="col-12 col-sm-auto">

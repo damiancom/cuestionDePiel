@@ -2,26 +2,18 @@
   <component :is="layout">
     <router-view />
   </component>
-  <ThemeSelector />
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import MainLayout from './layouts/MainLayout.vue';
 import AuthLayout from './layouts/AuthLayout.vue';
-import ThemeSelector from './components/ThemeSelector.vue';
-import { useThemeSelector } from './composables/useThemeSelector';
 
 const route = useRoute();
 const layout = computed(() => {
   if (route.meta && route.meta.layout === 'auth') return AuthLayout;
   return MainLayout;
-});
-
-const { initTheme } = useThemeSelector();
-onMounted(() => {
-  initTheme();
 });
 </script>
 
@@ -29,12 +21,14 @@ onMounted(() => {
 body {
   font-family: 'Roboto', sans-serif;
   background: #f8f9fa;
+  color: #1f2937;
 }
 
 .q-btn {
   text-transform: none;
 }
 
+/* ─── Botones Normalizados ────────────────────────────────── */
 .minimal-btn,
 .minimal-btn-save,
 .minimal-btn-delete {
@@ -56,13 +50,13 @@ body {
 }
 
 .minimal-btn-save {
-  background: var(--q-primary, #1976d2);
+  background: #1976d2;
   color: #fff;
-  transition: background 0.15s, filter 0.15s;
+  transition: background 0.15s;
 }
 
 .minimal-btn-save:hover {
-  filter: brightness(0.92);
+  background: #125ea7;
 }
 
 .minimal-btn-delete {
@@ -96,16 +90,48 @@ body {
 }
 
 .q-dialog-plugin .q-card__actions .q-btn--flat.text-primary {
-  background: var(--q-primary, #1976d2) !important;
+  background: #1976d2 !important;
   color: #fff !important;
   transition: background 0.15s;
 }
 
 .q-dialog-plugin .q-card__actions .q-btn--flat.text-primary:hover {
-  filter: brightness(0.92) !important;
+  background: #125ea7 !important;
 }
 
-/* Campo de búsqueda de cabecera unificado */
+/* ─── Tarjetas Normalizadas ───────────────────────────────── */
+.minimal-card {
+  border-radius: 12px;
+  border: 1px solid #e0e4ea;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  background: #ffffff;
+}
+
+.minimal-create-card {
+  border-radius: 16px;
+  background: #f9fafb;
+  border: 1px solid #ececec;
+}
+
+/* ─── Inputs de Formulario Normalizados ───────────────────── */
+.minimal-input {
+  background: #f8fafc !important;
+  border-radius: 12px;
+  border: 1px solid #e0e4ea !important;
+  box-shadow: none !important;
+  font-size: 15px;
+  padding: 4px 12px;
+  transition: all 0.2s ease;
+  margin-bottom: 4px;
+}
+
+.minimal-input:focus-within {
+  border-color: #1976d2 !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1) !important;
+}
+
+/* ─── Campo de Búsqueda de Cabecera Unificado ─────────────── */
 .minimal-search-input {
   background: transparent !important;
   box-shadow: none !important;
@@ -122,7 +148,7 @@ body {
 }
 
 .minimal-search-input:focus-within .q-field__control {
-  border-color: var(--q-primary, #1976d2) !important;
+  border-color: #1976d2 !important;
 }
 
 @media (max-width: 599px) {
@@ -133,7 +159,7 @@ body {
   }
 }
 
-/* Tablas: alternancia sutil de fondo entre filas (zebra striping) y hover */
+/* ─── Tablas: Efecto Cebra (Zebra Striping) y Hover ───────── */
 .q-table tbody tr:nth-child(even) {
   background-color: #f4f6fa;
 }
@@ -147,7 +173,7 @@ body {
   background-color: #eaf1fb !important;
 }
 
-/* Listas: alternancia sutil de fondo entre filas (zebra striping) y hover */
+/* ─── Listas: Efecto Cebra (Zebra Striping) y Hover ───────── */
 .zebra-list {
   overflow: hidden;
 }
@@ -168,4 +194,3 @@ body {
   background-color: #eaf1fb !important;
 }
 </style>
-
