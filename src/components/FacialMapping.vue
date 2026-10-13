@@ -890,13 +890,6 @@
       </div>
     </div>
 
-    <!-- Barra inferior de acciones alineada con las demás pestañas -->
-    <div class="row q-gutter-sm justify-end q-mt-lg">
-      <q-btn flat label="Limpiar" @click="confirmClear" color="grey-8" class="minimal-btn" />
-      <q-btn label="Guardar Análisis Facial" color="primary" @click="saveMapping" class="minimal-btn-save" />
-      <q-btn outline :label="$q.screen.gt.xs ? 'Imprimir' : ''" color="primary" icon="print" @click="openPrintPreview" class="minimal-btn" />
-    </div>
-
     <!-- Modal para Agregar / Editar Marcador en Rostro -->
     <q-dialog v-model="showMarkerDialog" persistent>
       <q-card style="min-width: 360px; max-width: 480px;" class="q-pa-md hybrid-card">
@@ -1059,13 +1052,17 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive, onMounted, nextTick } from 'vue';
+import { ref, computed, reactive, onMounted, nextTick, watch } from 'vue';
 import { useQuasar } from 'quasar';
 
 const props = defineProps({
   patient: {
     type: Object,
     default: () => ({})
+  },
+  initialData: {
+    type: Object,
+    default: null
   }
 });
 
@@ -1583,76 +1580,117 @@ function deleteMarker(id) {
   markers.value = markers.value.filter(m => m.id !== id);
 }
 
-function confirmClear() {
-  $q.dialog({
-    title: 'Limpiar evaluación',
-    message: '¿Estás seguro de que deseás eliminar todas las marcas del rostro y reiniciar la ficha técnica 50X?',
-    cancel: true,
-    persistent: true
-  }).onOk(() => {
+const canvasDataUrl = ref('');
+
+function resetData() {
+  markers.value = [];
+  canvasDataUrl.value = '';
+  clearCanvas();
+  const defaults = createDefaultOpticalSheet();
+  Object.assign(opticalSheet.checks, defaults.checks);
+  Object.assign(opticalSheet.zones, defaults.zones);
+  updateSnapshot();
+}
+
+function loadData(data) {
+  const defaults = createDefaultOpticalSheet();
+  Object.assign(opticalSheet.checks, defaults.checks);
+  Object.assign(opticalSheet.zones, defaults.zones);
+
+  if (!data) {
     markers.value = [];
+    canvasDataUrl.value = '';
     clearCanvas();
-    Object.assign(opticalSheet, createDefaultOpticalSheet());
-    $q.notify({ type: 'info', message: 'Se limpiaron todos los datos de la evaluación.' });
-  });
-}
+    updateSnapshot();
+    return;
+  }
 
-// Persistencia en LocalStorage
-function getStorageKey() {
-  const pId = props.patient?.id || 'demo';
-  return `facial_mapping_patient_${pId}`;
-}
-
-function saveMapping() {
   try {
-    const key = getStorageKey();
-    const dataToSave = {
-      markers: markers.value,
-      opticalSheet: JSON.parse(JSON.stringify(opticalSheet)),
-      updatedAt: new Date().toISOString()
-    };
-    localStorage.setItem(key, JSON.stringify(dataToSave));
+    markers.value = data.markers_json ? JSON.parse(data.markers_json) : [];
+  } catch (e) {
+    console.warn('Error parsing markers_json', e);
+    markers.value = [];
+  }
 
-    $q.notify({
-      type: 'positive',
-      message: 'Análisis facial guardado correctamente',
-      icon: 'check_circle'
-    });
-  } catch (err) {
-    console.error('Error al guardar mapeo facial:', err);
-    $q.notify({
-      type: 'negative',
-      message: 'No se pudo guardar la información localmente.'
-    });
+  canvasDataUrl.value = data.canvas_image || '';
+  renderCanvasDataUrl(canvasDataUrl.value);
+
+  try {
+    if (data.optical_checks_json) {
+      const parsedChecks = JSON.parse(data.optical_checks_json);
+      if (parsedChecks && typeof parsedChecks === 'object') {
+        Object.assign(opticalSheet.checks, parsedChecks);
+      }
+    }
+  } catch (e) {
+    console.warn('Error parsing optical_checks_json', e);
+  }
+
+  try {
+    if (data.anatomical_zones_json) {
+      const parsedZones = JSON.parse(data.anatomical_zones_json);
+      if (parsedZones && typeof parsedZones === 'object') {
+        Object.keys(defaults.zones).forEach(zKey => {
+          if (parsedZones[zKey]) {
+            Object.assign(opticalSheet.zones[zKey], parsedZones[zKey]);
+          }
+        });
+      }
+    }
+  } catch (e) {
+    console.warn('Error parsing anatomical_zones_json', e);
+  }
+
+  updateSnapshot();
+}
+
+function toBackendPayload() {
+  return {
+    markers_json: JSON.stringify(markers.value || []),
+    canvas_image: canvasDataUrl.value || '',
+    optical_checks_json: JSON.stringify(opticalSheet.checks),
+    anatomical_zones_json: JSON.stringify(opticalSheet.zones)
+  };
+}
+
+const lastSavedSnapshot = ref('');
+
+function updateSnapshot() {
+  try {
+    lastSavedSnapshot.value = JSON.stringify(toBackendPayload());
+  } catch (e) {
+    console.warn('Error calculando snapshot de análisis facial', e);
   }
 }
 
-function loadSavedMapping() {
+function isDirty() {
+  if (!lastSavedSnapshot.value) return false;
   try {
-    const key = getStorageKey();
-    const saved = localStorage.getItem(key);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed.markers) && parsed.markers.length > 0) {
-        markers.value = parsed.markers;
-      }
-      if (parsed.opticalSheet) {
-        if (parsed.opticalSheet.checks) {
-          Object.assign(opticalSheet.checks, parsed.opticalSheet.checks);
-        }
-        if (parsed.opticalSheet.zones) {
-          Object.assign(opticalSheet.zones, parsed.opticalSheet.zones);
-        }
-      }
-    }
-  } catch (err) {
-    console.error('Error al cargar mapeo facial guardado:', err);
+    return JSON.stringify(toBackendPayload()) !== lastSavedSnapshot.value;
+  } catch (e) {
+    return false;
   }
 }
 
 // ----------------------------------------------------
 // DIBUJO LIBRE (HTML5 Canvas)
 // ----------------------------------------------------
+function renderCanvasDataUrl(dataUrl) {
+  const canvas = drawCanvasRef.value;
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (!dataUrl) return;
+  const img = new Image();
+  img.onload = () => {
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  };
+  img.src = dataUrl;
+}
+
 function initCanvas() {
   if (!drawCanvasRef.value || !faceContainerRef.value) return;
   const canvas = drawCanvasRef.value;
@@ -1660,6 +1698,9 @@ function initCanvas() {
 
   canvas.width = container.clientWidth || 400;
   canvas.height = container.clientHeight || 500;
+  if (canvasDataUrl.value) {
+    renderCanvasDataUrl(canvasDataUrl.value);
+  }
 }
 
 function getCanvasPos(event) {
@@ -1745,12 +1786,15 @@ function drawTouch(e) {
 function stopDrawing() {
   if (!isDrawing.value) return;
   isDrawing.value = false;
+  if (drawCanvasRef.value) {
+    canvasDataUrl.value = drawCanvasRef.value.toDataURL();
+  }
 }
 
 function saveCanvasState() {
   const canvas = drawCanvasRef.value;
   if (!canvas) return;
-  canvasHistory.value.push(canvas.toDataURL());
+  canvasHistory.value.push(canvasDataUrl.value || '');
   if (canvasHistory.value.length > 15) {
     canvasHistory.value.shift();
   }
@@ -1760,22 +1804,17 @@ function undoStroke() {
   const canvas = drawCanvasRef.value;
   if (!canvas || canvasHistory.value.length === 0) return;
   const prevDataUrl = canvasHistory.value.pop();
-  const ctx = canvas.getContext('2d');
-  const img = new Image();
-  img.onload = () => {
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, 0, 0);
-  };
-  img.src = prevDataUrl;
+  canvasDataUrl.value = prevDataUrl || '';
+  renderCanvasDataUrl(canvasDataUrl.value);
 }
 
 function clearCanvas() {
+  canvasDataUrl.value = '';
+  canvasHistory.value = [];
   const canvas = drawCanvasRef.value;
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  canvasHistory.value = [];
 }
 
 // Impresión / Vista Previa
@@ -1789,11 +1828,32 @@ function triggerBrowserPrint() {
   window.print();
 }
 
+// Inicializar snapshot
+updateSnapshot();
+
+watch(
+  () => props.initialData,
+  (newVal) => {
+    if (newVal) {
+      loadData(newVal);
+    }
+  },
+  { immediate: true }
+);
+
 onMounted(() => {
-  loadSavedMapping();
   nextTick(() => {
     initCanvas();
   });
+});
+
+defineExpose({
+  loadData,
+  toBackendPayload,
+  resetData,
+  isDirty,
+  updateSnapshot,
+  openPrintPreview
 });
 </script>
 
