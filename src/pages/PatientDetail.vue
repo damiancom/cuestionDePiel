@@ -449,8 +449,9 @@
                   </q-icon>
                 </div>
               </q-tab>
-              <q-tab name="evaluacion-cutanea" label="Evaluación Cutánea & Fototipo" />
-              <q-tab name="salud-habitos" label="Salud, Seguridad y Hábitos" />
+              <q-tab name="salud-habitos" label="Antecedentes Clínicos" />
+              <q-tab name="evaluacion-cutanea" label="Evaluación Cosmiátrica" />
+              <q-tab name="mapeo_facial" label="Análisis Facial" />
               <q-tab name="rutina" label="Rutina" />
               <q-tab name="sesiones" label="Sesiones" />
               <q-tab name="consentimiento" label="Consentimiento" />
@@ -548,20 +549,8 @@
                 </div>
               </div>
             </q-tab-panel>
-            <q-tab-panel name="evaluacion-cutanea">
-              <!-- Ficha de Evaluación Cutánea & Fototipo -->
-              <SkinEvaluationForm
-                ref="skinEvaluationFormRef"
-                :initial-data="skinEvaluationBackup"
-              />
-
-              <div class="row q-gutter-sm justify-end q-mt-lg">
-                <q-btn flat label="Cancelar" @click="cancelarSkinEvaluation" color="grey-8" class="minimal-btn" />
-                <q-btn label="Guardar Evaluación Cutánea" color="primary" @click="guardarSkinEvaluation" :loading="guardandoSkinEvaluation" class="minimal-btn-save" />
-              </div>
-            </q-tab-panel>
             <q-tab-panel name="salud-habitos">
-              <!-- Ficha de Salud, Seguridad y Hábitos -->
+              <!-- Ficha de Antecedentes Clínicos -->
               <HealthSafetyHabitsForm
                 ref="healthSafetyHabitsFormRef"
                 :initial-data="healthSafetyHabitsBackup"
@@ -569,7 +558,32 @@
 
               <div class="row q-gutter-sm justify-end q-mt-lg">
                 <q-btn flat label="Cancelar" @click="cancelarHealthSafetyHabits" color="grey-8" class="minimal-btn" />
-                <q-btn label="Guardar Salud & Hábitos" color="primary" @click="guardarHealthSafetyHabits" :loading="guardandoHealthSafetyHabits" class="minimal-btn-save" />
+                <q-btn label="Guardar Antecedentes Clínicos" color="primary" @click="guardarHealthSafetyHabits" :loading="guardandoHealthSafetyHabits" class="minimal-btn-save" />
+              </div>
+            </q-tab-panel>
+            <q-tab-panel name="evaluacion-cutanea">
+              <!-- Ficha de Evaluación Cosmiátrica -->
+              <SkinEvaluationForm
+                ref="skinEvaluationFormRef"
+                :initial-data="skinEvaluationBackup"
+              />
+
+              <div class="row q-gutter-sm justify-end q-mt-lg">
+                <q-btn flat label="Cancelar" @click="cancelarSkinEvaluation" color="grey-8" class="minimal-btn" />
+                <q-btn label="Guardar Evaluación Cosmiátrica" color="primary" @click="guardarSkinEvaluation" :loading="guardandoSkinEvaluation" class="minimal-btn-save" />
+              </div>
+            </q-tab-panel>
+            <q-tab-panel name="mapeo_facial">
+              <FacialMapping
+                ref="facialMappingRef"
+                :patient="patient"
+                :initial-data="facialMappingBackup"
+              />
+
+              <div class="row q-gutter-sm justify-end q-mt-lg">
+                <q-btn flat label="Cancelar" @click="cancelarFacialMapping" color="grey-8" class="minimal-btn" />
+                <q-btn label="Guardar Análisis Facial" color="primary" @click="guardarFacialMapping" :loading="guardandoFacialMapping" class="minimal-btn-save" />
+                <q-btn outline :label="$q.screen.gt.xs ? 'Imprimir' : ''" color="primary" icon="print" @click="facialMappingRef?.openPrintPreview?.()" class="minimal-btn" />
               </div>
             </q-tab-panel>
             <q-tab-panel name="rutina">
@@ -1048,12 +1062,13 @@
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
-import { PATIENTS_URL, ROUTINES_ENDPOINT, SessionsAPI, ConsentsAPI, SkinEvaluationAPI, HealthSafetyHabitsAPI, WhatsappMessagesAPI } from "../services/api";
+import { PATIENTS_URL, ROUTINES_ENDPOINT, SessionsAPI, ConsentsAPI, SkinEvaluationAPI, HealthSafetyHabitsAPI, FacialAnalysisAPI, WhatsappMessagesAPI } from "../services/api";
 import axios from "axios";
 import { useQuasar } from "quasar";
 import RoutineGenerator from '../components/RoutineGenerator.vue';
 import SkinEvaluationForm from '../components/SkinEvaluationForm.vue';
 import HealthSafetyHabitsForm from '../components/HealthSafetyHabitsForm.vue';
+import FacialMapping from '../components/FacialMapping.vue';
 import { useThemeSelector } from '../composables/useThemeSelector';
 
 const { currentThemeId } = useThemeSelector();
@@ -1072,6 +1087,10 @@ const guardandoSkinEvaluation = ref(false);
 const healthSafetyHabitsFormRef = ref(null);
 const healthSafetyHabitsBackup = ref(null);
 const guardandoHealthSafetyHabits = ref(false);
+
+const facialMappingRef = ref(null);
+const facialMappingBackup = ref(null);
+const guardandoFacialMapping = ref(false);
 
 const $q = useQuasar();
 const route = useRoute();
@@ -1101,7 +1120,7 @@ const cropContainer = ref(null);
 const cropZoom = ref(1);
 const cropImage = ref(null);
 const cropOffset = ref({x: 0, y: 0});
-const tab = ref($q.screen.gt.sm ? 'evaluacion-cutanea' : 'perfil');
+const tab = ref($q.screen.gt.sm ? 'salud-habitos' : 'perfil');
 const isSidebarCollapsed = ref(false);
 
 function toggleSidebar() {
@@ -1123,13 +1142,13 @@ onMounted(() => {
     // Ignore storage errors
   }
   if ($q.screen.gt.sm && tab.value === 'perfil') {
-    tab.value = 'observaciones';
+    tab.value = 'salud-habitos';
   }
 });
 
 watch(() => $q.screen.gt.sm, (isDesktop) => {
   if (isDesktop && tab.value === 'perfil') {
-    tab.value = 'evaluacion-cutanea';
+    tab.value = 'salud-habitos';
   }
 });
 
@@ -1147,6 +1166,9 @@ function hasTabUnsavedChanges(tabName) {
   if (tabName === 'salud-habitos') {
     return Boolean(healthSafetyHabitsFormRef.value?.isDirty?.());
   }
+  if (tabName === 'mapeo_facial') {
+    return Boolean(facialMappingRef.value?.isDirty?.());
+  }
   if (tabName === 'rutina') {
     return Boolean(routineEditor.value?.isDirty?.());
   }
@@ -1160,6 +1182,7 @@ function hasAnyUnsavedChanges() {
   return isPatientDirty() ||
     Boolean(skinEvaluationFormRef.value?.isDirty?.()) ||
     Boolean(healthSafetyHabitsFormRef.value?.isDirty?.()) ||
+    Boolean(facialMappingRef.value?.isDirty?.()) ||
     Boolean(routineEditor.value?.isDirty?.());
 }
 
@@ -1193,6 +1216,7 @@ function handleTabChange(newTab) {
     confirmDiscardChanges(() => {
       if (tab.value === 'evaluacion-cutanea') cancelarSkinEvaluation();
       else if (tab.value === 'salud-habitos') cancelarHealthSafetyHabits();
+      else if (tab.value === 'mapeo_facial') cancelarFacialMapping();
       else if (tab.value === 'rutina') cancelarRutina();
       else if (tab.value === 'perfil') cancelPatientEdit();
 
@@ -1210,6 +1234,7 @@ onBeforeRouteLeave((to, from, next) => {
         if (isPatientDirty()) cancelPatientEdit();
         if (skinEvaluationFormRef.value?.isDirty?.()) cancelarSkinEvaluation();
         if (healthSafetyHabitsFormRef.value?.isDirty?.()) cancelarHealthSafetyHabits();
+        if (facialMappingRef.value?.isDirty?.()) cancelarFacialMapping();
         if (routineEditor.value?.isDirty?.()) cancelarRutina();
         next();
       },
@@ -1249,6 +1274,12 @@ watch(tab, (newTab) => {
     if (healthSafetyHabitsBackup.value) {
       nextTick(() => {
         healthSafetyHabitsFormRef.value?.loadData(healthSafetyHabitsBackup.value);
+      });
+    }
+  } else if (newTab === 'mapeo_facial') {
+    if (facialMappingBackup.value) {
+      nextTick(() => {
+        facialMappingRef.value?.loadData(facialMappingBackup.value);
       });
     }
   } else if (newTab === 'rutina') {
@@ -1603,6 +1634,7 @@ onMounted(async () => {
     await findPatientById(route.params.id);
     await fetchSkinEvaluation(route.params.id);
     await fetchHealthSafetyHabits(route.params.id);
+    await fetchFacialMapping(route.params.id);
     await fetchRoutine(route.params.id);
     await fetchSessions(route.params.id);
     await fetchConsentStatus(route.params.id);
@@ -1793,7 +1825,7 @@ async function fetchSkinEvaluation(id) {
     console.error('Error fetching skin evaluation:', error);
     $q.notify({
       type: 'negative',
-      message: 'Error al cargar evaluación cutánea',
+      message: 'Error al cargar evaluación cosmiátrica',
       position: 'top'
     });
   }
@@ -1808,14 +1840,14 @@ async function guardarSkinEvaluation() {
     skinEvaluationFormRef.value?.loadData(response.data);
     $q.notify({
       type: 'positive',
-      message: 'Evaluación cutánea guardada correctamente',
+      message: 'Evaluación cosmiátrica guardada correctamente',
       position: 'top'
     });
   } catch (error) {
-    console.error('Error guardando evaluación cutánea:', error);
+    console.error('Error guardando evaluación cosmiátrica:', error);
     $q.notify({
       type: 'negative',
-      message: 'Error al guardar evaluación cutánea',
+      message: 'Error al guardar evaluación cosmiátrica',
       position: 'top'
     });
   } finally {
@@ -1844,7 +1876,7 @@ async function fetchHealthSafetyHabits(id) {
     console.error('Error fetching health safety habits:', error);
     $q.notify({
       type: 'negative',
-      message: 'Error al cargar salud, seguridad y hábitos',
+      message: 'Error al cargar antecedentes clínicos',
       position: 'top'
     });
   }
@@ -1859,14 +1891,14 @@ async function guardarHealthSafetyHabits() {
     healthSafetyHabitsFormRef.value?.loadData(response.data);
     $q.notify({
       type: 'positive',
-      message: 'Salud, seguridad y hábitos guardados correctamente',
+      message: 'Antecedentes clínicos guardados correctamente',
       position: 'top'
     });
   } catch (error) {
-    console.error('Error guardando salud y hábitos:', error);
+    console.error('Error guardando antecedentes clínicos:', error);
     $q.notify({
       type: 'negative',
-      message: 'Error al guardar salud, seguridad y hábitos',
+      message: 'Error al guardar antecedentes clínicos',
       position: 'top'
     });
   } finally {
@@ -1879,6 +1911,57 @@ function cancelarHealthSafetyHabits() {
     healthSafetyHabitsFormRef.value?.loadData(healthSafetyHabitsBackup.value);
   } else {
     healthSafetyHabitsFormRef.value?.resetData();
+  }
+}
+
+async function fetchFacialMapping(id) {
+  try {
+    const response = await FacialAnalysisAPI.get(id);
+    facialMappingBackup.value = response.data;
+    facialMappingRef.value?.loadData(response.data);
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      console.log('Facial analysis not found (404), ficha en blanco.');
+      return;
+    }
+    console.error('Error fetching facial analysis:', error);
+    $q.notify({
+      type: 'negative',
+      message: 'Error al cargar análisis facial',
+      position: 'top'
+    });
+  }
+}
+
+async function guardarFacialMapping() {
+  try {
+    guardandoFacialMapping.value = true;
+    const payload = facialMappingRef.value?.toBackendPayload();
+    const response = await FacialAnalysisAPI.save(route.params.id, payload);
+    facialMappingBackup.value = response.data;
+    facialMappingRef.value?.loadData(response.data);
+    $q.notify({
+      type: 'positive',
+      message: 'Análisis facial guardado correctamente',
+      position: 'top'
+    });
+  } catch (error) {
+    console.error('Error guardando análisis facial:', error);
+    $q.notify({
+      type: 'negative',
+      message: 'Error al guardar análisis facial',
+      position: 'top'
+    });
+  } finally {
+    guardandoFacialMapping.value = false;
+  }
+}
+
+function cancelarFacialMapping() {
+  if (facialMappingBackup.value) {
+    facialMappingRef.value?.loadData(facialMappingBackup.value);
+  } else {
+    facialMappingRef.value?.resetData();
   }
 }
 
