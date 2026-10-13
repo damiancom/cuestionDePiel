@@ -7,6 +7,7 @@ export const PATIENTS_ENDPOINT = '/patients';
 export const ANAMNESIS_ENDPOINT = '/anamnesis';
 export const SKIN_EVALUATION_ENDPOINT = '/skin-evaluation';
 export const HEALTH_SAFETY_HABITS_ENDPOINT = '/health-safety-habits';
+export const FACIAL_ANALYSIS_ENDPOINT = '/facial-analysis';
 export const SESSIONS_ENDPOINT = '/sessions';
 export const ROUTINES_ENDPOINT = '/routines';
 export const PATIENTS_URL = `${API_BASE_URL}${PATIENTS_ENDPOINT}`;
@@ -33,6 +34,18 @@ export const HealthSafetyHabitsAPI = {
   },
   patch(patientId, payload) {
     return axios.patch(`${PATIENTS_URL}/${patientId}${HEALTH_SAFETY_HABITS_ENDPOINT}`, payload);
+  }
+};
+
+export const FacialAnalysisAPI = {
+  get(patientId) {
+    return axios.get(`${PATIENTS_URL}/${patientId}${FACIAL_ANALYSIS_ENDPOINT}`);
+  },
+  save(patientId, payload) {
+    return axios.put(`${PATIENTS_URL}/${patientId}${FACIAL_ANALYSIS_ENDPOINT}`, payload);
+  },
+  patch(patientId, payload) {
+    return axios.patch(`${PATIENTS_URL}/${patientId}${FACIAL_ANALYSIS_ENDPOINT}`, payload);
   }
 };
 

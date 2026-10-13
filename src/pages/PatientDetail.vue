@@ -316,7 +316,17 @@
               </div>
             </q-tab-panel>
             <q-tab-panel name="mapeo_facial">
-              <FacialMapping :patient="patient" />
+              <FacialMapping
+                ref="facialMappingRef"
+                :patient="patient"
+                :initial-data="facialMappingBackup"
+              />
+
+              <div class="row q-gutter-sm justify-end q-mt-lg">
+                <q-btn flat label="Cancelar" @click="cancelarFacialMapping" color="grey-8" class="minimal-btn" />
+                <q-btn label="Guardar Análisis Facial" color="primary" @click="guardarFacialMapping" :loading="guardandoFacialMapping" class="minimal-btn-save" />
+                <q-btn outline :label="$q.screen.gt.xs ? 'Imprimir' : ''" color="primary" icon="print" @click="facialMappingRef?.openPrintPreview?.()" class="minimal-btn" />
+              </div>
             </q-tab-panel>
             <q-tab-panel name="rutina">
               <RoutineGenerator ref="routineEditor" :initialRoutine="mappedRoutine" @save="handleRoutineSave" />
@@ -698,7 +708,7 @@
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
-import { PATIENTS_URL, ROUTINES_ENDPOINT, SessionsAPI, ConsentsAPI, SkinEvaluationAPI, HealthSafetyHabitsAPI, WhatsappMessagesAPI } from "../services/api";
+import { PATIENTS_URL, ROUTINES_ENDPOINT, SessionsAPI, ConsentsAPI, SkinEvaluationAPI, HealthSafetyHabitsAPI, FacialAnalysisAPI, WhatsappMessagesAPI } from "../services/api";
 import axios from "axios";
 import { useQuasar } from "quasar";
 import RoutineGenerator from '../components/RoutineGenerator.vue';
@@ -713,6 +723,10 @@ const guardandoSkinEvaluation = ref(false);
 const healthSafetyHabitsFormRef = ref(null);
 const healthSafetyHabitsBackup = ref(null);
 const guardandoHealthSafetyHabits = ref(false);
+
+const facialMappingRef = ref(null);
+const facialMappingBackup = ref(null);
+const guardandoFacialMapping = ref(false);
 
 const $q = useQuasar();
 const route = useRoute();
@@ -788,6 +802,9 @@ function hasTabUnsavedChanges(tabName) {
   if (tabName === 'salud-habitos') {
     return Boolean(healthSafetyHabitsFormRef.value?.isDirty?.());
   }
+  if (tabName === 'mapeo_facial') {
+    return Boolean(facialMappingRef.value?.isDirty?.());
+  }
   if (tabName === 'rutina') {
     return Boolean(routineEditor.value?.isDirty?.());
   }
@@ -801,6 +818,7 @@ function hasAnyUnsavedChanges() {
   return isPatientDirty() ||
     Boolean(skinEvaluationFormRef.value?.isDirty?.()) ||
     Boolean(healthSafetyHabitsFormRef.value?.isDirty?.()) ||
+    Boolean(facialMappingRef.value?.isDirty?.()) ||
     Boolean(routineEditor.value?.isDirty?.());
 }
 
@@ -834,6 +852,7 @@ function handleTabChange(newTab) {
     confirmDiscardChanges(() => {
       if (tab.value === 'evaluacion-cutanea') cancelarSkinEvaluation();
       else if (tab.value === 'salud-habitos') cancelarHealthSafetyHabits();
+      else if (tab.value === 'mapeo_facial') cancelarFacialMapping();
       else if (tab.value === 'rutina') cancelarRutina();
       else if (tab.value === 'perfil') cancelPatientEdit();
 
@@ -851,6 +870,7 @@ onBeforeRouteLeave((to, from, next) => {
         if (isPatientDirty()) cancelPatientEdit();
         if (skinEvaluationFormRef.value?.isDirty?.()) cancelarSkinEvaluation();
         if (healthSafetyHabitsFormRef.value?.isDirty?.()) cancelarHealthSafetyHabits();
+        if (facialMappingRef.value?.isDirty?.()) cancelarFacialMapping();
         if (routineEditor.value?.isDirty?.()) cancelarRutina();
         next();
       },
@@ -890,6 +910,12 @@ watch(tab, (newTab) => {
     if (healthSafetyHabitsBackup.value) {
       nextTick(() => {
         healthSafetyHabitsFormRef.value?.loadData(healthSafetyHabitsBackup.value);
+      });
+    }
+  } else if (newTab === 'mapeo_facial') {
+    if (facialMappingBackup.value) {
+      nextTick(() => {
+        facialMappingRef.value?.loadData(facialMappingBackup.value);
       });
     }
   } else if (newTab === 'rutina') {
@@ -1244,6 +1270,7 @@ onMounted(async () => {
     await findPatientById(route.params.id);
     await fetchSkinEvaluation(route.params.id);
     await fetchHealthSafetyHabits(route.params.id);
+    await fetchFacialMapping(route.params.id);
     await fetchRoutine(route.params.id);
     await fetchSessions(route.params.id);
     await fetchConsentStatus(route.params.id);
@@ -1520,6 +1547,57 @@ function cancelarHealthSafetyHabits() {
     healthSafetyHabitsFormRef.value?.loadData(healthSafetyHabitsBackup.value);
   } else {
     healthSafetyHabitsFormRef.value?.resetData();
+  }
+}
+
+async function fetchFacialMapping(id) {
+  try {
+    const response = await FacialAnalysisAPI.get(id);
+    facialMappingBackup.value = response.data;
+    facialMappingRef.value?.loadData(response.data);
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      console.log('Facial analysis not found (404), ficha en blanco.');
+      return;
+    }
+    console.error('Error fetching facial analysis:', error);
+    $q.notify({
+      type: 'negative',
+      message: 'Error al cargar análisis facial',
+      position: 'top'
+    });
+  }
+}
+
+async function guardarFacialMapping() {
+  try {
+    guardandoFacialMapping.value = true;
+    const payload = facialMappingRef.value?.toBackendPayload();
+    const response = await FacialAnalysisAPI.save(route.params.id, payload);
+    facialMappingBackup.value = response.data;
+    facialMappingRef.value?.loadData(response.data);
+    $q.notify({
+      type: 'positive',
+      message: 'Análisis facial guardado correctamente',
+      position: 'top'
+    });
+  } catch (error) {
+    console.error('Error guardando análisis facial:', error);
+    $q.notify({
+      type: 'negative',
+      message: 'Error al guardar análisis facial',
+      position: 'top'
+    });
+  } finally {
+    guardandoFacialMapping.value = false;
+  }
+}
+
+function cancelarFacialMapping() {
+  if (facialMappingBackup.value) {
+    facialMappingRef.value?.loadData(facialMappingBackup.value);
+  } else {
+    facialMappingRef.value?.resetData();
   }
 }
 
