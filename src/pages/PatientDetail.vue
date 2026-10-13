@@ -191,9 +191,9 @@
                   </q-icon>
                 </div>
               </q-tab>
-              <q-tab name="evaluacion-cutanea" label="Evaluación Cutánea & Fototipo" />
-              <q-tab name="salud-habitos" label="Salud, Seguridad y Hábitos" />
-              <q-tab name="mapeo_facial" label="Mapa Facial" />
+              <q-tab name="salud-habitos" label="Antecedentes Clínicos" />
+              <q-tab name="evaluacion-cutanea" label="Evaluación Cosmiátrica" />
+              <q-tab name="mapeo_facial" label="Análisis Facial" />
               <q-tab name="rutina" label="Rutina" />
               <q-tab name="sesiones" label="Sesiones" />
               <q-tab name="consentimiento" label="Consentimiento" />
@@ -291,20 +291,8 @@
                 </div>
               </div>
             </q-tab-panel>
-            <q-tab-panel name="evaluacion-cutanea">
-              <!-- Ficha de Evaluación Cutánea & Fototipo -->
-              <SkinEvaluationForm
-                ref="skinEvaluationFormRef"
-                :initial-data="skinEvaluationBackup"
-              />
-
-              <div class="row q-gutter-sm justify-end q-mt-lg">
-                <q-btn flat label="Cancelar" @click="cancelarSkinEvaluation" color="grey-8" class="minimal-btn" />
-                <q-btn label="Guardar Evaluación Cutánea" color="primary" @click="guardarSkinEvaluation" :loading="guardandoSkinEvaluation" class="minimal-btn-save" />
-              </div>
-            </q-tab-panel>
             <q-tab-panel name="salud-habitos">
-              <!-- Ficha de Salud, Seguridad y Hábitos -->
+              <!-- Ficha de Antecedentes Clínicos -->
               <HealthSafetyHabitsForm
                 ref="healthSafetyHabitsFormRef"
                 :initial-data="healthSafetyHabitsBackup"
@@ -312,7 +300,19 @@
 
               <div class="row q-gutter-sm justify-end q-mt-lg">
                 <q-btn flat label="Cancelar" @click="cancelarHealthSafetyHabits" color="grey-8" class="minimal-btn" />
-                <q-btn label="Guardar Salud & Hábitos" color="primary" @click="guardarHealthSafetyHabits" :loading="guardandoHealthSafetyHabits" class="minimal-btn-save" />
+                <q-btn label="Guardar Antecedentes Clínicos" color="primary" @click="guardarHealthSafetyHabits" :loading="guardandoHealthSafetyHabits" class="minimal-btn-save" />
+              </div>
+            </q-tab-panel>
+            <q-tab-panel name="evaluacion-cutanea">
+              <!-- Ficha de Evaluación Cosmiátrica -->
+              <SkinEvaluationForm
+                ref="skinEvaluationFormRef"
+                :initial-data="skinEvaluationBackup"
+              />
+
+              <div class="row q-gutter-sm justify-end q-mt-lg">
+                <q-btn flat label="Cancelar" @click="cancelarSkinEvaluation" color="grey-8" class="minimal-btn" />
+                <q-btn label="Guardar Evaluación Cosmiátrica" color="primary" @click="guardarSkinEvaluation" :loading="guardandoSkinEvaluation" class="minimal-btn-save" />
               </div>
             </q-tab-panel>
             <q-tab-panel name="mapeo_facial">
@@ -756,7 +756,7 @@ const cropContainer = ref(null);
 const cropZoom = ref(1);
 const cropImage = ref(null);
 const cropOffset = ref({x: 0, y: 0});
-const tab = ref($q.screen.gt.sm ? 'evaluacion-cutanea' : 'perfil');
+const tab = ref($q.screen.gt.sm ? 'salud-habitos' : 'perfil');
 const isSidebarCollapsed = ref(false);
 
 function toggleSidebar() {
@@ -778,13 +778,13 @@ onMounted(() => {
     // Ignore storage errors
   }
   if ($q.screen.gt.sm && tab.value === 'perfil') {
-    tab.value = 'observaciones';
+    tab.value = 'salud-habitos';
   }
 });
 
 watch(() => $q.screen.gt.sm, (isDesktop) => {
   if (isDesktop && tab.value === 'perfil') {
-    tab.value = 'evaluacion-cutanea';
+    tab.value = 'salud-habitos';
   }
 });
 
@@ -1461,7 +1461,7 @@ async function fetchSkinEvaluation(id) {
     console.error('Error fetching skin evaluation:', error);
     $q.notify({
       type: 'negative',
-      message: 'Error al cargar evaluación cutánea',
+      message: 'Error al cargar evaluación cosmiátrica',
       position: 'top'
     });
   }
@@ -1476,14 +1476,14 @@ async function guardarSkinEvaluation() {
     skinEvaluationFormRef.value?.loadData(response.data);
     $q.notify({
       type: 'positive',
-      message: 'Evaluación cutánea guardada correctamente',
+      message: 'Evaluación cosmiátrica guardada correctamente',
       position: 'top'
     });
   } catch (error) {
-    console.error('Error guardando evaluación cutánea:', error);
+    console.error('Error guardando evaluación cosmiátrica:', error);
     $q.notify({
       type: 'negative',
-      message: 'Error al guardar evaluación cutánea',
+      message: 'Error al guardar evaluación cosmiátrica',
       position: 'top'
     });
   } finally {
@@ -1512,7 +1512,7 @@ async function fetchHealthSafetyHabits(id) {
     console.error('Error fetching health safety habits:', error);
     $q.notify({
       type: 'negative',
-      message: 'Error al cargar salud, seguridad y hábitos',
+      message: 'Error al cargar antecedentes clínicos',
       position: 'top'
     });
   }
@@ -1527,14 +1527,14 @@ async function guardarHealthSafetyHabits() {
     healthSafetyHabitsFormRef.value?.loadData(response.data);
     $q.notify({
       type: 'positive',
-      message: 'Salud, seguridad y hábitos guardados correctamente',
+      message: 'Antecedentes clínicos guardados correctamente',
       position: 'top'
     });
   } catch (error) {
-    console.error('Error guardando salud y hábitos:', error);
+    console.error('Error guardando antecedentes clínicos:', error);
     $q.notify({
       type: 'negative',
-      message: 'Error al guardar salud, seguridad y hábitos',
+      message: 'Error al guardar antecedentes clínicos',
       position: 'top'
     });
   } finally {

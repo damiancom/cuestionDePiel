@@ -5,7 +5,7 @@
       <div>
         <div class="text-h6 text-primary flex items-center">
           <q-icon name="health_and_safety" class="q-mr-sm" size="24px" />
-          Salud, Seguridad y Hábitos
+          Antecedentes Clínicos
         </div>
         <div class="text-caption text-grey-8">
           Antecedentes médicos, medicación, alergias, contraindicaciones y hábitos de vida
