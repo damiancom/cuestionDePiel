@@ -3,7 +3,9 @@
     <input ref="inputFoto" type="file" accept="image/*" class="hidden" @change="onFotoSelected"/>
 
     <div class="row q-col-gutter-lg justify-center">
-      <!-- Sidebar Perfil Fijo (solo en desktop) -->
+      <!-- ─────────────────────────────────────────────────────────────
+           DOSSIER CLÍNICO ESTRUCTURADO DEL PACIENTE (Colapsable)
+           ───────────────────────────────────────────────────────────── -->
       <div v-if="!isSidebarCollapsed" class="col-12 col-md-4 col-lg-3 gt-sm">
         <q-card class="q-pa-md minimal-card patient-sidebar relative-position">
           <q-btn
@@ -28,33 +30,53 @@
             </q-avatar>
             
             <div v-if="!editing" class="full-width">
-              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Nombre:</span><br>{{ patient.name }}</div>
-              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Apellido:</span><br>{{ patient.last_name }}</div>
-              <div class="q-mb-sm">
-                <span class="text-weight-bold text-grey-8">Nacimiento:</span><br>
-                {{ formatDate(patient.birth_date) }}
-                <span v-if="calculateAge(patient.birth_date) !== ''" class="text-grey-7">({{ calculateAge(patient.birth_date) }} años)</span>
+              <!-- Dossier estructurado por bloques temáticos -->
+              <div class="q-gutter-y-sm">
+                <!-- Bloque Identidad -->
+                <div class="q-pa-sm bg-grey-1 rounded-borders text-center">
+                  <div class="text-subtitle1 text-weight-bold text-primary">{{ patient.name }} {{ patient.last_name }}</div>
+                  <div class="text-caption text-grey-8">
+                    <span v-if="calculateAge(patient.birth_date) !== ''">{{ calculateAge(patient.birth_date) }} años • </span>{{ formatDate(patient.birth_date) }}
+                  </div>
+                </div>
+
+                <!-- Bloque Contacto -->
+                <div class="q-pa-xs">
+                  <div class="text-caption text-weight-bold text-grey-6 q-mb-xs">CONTACTO</div>
+                  <div class="row items-center justify-between no-wrap q-mb-xs">
+                    <span class="text-caption text-grey-9"><q-icon name="smartphone" size="14px" class="q-mr-xs text-primary" />{{ patient.cellphone || '-' }}</span>
+                    <q-btn
+                      v-if="hasPhone"
+                      flat
+                      round
+                      dense
+                      size="xs"
+                      color="positive"
+                      icon="fa-brands fa-whatsapp"
+                      @click="handleTabChange('mensajes')"
+                    >
+                      <q-tooltip>Enviar mensaje predefinido de WhatsApp</q-tooltip>
+                    </q-btn>
+                  </div>
+                  <div v-if="patient.phone" class="text-caption text-grey-8 q-mb-xs">
+                    <q-icon name="phone" size="14px" class="q-mr-xs text-grey-6" />{{ patient.phone }}
+                  </div>
+                  <div class="text-caption text-grey-8 q-mb-xs">
+                    <q-icon name="location_on" size="14px" class="q-mr-xs text-grey-6" />{{ patient.address || '-' }}<span v-if="patient.locality"> ({{ patient.locality }})</span>
+                  </div>
+                  <div class="text-caption text-grey-8">
+                    <q-icon name="email" size="14px" class="q-mr-xs text-grey-6" />{{ patient.email || '-' }}
+                  </div>
+                </div>
+
+                <!-- Bloque Clínica -->
+                <div class="q-pa-xs">
+                  <div class="text-caption text-weight-bold text-grey-6 q-mb-xs">CLÍNICA</div>
+                  <div class="text-caption text-grey-8 q-mb-xs">Profesión: {{ patient.profession || '-' }}</div>
+                  <div v-if="patient.additional_note" class="text-caption text-grey-8" style="white-space: pre-wrap;">Nota: {{ patient.additional_note }}</div>
+                </div>
               </div>
-              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Profesión:</span><br>{{ patient.profession || '-' }}</div>
-              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Dirección:</span><br>{{ patient.address }}</div>
-              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">Teléfono:</span><br>{{ patient.phone || '-' }}</div>
-              <div class="q-mb-sm row items-center justify-between no-wrap">
-                <div><span class="text-weight-bold text-grey-8">Celular:</span><br>{{ patient.cellphone || '-' }}</div>
-                <q-btn
-                  v-if="hasPhone"
-                  flat
-                  round
-                  dense
-                  size="sm"
-                  color="positive"
-                  icon="fa-brands fa-whatsapp"
-                  @click="handleTabChange('mensajes')"
-                >
-                  <q-tooltip>Enviar mensaje predefinido de WhatsApp</q-tooltip>
-                </q-btn>
-              </div>
-              <div class="q-mb-sm"><span class="text-weight-bold text-grey-8">E-mail:</span><br>{{ patient.email }}</div>
-              <div class="q-mb-sm" v-if="patient.additional_note"><span class="text-weight-bold text-grey-8">Nota adicional:</span><br><span style="white-space: pre-wrap;">{{ patient.additional_note }}</span></div>
+
               <div class="q-my-sm text-center" v-if="consentStatus">
                 <q-badge
                   :color="consentStatus.is_signed ? 'positive' : (consentStatus.signed_version ? 'warning' : 'negative')"
@@ -84,7 +106,7 @@
                 <div class="col-12"><q-input v-model="patientEdit.email" label="E-mail" dense class="minimal-input" borderless /></div>
                 <div class="col-12"><q-input v-model="patientEdit.additional_note" label="Nota adicional" type="textarea" autogrow maxlength="200" counter class="minimal-input" borderless /></div>
               </div>
-              <div class="row q-gutter-sm justify-center q-mt-sm">
+              <div class="row q-gutter-sm justify-end q-mt-sm">
                 <q-btn flat label="Cancelar" @click="cancelPatientEdit" color="grey-8" class="minimal-btn" />
                 <q-btn label="Guardar" color="primary" @click="updatePatientData" class="minimal-btn-save" />
               </div>
@@ -93,11 +115,13 @@
         </q-card>
       </div>
 
-      <!-- Contenido Principal con Tabs -->
+      <!-- ─────────────────────────────────────────────────────────────
+           CONTENIDO PRINCIPAL CON TABS
+           ───────────────────────────────────────────────────────────── -->
       <div :class="isSidebarCollapsed ? 'col-12' : 'col-12 col-md-8 col-lg-9'" class="transition-width">
-        <q-card class="q-pa-md q-pa-sm-lg">
+        <q-card class="q-pa-md q-pa-sm-lg minimal-card">
           <div class="row items-center no-wrap q-mb-md">
-            <!-- Botón para mostrar el detalle del paciente (solo en desktop cuando está colapsado) -->
+            <!-- Botón para mostrar el detalle del paciente (solo cuando está colapsado en desktop) -->
             <q-btn
               v-if="isSidebarCollapsed"
               flat
@@ -226,34 +250,50 @@
                 </q-avatar>
                 
                 <div v-if="!editing" class="full-width" style="max-width: 600px;">
-                  <div class="row q-col-gutter-md q-mb-md">
-                    <div class="col-12 col-sm-6"><span class="text-weight-medium">Nombre:</span><br>{{ patient.name }}</div>
-                    <div class="col-12 col-sm-6"><span class="text-weight-medium">Apellido:</span><br>{{ patient.last_name }}</div>
-                    <div class="col-12 col-sm-6">
-                      <span class="text-weight-medium">Fecha de Nacimiento:</span><br>
-                      {{ formatDate(patient.birth_date) }}
-                      <span v-if="calculateAge(patient.birth_date) !== ''" class="text-grey-7">({{ calculateAge(patient.birth_date) }} años)</span>
+                  <div class="q-gutter-y-sm q-mb-md">
+                    <!-- Bloque Identidad -->
+                    <div class="q-pa-sm bg-grey-1 rounded-borders text-center">
+                      <div class="text-subtitle1 text-weight-bold text-primary">{{ patient.name }} {{ patient.last_name }}</div>
+                      <div class="text-caption text-grey-8">
+                        <span v-if="calculateAge(patient.birth_date) !== ''">{{ calculateAge(patient.birth_date) }} años • </span>{{ formatDate(patient.birth_date) }}
+                      </div>
                     </div>
-                    <div class="col-12 col-sm-6"><span class="text-weight-medium">Profesión:</span><br>{{ patient.profession || '-' }}</div>
-                    <div class="col-12 col-sm-6"><span class="text-weight-medium">Dirección:</span><br>{{ patient.address }}</div>
-                    <div class="col-12 col-sm-6"><span class="text-weight-medium">Teléfono:</span><br>{{ patient.phone || '-' }}</div>
-                    <div class="col-12 col-sm-6 row items-center justify-between no-wrap">
-                      <div><span class="text-weight-medium">Celular:</span><br>{{ patient.cellphone || '-' }}</div>
-                      <q-btn
-                        v-if="hasPhone"
-                        flat
-                        round
-                        dense
-                        size="sm"
-                        color="positive"
-                        icon="fa-brands fa-whatsapp"
-                        @click="handleTabChange('mensajes')"
-                      >
-                        <q-tooltip>Enviar mensaje de WhatsApp</q-tooltip>
-                      </q-btn>
+
+                    <!-- Bloque Contacto -->
+                    <div class="q-pa-xs">
+                      <div class="text-caption text-weight-bold text-grey-6 q-mb-xs">CONTACTO</div>
+                      <div class="row items-center justify-between no-wrap q-mb-xs">
+                        <span class="text-caption text-grey-9"><q-icon name="smartphone" size="14px" class="q-mr-xs text-primary" />{{ patient.cellphone || '-' }}</span>
+                        <q-btn
+                          v-if="hasPhone"
+                          flat
+                          round
+                          dense
+                          size="xs"
+                          color="positive"
+                          icon="fa-brands fa-whatsapp"
+                          @click="handleTabChange('mensajes')"
+                        >
+                          <q-tooltip>Enviar mensaje de WhatsApp</q-tooltip>
+                        </q-btn>
+                      </div>
+                      <div v-if="patient.phone" class="text-caption text-grey-8 q-mb-xs">
+                        <q-icon name="phone" size="14px" class="q-mr-xs text-grey-6" />{{ patient.phone }}
+                      </div>
+                      <div class="text-caption text-grey-8 q-mb-xs">
+                        <q-icon name="location_on" size="14px" class="q-mr-xs text-grey-6" />{{ patient.address || '-' }}<span v-if="patient.locality"> ({{ patient.locality }})</span>
+                      </div>
+                      <div class="text-caption text-grey-8">
+                        <q-icon name="email" size="14px" class="q-mr-xs text-grey-6" />{{ patient.email || '-' }}
+                      </div>
                     </div>
-                    <div class="col-12 col-sm-6"><span class="text-weight-medium">E-mail:</span><br>{{ patient.email }}</div>
-                    <div class="col-12" v-if="patient.additional_note"><span class="text-weight-medium">Nota adicional:</span><br><span style="white-space: pre-wrap;">{{ patient.additional_note }}</span></div>
+
+                    <!-- Bloque Clínica -->
+                    <div class="q-pa-xs">
+                      <div class="text-caption text-weight-bold text-grey-6 q-mb-xs">CLÍNICA</div>
+                      <div class="text-caption text-grey-8 q-mb-xs">Profesión: {{ patient.profession || '-' }}</div>
+                      <div v-if="patient.additional_note" class="text-caption text-grey-8" style="white-space: pre-wrap;">Nota: {{ patient.additional_note }}</div>
+                    </div>
                   </div>
                   <div class="q-my-sm text-center" v-if="consentStatus">
                     <q-badge
@@ -1725,6 +1765,22 @@ async function handleRoutineSave(routineData) {
   font-size: 48px;
 }
 
+.patient-hero-banner {
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.clinical-context-bar {
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.text-xs {
+  font-size: 11px;
+}
+
 .transition-width {
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), flex 0.3s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -1784,7 +1840,7 @@ async function handleRoutineSave(routineData) {
 }
 
 .minimal-input:focus-within {
-  border-color: #1976d2 !important;
+  border-color: var(--q-primary, #1976d2) !important;
   background: #ffffff !important;
   box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1) !important;
 }
@@ -1805,13 +1861,13 @@ async function handleRoutineSave(routineData) {
 }
 
 .minimal-btn-save {
-  background: #1976d2;
-  color: #fff;
-  transition: background 0.15s;
+  background: var(--q-primary, #1976d2) !important;
+  color: #fff !important;
+  transition: background 0.15s, filter 0.15s;
 }
 
 .minimal-btn-save:hover {
-  background: #125ea7;
+  filter: brightness(0.92) !important;
 }
 
 

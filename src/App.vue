@@ -21,12 +21,14 @@ const layout = computed(() => {
 body {
   font-family: 'Roboto', sans-serif;
   background: #f8f9fa;
+  color: #1f2937;
 }
 
 .q-btn {
   text-transform: none;
 }
 
+/* ─── Botones Normalizados ────────────────────────────────── */
 .minimal-btn,
 .minimal-btn-save,
 .minimal-btn-delete {
@@ -97,7 +99,39 @@ body {
   background: #125ea7 !important;
 }
 
-/* Campo de búsqueda de cabecera unificado */
+/* ─── Tarjetas Normalizadas ───────────────────────────────── */
+.minimal-card {
+  border-radius: 12px;
+  border: 1px solid #e0e4ea;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  background: #ffffff;
+}
+
+.minimal-create-card {
+  border-radius: 16px;
+  background: #f9fafb;
+  border: 1px solid #ececec;
+}
+
+/* ─── Inputs de Formulario Normalizados ───────────────────── */
+.minimal-input {
+  background: #f8fafc !important;
+  border-radius: 12px;
+  border: 1px solid #e0e4ea !important;
+  box-shadow: none !important;
+  font-size: 15px;
+  padding: 4px 12px;
+  transition: all 0.2s ease;
+  margin-bottom: 4px;
+}
+
+.minimal-input:focus-within {
+  border-color: #1976d2 !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1) !important;
+}
+
+/* ─── Campo de Búsqueda de Cabecera Unificado ─────────────── */
 .minimal-search-input {
   background: transparent !important;
   box-shadow: none !important;
@@ -125,7 +159,7 @@ body {
   }
 }
 
-/* Tablas: alternancia sutil de fondo entre filas (zebra striping) y hover */
+/* ─── Tablas: Efecto Cebra (Zebra Striping) y Hover ───────── */
 .q-table tbody tr:nth-child(even) {
   background-color: #f4f6fa;
 }
@@ -139,7 +173,7 @@ body {
   background-color: #eaf1fb !important;
 }
 
-/* Listas: alternancia sutil de fondo entre filas (zebra striping) y hover */
+/* ─── Listas: Efecto Cebra (Zebra Striping) y Hover ───────── */
 .zebra-list {
   overflow: hidden;
 }
@@ -160,4 +194,3 @@ body {
   background-color: #eaf1fb !important;
 }
 </style>
-

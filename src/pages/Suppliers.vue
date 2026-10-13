@@ -837,10 +837,6 @@ onMounted(loadSuppliers);
   height: 48px;
 }
 
-.supplier-table :deep(tbody tr:hover td) {
-  background: #f8fafc;
-}
-
 .supplier-table :deep(tbody tr:last-child td) {
   border-bottom: none;
 }
@@ -926,39 +922,10 @@ onMounted(loadSuppliers);
   border-radius: 16px;
 }
 
-.minimal-search-input {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 0 8px;
-  min-width: 220px;
-}
-
-.minimal-btn-save {
-  border-radius: 8px;
-  font-weight: 600;
-}
-
 .dialog-card {
   width: 480px;
   max-width: 95vw;
   border-radius: 16px;
-}
-
-.minimal-input {
-  background: transparent !important;
-  box-shadow: none !important;
-  font-size: 14px;
-}
-
-.minimal-input :deep(.q-field__control) {
-  border-bottom: 1.5px solid #e0e4ea !important;
-  transition: border-color 0.2s;
-  padding: 0 8px !important;
-}
-
-.minimal-input:focus-within :deep(.q-field__control) {
-  border-color: #1976d2 !important;
 }
 
 .flex-shrink-0 {
