@@ -1131,6 +1131,24 @@ const alertasCriticas = computed(() => {
   line-height: 1.2;
 }
 
+.toggle-hybrid :deep(.q-btn:not(:last-child)),
+.biotipo-toggle-unified :deep(.q-btn:not(:last-child)),
+.scale-toggle :deep(.q-btn:not(:last-child)) {
+  border-right: 1px solid #cbd5e1;
+}
+
+.toggle-hybrid :deep(.q-btn.bg-primary),
+.biotipo-toggle-unified :deep(.q-btn.bg-primary),
+.scale-toggle :deep(.q-btn.bg-primary) {
+  border-right-color: #1976d2;
+}
+
+.toggle-hybrid :deep(.q-btn:has(+ .q-btn.bg-primary)),
+.biotipo-toggle-unified :deep(.q-btn:has(+ .q-btn.bg-primary)),
+.scale-toggle :deep(.q-btn:has(+ .q-btn.bg-primary)) {
+  border-right-color: #1976d2;
+}
+
 .minimal-input {
   background: #f8fafc !important;
   border-radius: 10px;

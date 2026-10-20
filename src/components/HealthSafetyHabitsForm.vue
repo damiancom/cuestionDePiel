@@ -1206,6 +1206,21 @@ defineExpose({
   font-size: 13px;
 }
 
+.toggle-hybrid :deep(.q-btn:not(:last-child)),
+.scale-toggle :deep(.q-btn:not(:last-child)) {
+  border-right: 1px solid #d0d7de;
+}
+
+.toggle-hybrid :deep(.q-btn.bg-primary),
+.scale-toggle :deep(.q-btn.bg-primary) {
+  border-right-color: #1976d2;
+}
+
+.toggle-hybrid :deep(.q-btn:has(+ .q-btn.bg-primary)),
+.scale-toggle :deep(.q-btn:has(+ .q-btn.bg-primary)) {
+  border-right-color: #1976d2;
+}
+
 .scale-item {
   background: #ffffff;
   border-radius: 8px;
