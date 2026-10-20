@@ -172,7 +172,16 @@
               <q-tooltip>Mostrar detalle del paciente</q-tooltip>
             </q-btn>
 
-            <q-tabs :model-value="tab" @update:model-value="handleTabChange" class="text-primary col" align="left" dense mobile-arrows outside-arrows>
+            <q-tabs
+              :model-value="tab"
+              @update:model-value="handleTabChange"
+              class="text-primary col"
+              align="left"
+              dense
+              mobile-arrows
+              outside-arrows
+              no-caps
+            >
               <!-- Tab Perfil: Sólo visible en mobile (lt-md) -->
               <q-tab name="perfil" class="lt-md" no-caps>
                 <div class="row items-center no-wrap">
