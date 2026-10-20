@@ -224,17 +224,47 @@
               <q-tab v-if="hasPhone" name="mensajes" label="Mensajes" />
             </q-tabs>
 
-            <!-- ACCESO A CATÁLOGO DE PRODUCTOS (SOLO ÍCONO) -->
+            <!-- ACCESO A CATÁLOGO DE PRODUCTOS (SOLO ÍCONO CON ONBOARDING TIP) -->
             <q-btn
               flat
               round
               dense
               color="primary"
               icon="inventory_2"
-              class="q-ml-xs"
-              @click="openGlobalCatalog"
+              class="q-ml-xs relative-position"
+              @click="handleCatalogBtnClick"
             >
-              <q-tooltip>Catálogo de productos, precios y stock</q-tooltip>
+              <q-tooltip v-if="!showOnboardingTip">Catálogo de productos, precios y stock</q-tooltip>
+
+              <!-- POPUP / TOOLTIP ONBOARDING CON COOKIE PERSISTENTE -->
+              <q-menu
+                v-model="showOnboardingTip"
+                anchor="bottom right"
+                self="top right"
+                no-parent-event
+                no-focus
+                class="onboarding-tooltip-card shadow-4"
+              >
+                <div class="q-pa-sm bg-primary text-white row items-center no-wrap" style="max-width: 280px; border-radius: 8px;">
+                  <q-icon name="lightbulb" size="20px" class="q-mr-sm text-amber-3" style="flex-shrink: 0;" />
+                  <div class="col text-caption leading-tight">
+                    <div class="text-weight-bold">¡Catálogo a mano!</div>
+                    <div class="text-grey-2" style="font-size: 11.5px;">Consultá productos, precios y stock sin salir de la ficha.</div>
+                  </div>
+                  <q-btn
+                    flat
+                    round
+                    dense
+                    size="xs"
+                    icon="close"
+                    color="white"
+                    class="q-ml-xs"
+                    @click.stop="dismissOnboardingTip"
+                  >
+                    <q-tooltip>Cerrar</q-tooltip>
+                  </q-btn>
+                </div>
+              </q-menu>
             </q-btn>
           </div>
           <q-separator />
@@ -810,6 +840,48 @@ import FacialMapping from '../components/FacialMapping.vue';
 // Catálogo Global en Ficha del Paciente (para acceso rápido desde cualquier pestaña / tablet)
 const catalogProducts = ref([]);
 const showGlobalCatalogDrawer = ref(false);
+
+// Onboarding Tooltip Persistente con Cookie
+const showOnboardingTip = ref(false);
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+}
+
+function setCookie(name, val, days = 365) {
+  const date = new Date();
+  date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+  const expires = `expires=${date.toUTCString()}`;
+  document.cookie = `${name}=${val}; ${expires}; path=/; SameSite=Lax`;
+  try {
+    localStorage.setItem(name, val);
+  } catch (e) {
+    // Ignore storage errors
+  }
+}
+
+function checkOnboardingCookie() {
+  const cookieVal = getCookie('onboarding_catalog_seen');
+  const storageVal = localStorage.getItem('onboarding_catalog_seen');
+  if (!cookieVal && !storageVal) {
+    setTimeout(() => {
+      showOnboardingTip.value = true;
+    }, 700);
+  }
+}
+
+function dismissOnboardingTip() {
+  showOnboardingTip.value = false;
+  setCookie('onboarding_catalog_seen', 'true', 365);
+}
+
+function handleCatalogBtnClick() {
+  dismissOnboardingTip();
+  openGlobalCatalog();
+}
 
 const openGlobalCatalog = () => {
   showGlobalCatalogDrawer.value = true;
@@ -1407,6 +1479,7 @@ onMounted(async () => {
     await fetchConsentStatus(route.params.id);
     await fetchWhatsappMessages();
     await loadCatalogProducts();
+    checkOnboardingCookie();
   }
 });
 
@@ -2060,5 +2133,11 @@ async function handleRoutineSave(routineData) {
 .patient-messages-list :deep(.q-item:hover),
 .patient-messages-list .q-item:hover {
   background-color: #eaf1fb !important;
+}
+
+.onboarding-tooltip-card {
+  border-radius: 8px !important;
+  overflow: hidden;
+  z-index: 6000 !important;
 }
 </style>
