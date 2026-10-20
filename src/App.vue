@@ -193,4 +193,48 @@ body {
 .zebra-list .q-item:hover {
   background-color: #eaf1fb !important;
 }
+
+/* ─── Toggles y Selectores de Opciones Segmentadas ─────────── */
+.toggle-hybrid,
+.toggle-biotipo,
+.toggle-custom,
+.scale-toggle,
+.biotipo-toggle-unified {
+  border: 1px solid #d0d7de;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.toggle-hybrid .q-btn,
+.toggle-biotipo .q-btn,
+.toggle-custom .q-btn,
+.scale-toggle .q-btn,
+.biotipo-toggle-unified .q-btn {
+  padding: 4px 12px;
+  font-size: 13px;
+}
+
+.toggle-hybrid .q-btn:not(:last-child),
+.toggle-biotipo .q-btn:not(:last-child),
+.toggle-custom .q-btn:not(:last-child),
+.scale-toggle .q-btn:not(:last-child),
+.biotipo-toggle-unified .q-btn:not(:last-child) {
+  border-right: 1px solid #d0d7de;
+}
+
+.toggle-hybrid .q-btn.bg-primary,
+.toggle-biotipo .q-btn.bg-primary,
+.toggle-custom .q-btn.bg-primary,
+.scale-toggle .q-btn.bg-primary,
+.biotipo-toggle-unified .q-btn.bg-primary {
+  border-right-color: #1976d2;
+}
+
+.toggle-hybrid .q-btn:has(+ .q-btn.bg-primary),
+.toggle-biotipo .q-btn:has(+ .q-btn.bg-primary),
+.toggle-custom .q-btn:has(+ .q-btn.bg-primary),
+.scale-toggle .q-btn:has(+ .q-btn.bg-primary),
+.biotipo-toggle-unified .q-btn:has(+ .q-btn.bg-primary) {
+  border-right-color: #1976d2;
+}
 </style>

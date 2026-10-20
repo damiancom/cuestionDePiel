@@ -918,9 +918,33 @@ defineExpose({
 }
 
 .toggle-biotipo {
-  border: 1px solid #e0e4ea;
+  border: 1px solid #d0d7de;
   border-radius: 16px;
   overflow: hidden;
+}
+
+.toggle-biotipo :deep(.q-btn) {
+  padding: 4px 12px;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.toggle-biotipo :deep(.q-btn:not(:last-child)),
+.toggle-hybrid :deep(.q-btn:not(:last-child)),
+.toggle-custom :deep(.q-btn:not(:last-child)) {
+  border-right: 1px solid #d0d7de;
+}
+
+.toggle-biotipo :deep(.q-btn.bg-primary),
+.toggle-hybrid :deep(.q-btn.bg-primary),
+.toggle-custom :deep(.q-btn.bg-primary) {
+  border-right-color: #1976d2;
+}
+
+.toggle-biotipo :deep(.q-btn:has(+ .q-btn.bg-primary)),
+.toggle-hybrid :deep(.q-btn:has(+ .q-btn.bg-primary)),
+.toggle-custom :deep(.q-btn:has(+ .q-btn.bg-primary)) {
+  border-right-color: #1976d2;
 }
 
 .condition-pill {

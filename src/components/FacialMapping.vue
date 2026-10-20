@@ -1932,6 +1932,18 @@ defineExpose({
   font-size: 12.5px;
 }
 
+.toggle-hybrid :deep(.q-btn:not(:last-child)) {
+  border-right: 1px solid #d0d7de;
+}
+
+.toggle-hybrid :deep(.q-btn.bg-primary) {
+  border-right-color: #1976d2;
+}
+
+.toggle-hybrid :deep(.q-btn:has(+ .q-btn.bg-primary)) {
+  border-right-color: #1976d2;
+}
+
 .minimal-input {
   background: #f8fafc !important;
   border-radius: 12px;
