@@ -366,20 +366,21 @@
               <!-- Antecedentes Dérmicos -->
               <div>
                 <div class="text-caption text-weight-bold text-grey-8">ANTECEDENTES DÉRMICOS</div>
-                <div class="q-gutter-y-xs q-mt-xs text-caption">
-                  <div class="row items-center justify-between">
+                <div v-if="formData.herpesSimple || formData.cicatrizacionQueloides" class="q-gutter-y-xs q-mt-xs text-caption">
+                  <div v-if="formData.herpesSimple" class="row items-center justify-between">
                     <span>Herpes Simple:</span>
-                    <q-badge :color="formData.herpesSimple ? 'warning' : 'grey-3'" :text-color="formData.herpesSimple ? 'dark' : 'grey-8'">
-                      {{ formData.herpesSimple ? 'Sí' : 'No' }}
+                    <q-badge color="warning" text-color="dark">
+                      Sí
                     </q-badge>
                   </div>
-                  <div class="row items-center justify-between">
+                  <div v-if="formData.cicatrizacionQueloides" class="row items-center justify-between">
                     <span>Queloides / Cicatrización:</span>
-                    <q-badge :color="formData.cicatrizacionQueloides ? 'warning' : 'grey-3'" :text-color="formData.cicatrizacionQueloides ? 'dark' : 'grey-8'">
-                      {{ formData.cicatrizacionQueloides ? 'Sí' : 'No' }}
+                    <q-badge color="warning" text-color="dark">
+                      Sí
                     </q-badge>
                   </div>
                 </div>
+                <div v-else class="text-caption text-grey-5 italic q-mt-xs">Sin antecedentes declarados</div>
               </div>
             </q-card-section>
           </q-card>
