@@ -975,10 +975,10 @@ const useColumnsLayout = computed(() => {
 });
 
 const biotiposOptions = [
-  { label: 'Normal', value: 'Normal' },
-  { label: 'Seca', value: 'Seca' },
-  { label: 'Grasa', value: 'Grasa' },
-  { label: 'Mixta', value: 'Mixta' }
+  { label: 'Eudérmica', value: 'Eudérmica' },
+  { label: 'Alípica', value: 'Alípica' },
+  { label: 'Mixta', value: 'Mixta' },
+  { label: 'Grasa', value: 'Grasa' }
 ];
 
 const condicionesPielOptions = [
