@@ -2112,13 +2112,13 @@ const imageCategoryTypeOptions = imageCategoryDefinitions.map(c => ({
 function normalizeImageCategoryType(rawType) {
   if (!rawType) return '';
   const val = String(rawType).trim();
-  if (val === '1' || val === 'luzBlanca' || val === 'LUZ_BLANCA_DIRECTA' || val === FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT) {
+  if (val === '1' || val === FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT) {
     return FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT;
   }
-  if (val === '2' || val === 'luzPolarizada' || val === 'LUZ_POLARIZADA_CRUZADA' || val === FACIAL_IMAGE_TYPES.CROSS_POLARIZED_LIGHT) {
+  if (val === '2' || val === FACIAL_IMAGE_TYPES.CROSS_POLARIZED_LIGHT) {
     return FACIAL_IMAGE_TYPES.CROSS_POLARIZED_LIGHT;
   }
-  if (val === '3' || val === 'luzUV' || val === 'LUZ_UV_WOOD' || val === FACIAL_IMAGE_TYPES.UV_WOOD_LIGHT) {
+  if (val === '3' || val === FACIAL_IMAGE_TYPES.UV_WOOD_LIGHT) {
     return FACIAL_IMAGE_TYPES.UV_WOOD_LIGHT;
   }
   return '';
