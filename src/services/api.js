@@ -37,6 +37,12 @@ export const HealthSafetyHabitsAPI = {
   }
 };
 
+export const FACIAL_IMAGE_TYPES = Object.freeze({
+  DIRECT_WHITE_LIGHT: 'DIRECT_WHITE_LIGHT',
+  CROSS_POLARIZED_LIGHT: 'CROSS_POLARIZED_LIGHT',
+  UV_WOOD_LIGHT: 'UV_WOOD_LIGHT'
+});
+
 export const FacialAnalysisAPI = {
   get(patientId) {
     return axios.get(`${PATIENTS_URL}/${patientId}${FACIAL_ANALYSIS_ENDPOINT}`);
@@ -46,6 +52,26 @@ export const FacialAnalysisAPI = {
   },
   patch(patientId, payload) {
     return axios.patch(`${PATIENTS_URL}/${patientId}${FACIAL_ANALYSIS_ENDPOINT}`, payload);
+  },
+  uploadImage(patientId, file, categoryType, note = '', zone = '') {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('category_type', categoryType);
+    if (note) {
+      formData.append('note', note);
+    }
+    if (zone) {
+      formData.append('zone', zone);
+    }
+    return axios.post(`${PATIENTS_URL}/${patientId}${FACIAL_ANALYSIS_ENDPOINT}/images`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+  },
+  updateImage(patientId, imageId, payload) {
+    return axios.patch(`${PATIENTS_URL}/${patientId}${FACIAL_ANALYSIS_ENDPOINT}/images/${imageId}`, payload);
+  },
+  deleteImage(patientId, imageId) {
+    return axios.delete(`${PATIENTS_URL}/${patientId}${FACIAL_ANALYSIS_ENDPOINT}/images/${imageId}`);
   }
 };
 
