@@ -1,8 +1,8 @@
 <template>
   <div class="routine-generator-container">
-    <!-- BARRA SUPERIOR DE CABECERA Y HERRAMIENTAS -->
-    <div class="row items-center justify-between q-mb-md q-col-gutter-sm">
-      <div class="col-12 col-sm">
+    <!-- BARRA SUPERIOR DE CABECERA -->
+    <div class="row items-center justify-between q-mb-md">
+      <div>
         <div class="text-h6 text-primary flex items-center text-weight-bold">
           <q-icon name="spa" size="26px" class="q-mr-sm" color="primary" />
           Rutina Facial
@@ -10,30 +10,6 @@
         <div class="text-caption text-grey-7">
           Plan de cuidado diario personalizado para el paciente
         </div>
-      </div>
-
-      <div class="col-12 col-sm-auto row items-center q-gutter-xs">
-        <!-- BOTÓN TOGGLE CATÁLOGO DE PRODUCTOS -->
-        <q-btn
-          :color="showCatalog ? 'primary' : 'grey-8'"
-          :flat="!showCatalog"
-          :outline="!showCatalog"
-          :unelevated="showCatalog"
-          icon="inventory_2"
-          :label="$q.screen.gt.xs ? (showCatalog ? 'Ocultar Catálogo' : 'Catálogo de Productos') : 'Catálogo'"
-          class="minimal-btn"
-          @click="toggleCatalog"
-        >
-          <q-badge
-            :color="showCatalog ? 'white' : 'blue-1'"
-            :text-color="showCatalog ? 'primary' : 'primary'"
-            class="q-ml-xs text-weight-bold"
-            :label="availableProducts.length"
-          />
-          <q-tooltip>
-            {{ showCatalog ? 'Ocultar panel de productos' : 'Abrir catálogo para ver precios, stock y recomendar productos' }}
-          </q-tooltip>
-        </q-btn>
       </div>
     </div>
 
@@ -70,29 +46,14 @@
             <!-- COLUMNA DÍA ☀️                             -->
             <!-- ========================================== -->
             <div class="col-12 col-md-6">
-              <div class="column-header column-header--day q-mb-md row items-center justify-between">
-                <div class="row items-center no-wrap">
-                  <div class="column-header__icon column-header__icon--day q-mr-sm">
-                    <q-icon name="wb_sunny" size="20px" />
-                  </div>
-                  <div>
-                    <h3 class="column-header__title q-my-none">DÍA</h3>
-                    <div class="column-header__subtitle">{{ routineData.day.length }} pasos programados</div>
-                  </div>
+              <div class="column-header column-header--day q-mb-md row items-center">
+                <div class="column-header__icon column-header__icon--day q-mr-sm">
+                  <q-icon name="wb_sunny" size="20px" />
                 </div>
-
-                <q-btn
-                  v-if="isEditing"
-                  flat
-                  dense
-                  round
-                  icon="add"
-                  color="amber-9"
-                  @click="addStep('day')"
-                  class="pdf-hidden"
-                >
-                  <q-tooltip>Añadir paso de Día</q-tooltip>
-                </q-btn>
+                <div>
+                  <h3 class="column-header__title q-my-none">DÍA</h3>
+                  <div class="column-header__subtitle">{{ routineData.day.length }} pasos programados</div>
+                </div>
               </div>
 
               <div id="day-steps" class="steps-list">
@@ -222,7 +183,7 @@
             <!-- COLUMNA NOCHE 🌙                           -->
             <!-- ========================================== -->
             <div class="col-12 col-md-6">
-              <div class="column-header column-header--night q-mb-md row items-center justify-between">
+              <div class="column-header column-header--night q-mb-md row items-center">
                 <div class="row items-center no-wrap">
                   <div class="column-header__icon column-header__icon--night q-mr-sm">
                     <q-icon name="bedtime" size="20px" />
@@ -232,19 +193,6 @@
                     <div class="column-header__subtitle">{{ routineData.night.length }} pasos programados</div>
                   </div>
                 </div>
-
-                <q-btn
-                  v-if="isEditing"
-                  flat
-                  dense
-                  round
-                  icon="add"
-                  color="indigo-7"
-                  @click="addStep('night')"
-                  class="pdf-hidden"
-                >
-                  <q-tooltip>Añadir paso de Noche</q-tooltip>
-                </q-btn>
               </div>
 
               <div id="night-steps" class="steps-list">
@@ -984,7 +932,9 @@ defineExpose({
   resetToInitial,
   recargarProductos,
   isDirty,
-  updateSnapshot
+  updateSnapshot,
+  toggleCatalog,
+  showCatalog
 });
 </script>
 

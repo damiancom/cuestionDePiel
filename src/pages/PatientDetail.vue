@@ -370,10 +370,13 @@
             </q-tab-panel>
             <q-tab-panel name="rutina">
               <RoutineGenerator ref="routineEditor" :initialRoutine="mappedRoutine" @save="handleRoutineSave" />
-              <div class="row q-gutter-sm justify-end q-mt-md">
+              <div class="row q-gutter-sm justify-end q-mt-lg">
                 <q-btn flat label="Cancelar" @click="cancelarRutina" color="grey-8" class="minimal-btn" />
-                <q-btn label="Guardar" color="primary" @click="guardarRutina" class="minimal-btn-save" />
+                <q-btn label="Guardar Rutina" color="primary" @click="guardarRutina" class="minimal-btn-save" />
                 <q-btn outline :label="$q.screen.gt.xs ? 'Descargar' : ''" color="primary" icon="download" @click="descargarRutina" class="minimal-btn" />
+                <q-btn outline :label="$q.screen.gt.xs ? 'Catálogo' : ''" color="primary" icon="inventory_2" @click="routineEditor?.toggleCatalog?.()" class="minimal-btn">
+                  <q-tooltip>Abrir catálogo de productos para consultar precios y stock</q-tooltip>
+                </q-btn>
               </div>
             </q-tab-panel>
             <q-tab-panel name="sesiones">
