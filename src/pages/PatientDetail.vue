@@ -223,6 +223,49 @@
               <q-tab name="consentimiento" label="Consentimiento" />
               <q-tab v-if="hasPhone" name="mensajes" label="Mensajes" />
             </q-tabs>
+
+            <!-- ACCESO A CATÁLOGO DE PRODUCTOS (SOLO ÍCONO CON ONBOARDING TIP) -->
+            <q-btn
+              flat
+              round
+              dense
+              color="primary"
+              icon="inventory_2"
+              class="q-ml-xs relative-position"
+              @click="handleCatalogBtnClick"
+            >
+              <q-tooltip v-if="!showOnboardingTip">Catálogo de productos, precios y stock</q-tooltip>
+
+              <!-- POPUP / TOOLTIP ONBOARDING CON COOKIE PERSISTENTE -->
+              <q-menu
+                v-model="showOnboardingTip"
+                anchor="bottom right"
+                self="top right"
+                no-parent-event
+                no-focus
+                class="onboarding-tooltip-card shadow-4"
+              >
+                <div class="q-pa-sm bg-primary text-white row items-center no-wrap" style="max-width: 280px; border-radius: 8px;">
+                  <q-icon name="lightbulb" size="20px" class="q-mr-sm text-amber-3" style="flex-shrink: 0;" />
+                  <div class="col text-caption leading-tight">
+                    <div class="text-weight-bold">¡Catálogo a mano!</div>
+                    <div class="text-grey-2" style="font-size: 11.5px;">Consultá productos, precios y stock sin salir de la ficha.</div>
+                  </div>
+                  <q-btn
+                    flat
+                    round
+                    dense
+                    size="xs"
+                    icon="close"
+                    color="white"
+                    class="q-ml-xs"
+                    @click.stop="dismissOnboardingTip"
+                  >
+                    <q-tooltip>Cerrar</q-tooltip>
+                  </q-btn>
+                </div>
+              </q-menu>
+            </q-btn>
           </div>
           <q-separator />
           
@@ -369,11 +412,19 @@
               </div>
             </q-tab-panel>
             <q-tab-panel name="rutina">
-              <RoutineGenerator ref="routineEditor" :initialRoutine="mappedRoutine" @save="handleRoutineSave" />
-              <div class="row q-gutter-sm justify-end q-mt-md">
+              <RoutineGenerator
+                ref="routineEditor"
+                :initialRoutine="mappedRoutine"
+                @save="handleRoutineSave"
+                @active-step-change="handleActiveStepChange"
+              />
+              <div class="row q-gutter-sm justify-end q-mt-lg">
                 <q-btn flat label="Cancelar" @click="cancelarRutina" color="grey-8" class="minimal-btn" />
-                <q-btn label="Guardar" color="primary" @click="guardarRutina" class="minimal-btn-save" />
+                <q-btn label="Guardar Rutina" color="primary" @click="guardarRutina" class="minimal-btn-save" />
                 <q-btn outline :label="$q.screen.gt.xs ? 'Descargar' : ''" color="primary" icon="download" @click="descargarRutina" class="minimal-btn" />
+                <q-btn outline :label="$q.screen.gt.xs ? 'Catálogo' : ''" color="primary" icon="inventory_2" @click="openGlobalCatalog" class="minimal-btn">
+                  <q-tooltip>Abrir catálogo de productos para consultar precios y stock</q-tooltip>
+                </q-btn>
               </div>
             </q-tab-panel>
             <q-tab-panel name="sesiones">
@@ -742,19 +793,145 @@
       </q-card>
     </q-dialog>
 
+    <!-- DRAWER LATERAL DERECHO DE CATÁLOGO (CONSULTA GLOBAL DESDE CUALQUIER PESTAÑA) -->
+    <q-dialog
+      v-model="showGlobalCatalogDrawer"
+      position="right"
+      maximized
+      transition-show="slide-left"
+      transition-hide="slide-right"
+    >
+      <q-card class="column full-height catalog-global-drawer" style="max-width: 440px; width: 92vw;">
+        <!-- Cabecera Drawer -->
+        <q-card-section class="row items-center justify-between q-py-sm bg-grey-1 border-bottom">
+          <div class="row items-center no-wrap">
+            <q-icon name="inventory_2" size="22px" color="primary" class="q-mr-sm" />
+            <div>
+              <div class="text-subtitle1 text-weight-bold text-primary">
+                Catálogo de Productos
+              </div>
+              <div class="text-caption text-grey-7">Consulta rápida de precios y stock</div>
+            </div>
+          </div>
+          <q-btn flat round dense icon="close" color="grey-8" v-close-popup />
+        </q-card-section>
+
+        <!-- Contenido con Buscador y Lista de Productos -->
+        <q-card-section class="col q-pa-md scroll">
+          <RoutineProductCatalog
+            :products="catalogProducts"
+            :active-step="currentActiveStep"
+            :show-routine-actions="tab === 'rutina'"
+            @insert-product="handleGlobalCatalogInsert"
+          />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
   </q-page>
 </template>
 
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
-import { PATIENTS_URL, ROUTINES_ENDPOINT, SessionsAPI, ConsentsAPI, SkinEvaluationAPI, HealthSafetyHabitsAPI, FacialAnalysisAPI, WhatsappMessagesAPI } from "../services/api";
+import { PATIENTS_URL, ROUTINES_ENDPOINT, SessionsAPI, ConsentsAPI, SkinEvaluationAPI, HealthSafetyHabitsAPI, FacialAnalysisAPI, WhatsappMessagesAPI, RecommendedProductsAPI } from "../services/api";
 import axios from "axios";
 import { useQuasar } from "quasar";
 import RoutineGenerator from '../components/RoutineGenerator.vue';
+import RoutineProductCatalog from '../components/RoutineProductCatalog.vue';
 import SkinEvaluationForm from '../components/SkinEvaluationForm.vue';
 import HealthSafetyHabitsForm from '../components/HealthSafetyHabitsForm.vue';
 import FacialMapping from '../components/FacialMapping.vue';
+
+// Catálogo Global en Ficha del Paciente (para acceso rápido desde cualquier pestaña / tablet)
+const catalogProducts = ref([]);
+const showGlobalCatalogDrawer = ref(false);
+const currentActiveStep = ref(null);
+
+const handleActiveStepChange = (val) => {
+  currentActiveStep.value = val;
+};
+
+// Onboarding Tooltip Persistente con Cookie
+const showOnboardingTip = ref(false);
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+}
+
+function setCookie(name, val, days = 365) {
+  const date = new Date();
+  date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+  const expires = `expires=${date.toUTCString()}`;
+  document.cookie = `${name}=${val}; ${expires}; path=/; SameSite=Lax`;
+  try {
+    localStorage.setItem(name, val);
+  } catch (e) {
+    // Ignore storage errors
+  }
+}
+
+function checkOnboardingCookie() {
+  const cookieVal = getCookie('onboarding_catalog_seen');
+  const storageVal = localStorage.getItem('onboarding_catalog_seen');
+  if (!cookieVal && !storageVal) {
+    setTimeout(() => {
+      showOnboardingTip.value = true;
+    }, 700);
+  }
+}
+
+function dismissOnboardingTip() {
+  showOnboardingTip.value = false;
+  setCookie('onboarding_catalog_seen', 'true', 365);
+}
+
+function handleCatalogBtnClick() {
+  dismissOnboardingTip();
+  openGlobalCatalog();
+}
+
+const openGlobalCatalog = () => {
+  if (tab.value === 'rutina' && routineEditor.value?.activeStep) {
+    currentActiveStep.value = routineEditor.value.activeStep;
+  }
+  showGlobalCatalogDrawer.value = true;
+};
+
+const loadCatalogProducts = async () => {
+  try {
+    const res = await RecommendedProductsAPI.list();
+    catalogProducts.value = res.data || [];
+  } catch (e) {
+    console.error('Error cargando catálogo en ficha:', e);
+  }
+};
+
+function formatPrice(val) {
+  if (val == null) return '';
+  const num = typeof val === 'number' ? val : parseFloat(val);
+  return isNaN(num) ? '' : num.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+const handleGlobalCatalogInsert = ({ product, targetPeriod }) => {
+  if (tab.value === 'rutina' && routineEditor.value) {
+    routineEditor.value.handleInsertFromCatalog?.({ product, targetPeriod });
+  } else {
+    const priceText = product.selling_price != null
+      ? `$${formatPrice(product.selling_price)}`
+      : 'Sin precio asignado';
+    $q.notify({
+      type: 'info',
+      message: `${product.brand_name} ${product.name} — ${priceText} (${product.stock || 0} en stock)`,
+      icon: 'inventory_2',
+      position: 'top',
+      timeout: 3500
+    });
+  }
+};
 
 const skinEvaluationFormRef = ref(null);
 const skinEvaluationBackup = ref(null);
@@ -961,9 +1138,15 @@ watch(tab, (newTab) => {
   } else if (newTab === 'rutina') {
     nextTick(() => {
       routineEditor.value?.recargarProductos?.();
+      if (routineEditor.value?.activeStep) {
+        currentActiveStep.value = routineEditor.value.activeStep;
+      }
     });
-  } else if (newTab === 'mensajes') {
-    fetchWhatsappMessages();
+  } else {
+    currentActiveStep.value = null;
+    if (newTab === 'mensajes') {
+      fetchWhatsappMessages();
+    }
   }
 });
 
@@ -1315,6 +1498,8 @@ onMounted(async () => {
     await fetchSessions(route.params.id);
     await fetchConsentStatus(route.params.id);
     await fetchWhatsappMessages();
+    await loadCatalogProducts();
+    checkOnboardingCookie();
   }
 });
 
@@ -1968,5 +2153,11 @@ async function handleRoutineSave(routineData) {
 .patient-messages-list :deep(.q-item:hover),
 .patient-messages-list .q-item:hover {
   background-color: #eaf1fb !important;
+}
+
+.onboarding-tooltip-card {
+  border-radius: 8px !important;
+  overflow: hidden;
+  z-index: 6000 !important;
 }
 </style>
