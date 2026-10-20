@@ -1,5 +1,15 @@
 <template>
   <div class="facial-mapping-container q-gutter-y-md">
+    <!-- Input oculto global para selección de imágenes clínicas por categoría -->
+    <input
+      ref="imageFileInputRef"
+      type="file"
+      accept="image/*"
+      multiple
+      class="hidden"
+      @change="onImageFilesSelected"
+    />
+
     <!-- Encabezado alineado con las demás pestañas -->
     <div class="row items-center justify-between q-mb-md">
       <div>
@@ -598,6 +608,14 @@
             </div>
             <div class="row items-center no-wrap q-gutter-x-xs">
               <q-badge
+                v-if="getImagesByCategory(sec.imageCategoryType).length > 0"
+                color="blue-grey-2"
+                text-color="blue-grey-9"
+              >
+                <q-icon name="photo_camera" size="12px" class="q-mr-xs" />
+                {{ getImagesByCategory(sec.imageCategoryType).length }}
+              </q-badge>
+              <q-badge
                 v-if="countSectionSelected(sec.id) > 0"
                 :color="sec.badgeColor"
                 :label="`${countSectionSelected(sec.id)} seleccionados`"
@@ -616,7 +634,7 @@
           <q-slide-transition>
             <div v-show="!collapsedSections[sec.id]">
               <q-separator />
-              <q-card-section>
+              <q-card-section class="q-gutter-y-md">
                 <q-markup-table flat bordered separator="cell" wrap-cells class="hybrid-table rounded-borders">
                   <thead>
                     <tr class="bg-grey-1 text-grey-8 text-left">
@@ -669,6 +687,169 @@
                     </tr>
                   </tbody>
                 </q-markup-table>
+
+                <!-- Bloque Integrado de Carga y Galería de Imágenes para esta Categoría (1, 2 o 3) -->
+                <div
+                  class="hybrid-subitem q-pa-md rounded-borders"
+                  :class="{ 'dropzone-active': dragOverCategory === sec.imageCategoryType }"
+                  @dragover.prevent="dragOverCategory = sec.imageCategoryType"
+                  @dragleave.prevent="dragOverCategory = null"
+                  @drop.prevent="onDropFiles($event, sec.imageCategoryType)"
+                >
+                  <div class="row items-center justify-between q-col-gutter-sm q-mb-sm">
+                    <div class="row items-center no-wrap col-12 col-sm-auto">
+                      <q-avatar
+                        size="30px"
+                        :color="sec.avatarBg"
+                        :text-color="sec.avatarColor"
+                        icon="photo_library"
+                        class="q-mr-sm flex-shrink-0"
+                      />
+                      <div>
+                        <div class="row items-center q-gutter-x-xs">
+                          <span class="text-body2 text-weight-bold text-grey-9">Capturas Fotográficas</span>
+                        </div>
+                        <div class="text-caption text-grey-7">
+                          Registro visual de hallazgos clínicos
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row items-center q-gutter-x-xs col-12 col-sm-auto justify-end">
+                      <q-badge
+                        :color="getImagesByCategory(sec.imageCategoryType).length > 0 ? sec.badgeColor : 'grey-4'"
+                        :text-color="getImagesByCategory(sec.imageCategoryType).length > 0 ? 'white' : 'grey-8'"
+                      >
+                        {{ getImagesByCategory(sec.imageCategoryType).length }} {{ getImagesByCategory(sec.imageCategoryType).length === 1 ? 'foto' : 'fotos' }}
+                      </q-badge>
+                    </div>
+                  </div>
+
+                  <!-- Controles de carga rápida dentro de la categoría -->
+                  <div class="row items-center q-col-gutter-sm q-mb-sm">
+                    <div class="col-12 col-sm-4">
+                      <q-select
+                        v-model="sectionUploadDrafts[sec.imageCategoryType].zone"
+                        :options="zoneOptions"
+                        use-input
+                        clearable
+                        new-value-mode="add-unique"
+                        borderless
+                        dense
+                        class="minimal-input"
+                        label="Zona anatómica (opcional)"
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="place" size="xs" color="grey-7" />
+                        </template>
+                      </q-select>
+                    </div>
+
+                    <div class="col-12 col-sm-5">
+                      <q-input
+                        v-model="sectionUploadDrafts[sec.imageCategoryType].note"
+                        borderless
+                        dense
+                        class="minimal-input"
+                        label="Observación de la captura (opcional)"
+                        placeholder="Ej: Captura 50X mejilla derecha..."
+                      />
+                    </div>
+
+                    <div class="col-12 col-sm-3 flex justify-end">
+                      <q-btn
+                        color="primary"
+                        icon="add_a_photo"
+                        label="Subir imagen"
+                        class="minimal-btn-save full-width"
+                        :loading="uploadingImage && activeUploadCategoryType === sec.imageCategoryType"
+                        @click="triggerImageUpload(sec.imageCategoryType)"
+                      />
+                    </div>
+                  </div>
+
+                  <!-- Estado vacío de la categoría -->
+                  <div
+                    v-if="getImagesByCategory(sec.imageCategoryType).length === 0"
+                    class="empty-state text-center q-pa-md text-grey-6 bg-grey-1 rounded-borders cursor-pointer"
+                    @click="triggerImageUpload(sec.imageCategoryType)"
+                  >
+                    <q-icon name="add_photo_alternate" size="26px" color="grey-5" />
+                    <div class="text-caption text-weight-medium text-grey-7 q-mt-xs">
+                      No hay imágenes cargadas
+                    </div>
+                    <div class="text-caption text-grey-6">
+                      Hacé clic aquí o arrastrá imágenes para subirlas
+                    </div>
+                  </div>
+
+                  <!-- Galería de miniaturas de la categoría -->
+                  <div v-else class="row q-col-gutter-sm q-mt-xs">
+                    <div
+                      v-for="img in getImagesByCategory(sec.imageCategoryType)"
+                      :key="img.id"
+                      class="col-12 col-sm-6 col-md-4"
+                    >
+                      <div class="facial-image-card rounded-borders overflow-hidden">
+                        <div class="facial-image-thumb-wrapper cursor-pointer" @click="openImageLightbox(img)">
+                          <img :src="img.url" :alt="img.note || sec.title" class="facial-image-thumb" loading="lazy" />
+                          <div class="facial-image-overlay flex flex-center">
+                            <q-icon name="zoom_in" size="28px" color="white" />
+                          </div>
+                          <q-badge
+                            v-if="img.zone"
+                            color="dark"
+                            class="absolute-bottom-left q-ma-xs text-caption"
+                            style="opacity: 0.85;"
+                          >
+                            <q-icon name="place" size="11px" class="q-mr-xs" />
+                            {{ img.zone }}
+                          </q-badge>
+                        </div>
+
+                        <div class="q-pa-sm bg-white">
+                          <div class="row items-start justify-between no-wrap">
+                            <div class="col overflow-hidden">
+                              <div v-if="img.note" class="text-caption text-grey-9 text-weight-medium ellipsis-2-lines">
+                                {{ img.note }}
+                              </div>
+                              <div v-else class="text-caption text-grey-5 italic">
+                                Sin observación
+                              </div>
+                              <div class="text-caption text-grey-6 q-mt-xs" style="font-size: 11px;">
+                                {{ formatImageDate(img.created_at) }}
+                              </div>
+                            </div>
+                            <div class="row items-center no-wrap q-ml-xs">
+                              <q-btn
+                                flat
+                                round
+                                dense
+                                size="xs"
+                                color="primary"
+                                icon="edit"
+                                @click="openEditImageDialog(img)"
+                              >
+                                <q-tooltip>Editar categoría u observación</q-tooltip>
+                              </q-btn>
+                              <q-btn
+                                flat
+                                round
+                                dense
+                                size="xs"
+                                color="negative"
+                                icon="delete_outline"
+                                @click="confirmDeleteImage(img)"
+                              >
+                                <q-tooltip>Eliminar imagen</q-tooltip>
+                              </q-btn>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </q-card-section>
             </div>
           </q-slide-transition>
@@ -832,7 +1013,18 @@
 
               <!-- Luz Blanca Directa -->
               <div>
-                <div class="text-caption text-weight-bold text-grey-8">LUZ BLANCA DIRECTA</div>
+                <div class="row items-center justify-between">
+                  <div class="text-caption text-weight-bold text-grey-8">LUZ BLANCA DIRECTA</div>
+                  <q-badge
+                    v-if="getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_BLANCA_DIRECTA).length > 0"
+                    color="blue-grey-1"
+                    text-color="blue-grey-9"
+                    class="text-caption"
+                  >
+                    <q-icon name="photo_camera" size="11px" class="q-mr-xs" />
+                    {{ getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_BLANCA_DIRECTA).length }}
+                  </q-badge>
+                </div>
                 <div v-if="summaryBySection.luzBlanca.length > 0" class="row q-gutter-xs q-mt-xs">
                   <q-badge
                     v-for="(item, idx) in summaryBySection.luzBlanca"
@@ -845,13 +1037,34 @@
                   </q-badge>
                 </div>
                 <div v-else class="text-caption text-grey-5 italic q-mt-xs">Sin hallazgos superficiales registrados</div>
+                <div v-if="getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_BLANCA_DIRECTA).length > 0" class="row q-gutter-xs q-mt-xs">
+                  <img
+                    v-for="img in getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_BLANCA_DIRECTA)"
+                    :key="img.id"
+                    :src="img.url"
+                    :alt="img.note || 'Luz Blanca'"
+                    class="summary-mini-thumb cursor-pointer"
+                    @click="openImageLightbox(img)"
+                  />
+                </div>
               </div>
 
               <q-separator />
 
               <!-- Luz Polarizada Cruzada -->
               <div>
-                <div class="text-caption text-weight-bold text-grey-8">LUZ POLARIZADA CRUZADA</div>
+                <div class="row items-center justify-between">
+                  <div class="text-caption text-weight-bold text-grey-8">LUZ POLARIZADA CRUZADA</div>
+                  <q-badge
+                    v-if="getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_POLARIZADA_CRUZADA).length > 0"
+                    color="blue-1"
+                    text-color="primary"
+                    class="text-caption"
+                  >
+                    <q-icon name="photo_camera" size="11px" class="q-mr-xs" />
+                    {{ getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_POLARIZADA_CRUZADA).length }}
+                  </q-badge>
+                </div>
                 <div v-if="summaryBySection.luzPolarizada.length > 0" class="row q-gutter-xs q-mt-xs">
                   <q-badge
                     v-for="(item, idx) in summaryBySection.luzPolarizada"
@@ -864,13 +1077,34 @@
                   </q-badge>
                 </div>
                 <div v-else class="text-caption text-grey-5 italic q-mt-xs">Sin patrones dérmicos registrados</div>
+                <div v-if="getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_POLARIZADA_CRUZADA).length > 0" class="row q-gutter-xs q-mt-xs">
+                  <img
+                    v-for="img in getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_POLARIZADA_CRUZADA)"
+                    :key="img.id"
+                    :src="img.url"
+                    :alt="img.note || 'Luz Polarizada'"
+                    class="summary-mini-thumb cursor-pointer"
+                    @click="openImageLightbox(img)"
+                  />
+                </div>
               </div>
 
               <q-separator />
 
               <!-- Luz UV / Wood -->
               <div>
-                <div class="text-caption text-weight-bold text-grey-8">LUZ UV / FLUORESCENCIA WOOD</div>
+                <div class="row items-center justify-between">
+                  <div class="text-caption text-weight-bold text-grey-8">LUZ UV / FLUORESCENCIA WOOD</div>
+                  <q-badge
+                    v-if="getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_UV_WOOD).length > 0"
+                    color="purple-1"
+                    text-color="purple-9"
+                    class="text-caption"
+                  >
+                    <q-icon name="photo_camera" size="11px" class="q-mr-xs" />
+                    {{ getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_UV_WOOD).length }}
+                  </q-badge>
+                </div>
                 <div v-if="summaryBySection.luzUV.length > 0" class="row q-gutter-xs q-mt-xs">
                   <q-badge
                     v-for="(item, idx) in summaryBySection.luzUV"
@@ -883,6 +1117,16 @@
                   </q-badge>
                 </div>
                 <div v-else class="text-caption text-grey-5 italic q-mt-xs">Sin signos de fluorescencia registrados</div>
+                <div v-if="getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_UV_WOOD).length > 0" class="row q-gutter-xs q-mt-xs">
+                  <img
+                    v-for="img in getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_UV_WOOD)"
+                    :key="img.id"
+                    :src="img.url"
+                    :alt="img.note || 'Luz UV'"
+                    class="summary-mini-thumb cursor-pointer"
+                    @click="openImageLightbox(img)"
+                  />
+                </div>
               </div>
             </q-card-section>
           </q-card>
@@ -1045,6 +1289,240 @@
               </div>
             </div>
           </div>
+
+          <!-- Registro Fotográfico en Impresión -->
+          <div v-if="facialImages.length > 0" class="q-mt-md">
+            <div class="text-subtitle2 text-weight-bold q-mb-sm">Capturas Fotográficas:</div>
+            <div v-for="cat in imageCategoryDefinitions" :key="cat.type" class="q-mb-md">
+              <template v-if="getImagesByCategory(cat.type).length > 0">
+                <div class="text-caption text-weight-bold text-grey-9 q-mb-xs">
+                  {{ cat.label }}
+                </div>
+                <div class="row q-col-gutter-sm">
+                  <div
+                    v-for="img in getImagesByCategory(cat.type)"
+                    :key="img.id"
+                    class="col-4"
+                  >
+                    <div class="q-pa-xs border-subtle rounded-borders">
+                      <img :src="img.url" :alt="img.note || cat.label" style="width: 100%; height: 120px; object-fit: cover; border-radius: 6px;" />
+                      <div class="text-caption text-grey-9 q-mt-xs">
+                        <b v-if="img.zone">{{ img.zone }}: </b>{{ img.note || 'Sin observación' }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
+    <!-- Modal para Editar Metadatos de Imagen (Categoría Nemotécnica, Zona, Observación) -->
+    <q-dialog v-model="showEditImageDialog" persistent>
+      <q-card style="min-width: 360px; max-width: 480px;" class="q-pa-md hybrid-card">
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6 text-primary flex items-center">
+            <q-icon name="photo_library" class="q-mr-sm" />
+            Editar Imagen Clínica
+          </div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+
+        <q-card-section class="q-gutter-y-sm q-pt-md">
+          <div v-if="editingImageForm.url" class="text-center q-mb-sm">
+            <img :src="editingImageForm.url" alt="Vista previa" style="max-height: 160px; max-width: 100%; border-radius: 8px; object-fit: cover;" />
+          </div>
+
+          <q-select
+            v-model="editingImageForm.category_type"
+            :options="imageCategoryTypeOptions"
+            emit-value
+            map-options
+            borderless
+            dense
+            class="minimal-input"
+            label="Categoría óptica"
+          >
+            <template v-slot:option="scope">
+              <q-item v-bind="scope.itemProps">
+                <q-item-section avatar>
+                  <q-avatar size="26px" :color="scope.opt.avatarBg" :text-color="scope.opt.avatarColor" :icon="scope.opt.icon" />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>{{ scope.opt.label }}</q-item-label>
+                  <q-item-label caption>{{ scope.opt.subtitle }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+
+          <q-select
+            v-model="editingImageForm.zone"
+            :options="zoneOptions"
+            use-input
+            clearable
+            new-value-mode="add-unique"
+            borderless
+            dense
+            class="minimal-input"
+            label="Zona anatómica"
+          />
+
+          <q-input
+            v-model="editingImageForm.note"
+            type="textarea"
+            autogrow
+            borderless
+            dense
+            class="minimal-input"
+            label="Observación clínica"
+            placeholder="Ej: Porfirinas activas en ala nasal derecha..."
+          />
+        </q-card-section>
+
+        <q-card-actions align="right" class="q-pt-sm">
+          <q-btn flat label="Cancelar" color="grey-8" class="minimal-btn" v-close-popup />
+          <q-btn color="primary" label="Guardar Cambios" class="minimal-btn-save" @click="saveEditedImage" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <!-- Modal Visor de Imagen a Pantalla Completa con Zoom y Desplazamiento (Lightbox) -->
+    <q-dialog v-model="showLightboxDialog" maximized transition-show="fade" transition-hide="fade">
+      <q-card v-if="lightboxImage" class="bg-grey-10 text-white column full-height no-wrap">
+        <!-- Cabecera con info de la imagen y controles de Zoom -->
+        <q-card-section class="row items-center justify-between q-py-sm bg-grey-9 q-col-gutter-sm">
+          <div class="row items-center no-wrap q-gutter-x-sm col-12 col-sm-auto">
+            <q-icon :name="getImageCategoryMeta(lightboxImage.category_type).icon" size="22px" color="amber-3" />
+            <div>
+              <div class="text-subtitle2 text-weight-bold">
+                {{ getImageCategoryMeta(lightboxImage.category_type).label }}
+              </div>
+              <div class="text-caption text-grey-4">
+                <span v-if="lightboxImage.zone">{{ lightboxImage.zone }} • </span>
+                {{ formatImageDate(lightboxImage.created_at) }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Controles de Zoom -->
+          <div class="row items-center no-wrap q-gutter-x-xs col-12 col-sm-auto justify-end">
+            <q-btn
+              flat
+              round
+              dense
+              icon="remove"
+              color="white"
+              :disable="lightboxZoom <= 1"
+              @click="adjustLightboxZoom(-0.5)"
+            >
+              <q-tooltip>Alejar</q-tooltip>
+            </q-btn>
+
+            <q-slider
+              v-model="lightboxZoom"
+              :min="1"
+              :max="5"
+              :step="0.1"
+              color="amber-3"
+              style="width: 110px;"
+              dense
+              class="q-mx-xs gt-xs"
+              @update:model-value="onLightboxSliderZoom"
+            />
+
+            <q-badge color="grey-8" text-color="amber-3" class="q-px-sm q-py-xs text-weight-bold" style="min-width: 52px; justify-content: center;">
+              {{ Math.round(lightboxZoom * 100) }}%
+            </q-badge>
+
+            <q-btn
+              flat
+              round
+              dense
+              icon="add"
+              color="white"
+              :disable="lightboxZoom >= 5"
+              @click="adjustLightboxZoom(0.5)"
+            >
+              <q-tooltip>Ampliar</q-tooltip>
+            </q-btn>
+
+            <q-btn
+              flat
+              round
+              dense
+              icon="fit_screen"
+              color="white"
+              :disable="lightboxZoom === 1 && lightboxPan.x === 0 && lightboxPan.y === 0"
+              @click="resetLightboxZoom"
+            >
+              <q-tooltip>Restablecer vista (100%)</q-tooltip>
+            </q-btn>
+
+            <q-separator vertical dark inset class="q-mx-xs" />
+
+            <q-btn flat round dense icon="close" color="white" v-close-popup>
+              <q-tooltip>Cerrar visor</q-tooltip>
+            </q-btn>
+          </div>
+        </q-card-section>
+
+        <!-- Área interactiva de visualización con soporte de rueda, doble clic, pellizco (pinch) y arrastre (pan) -->
+        <q-card-section
+          class="col flex flex-center relative-position overflow-hidden q-pa-none unselectable"
+          :style="{ cursor: lightboxZoom > 1 ? (isLightboxPanning ? 'grabbing' : 'grab') : 'zoom-in' }"
+          @wheel.prevent="onLightboxWheel"
+          @mousedown="startLightboxPan"
+          @mousemove="moveLightboxPan"
+          @mouseup="endLightboxPan"
+          @mouseleave="endLightboxPan"
+          @dblclick="toggleLightboxDoubleClickZoom"
+          @touchstart="onLightboxTouchStart"
+          @touchmove.prevent="onLightboxTouchMove"
+          @touchend="onLightboxTouchEnd"
+        >
+          <q-btn
+            v-if="facialImages.length > 1"
+            round
+            flat
+            color="white"
+            icon="chevron_left"
+            size="lg"
+            class="absolute-left q-ml-md bg-dark z-top"
+            style="opacity: 0.75;"
+            @click.stop="navigateLightbox(-1)"
+          />
+
+          <img
+            :src="lightboxImage.url"
+            :alt="lightboxImage.note || 'Captura clínica'"
+            draggable="false"
+            class="lightbox-zoomable-img"
+            :class="{ 'lightbox-smooth-transition': !isLightboxPanning && !isPinching }"
+            :style="{
+              transform: `translate3d(${lightboxPan.x}px, ${lightboxPan.y}px, 0) scale(${lightboxZoom})`
+            }"
+          />
+
+          <q-btn
+            v-if="facialImages.length > 1"
+            round
+            flat
+            color="white"
+            icon="chevron_right"
+            size="lg"
+            class="absolute-right q-mr-md bg-dark z-top"
+            style="opacity: 0.75;"
+            @click.stop="navigateLightbox(1)"
+          />
+        </q-card-section>
+
+        <q-card-section v-if="lightboxImage.note" class="bg-grey-9 q-py-sm text-body2 text-grey-2">
+          <q-icon name="notes" size="16px" class="q-mr-xs text-amber-3" />
+          {{ lightboxImage.note }}
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -1052,8 +1530,9 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive, onMounted, nextTick, watch } from 'vue';
+import { ref, computed, reactive, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import { useQuasar } from 'quasar';
+import { FacialAnalysisAPI, FACIAL_IMAGE_TYPES } from '../services/api';
 
 const props = defineProps({
   patient: {
@@ -1172,6 +1651,7 @@ const zoneOptions = [
 const opticalProtocolSections = [
   {
     id: 'luzBlanca',
+    imageCategoryType: FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT,
     title: '1. Luz Blanca Directa',
     subtitle: 'Superficie epidérmica, microrelieve y textura',
     icon: 'wb_sunny',
@@ -1235,6 +1715,7 @@ const opticalProtocolSections = [
   },
   {
     id: 'luzPolarizada',
+    imageCategoryType: FACIAL_IMAGE_TYPES.CROSS_POLARIZED_LIGHT,
     title: '2. Luz Polarizada Cruzada',
     subtitle: 'Nivel dérmico, vascularización y pigmentación',
     icon: 'tonality',
@@ -1299,6 +1780,7 @@ const opticalProtocolSections = [
   },
   {
     id: 'luzUV',
+    imageCategoryType: FACIAL_IMAGE_TYPES.UV_WOOD_LIGHT,
     title: '3. Luz UV / Fluorescencia Tipo Wood',
     subtitle: 'Microbiota, porfirinas, sebo y contaminantes',
     icon: 'flare',
@@ -1582,8 +2064,428 @@ function deleteMarker(id) {
 
 const canvasDataUrl = ref('');
 
+// ============================================================================
+// REGISTRO FOTOGRÁFICO POR CATEGORÍA NEMOTÉCNICA (S3 / LOCAL STORAGE)
+// ============================================================================
+const imageCategoryDefinitions = [
+  {
+    type: FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT,
+    label: '1. Luz Blanca Directa',
+    shortLabel: 'Luz Blanca Directa',
+    subtitle: 'Superficie epidérmica, microrelieve y textura',
+    icon: 'wb_sunny',
+    avatarBg: 'blue-grey-1',
+    avatarColor: 'blue-grey-8',
+    badgeColor: 'blue-grey-8'
+  },
+  {
+    type: FACIAL_IMAGE_TYPES.CROSS_POLARIZED_LIGHT,
+    label: '2. Luz Polarizada Cruzada',
+    shortLabel: 'Luz Polarizada Cruzada',
+    subtitle: 'Nivel dérmico, vascularización y pigmentación',
+    icon: 'tonality',
+    avatarBg: 'blue-1',
+    avatarColor: 'blue-8',
+    badgeColor: 'primary'
+  },
+  {
+    type: FACIAL_IMAGE_TYPES.UV_WOOD_LIGHT,
+    label: '3. Luz UV / Fluorescencia Tipo Wood',
+    shortLabel: 'Luz UV / Wood',
+    subtitle: 'Microbiota, porfirinas, sebo y contaminantes',
+    icon: 'flare',
+    avatarBg: 'purple-1',
+    avatarColor: 'purple-9',
+    badgeColor: 'purple-8'
+  }
+];
+
+const imageCategoryTypeOptions = imageCategoryDefinitions.map(c => ({
+  value: c.type,
+  label: c.label,
+  subtitle: c.subtitle,
+  icon: c.icon,
+  avatarBg: c.avatarBg,
+  avatarColor: c.avatarColor
+}));
+
+function normalizeImageCategoryType(rawType) {
+  if (!rawType) return FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT;
+  const val = String(rawType).trim();
+  if (val === '1' || val === 'luzBlanca' || val === 'LUZ_BLANCA_DIRECTA' || val === FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT) {
+    return FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT;
+  }
+  if (val === '2' || val === 'luzPolarizada' || val === 'LUZ_POLARIZADA_CRUZADA' || val === FACIAL_IMAGE_TYPES.CROSS_POLARIZED_LIGHT) {
+    return FACIAL_IMAGE_TYPES.CROSS_POLARIZED_LIGHT;
+  }
+  if (val === '3' || val === 'luzUV' || val === 'LUZ_UV_WOOD' || val === FACIAL_IMAGE_TYPES.UV_WOOD_LIGHT) {
+    return FACIAL_IMAGE_TYPES.UV_WOOD_LIGHT;
+  }
+  return FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT;
+}
+
+function getImageCategoryMeta(categoryType) {
+  const normalized = normalizeImageCategoryType(categoryType);
+  return imageCategoryDefinitions.find(c => c.type === normalized) || imageCategoryDefinitions[0];
+}
+
+const facialImages = ref([]);
+const localObjectUrls = [];
+const imageFileInputRef = ref(null);
+const uploadingImage = ref(false);
+const activeUploadCategoryType = ref(FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT);
+const dragOverCategory = ref(null);
+
+const sectionUploadDrafts = reactive({
+  [FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT]: { zone: '', note: '' },
+  [FACIAL_IMAGE_TYPES.CROSS_POLARIZED_LIGHT]: { zone: '', note: '' },
+  [FACIAL_IMAGE_TYPES.UV_WOOD_LIGHT]: { zone: '', note: '' }
+});
+
+const showEditImageDialog = ref(false);
+const editingImageForm = reactive({
+  id: '',
+  category_type: FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT,
+  zone: '',
+  note: '',
+  url: ''
+});
+
+const showLightboxDialog = ref(false);
+const lightboxImage = ref(null);
+const lightboxZoom = ref(1);
+const lightboxPan = reactive({ x: 0, y: 0 });
+const isLightboxPanning = ref(false);
+const isPinching = ref(false);
+const panStart = reactive({ x: 0, y: 0 });
+const pinchStartDistance = ref(0);
+const pinchStartZoom = ref(1);
+
+function getImagesByCategory(categoryType) {
+  const normalized = normalizeImageCategoryType(categoryType);
+  return facialImages.value.filter(img => normalizeImageCategoryType(img.category_type) === normalized);
+}
+
+function formatImageDate(dateStr) {
+  if (!dateStr) return currentDateFormatted.value;
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return String(dateStr);
+    return d.toLocaleDateString('es-AR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  } catch {
+    return String(dateStr);
+  }
+}
+
+function triggerImageUpload(categoryType) {
+  activeUploadCategoryType.value = normalizeImageCategoryType(categoryType);
+  if (imageFileInputRef.value) {
+    imageFileInputRef.value.value = '';
+    imageFileInputRef.value.click();
+  }
+}
+
+async function onImageFilesSelected(event) {
+  const files = Array.from(event.target?.files || []);
+  if (!files.length) return;
+  await processSelectedImageFiles(files, activeUploadCategoryType.value);
+}
+
+async function onDropFiles(event, categoryType) {
+  dragOverCategory.value = null;
+  const files = Array.from(event.dataTransfer?.files || []).filter(f => f.type.startsWith('image/'));
+  if (!files.length) return;
+  await processSelectedImageFiles(files, normalizeImageCategoryType(categoryType));
+}
+
+async function processSelectedImageFiles(files, categoryType) {
+  const targetCategory = normalizeImageCategoryType(categoryType);
+  uploadingImage.value = true;
+  const draft = sectionUploadDrafts[targetCategory] || { zone: '', note: '' };
+  const noteToApply = draft.note ? draft.note.trim() : '';
+  const zoneToApply = draft.zone ? draft.zone.trim() : '';
+
+  try {
+    for (const file of files) {
+      let addedFromBackend = false;
+
+      if (props.patient?.id) {
+        try {
+          const res = await FacialAnalysisAPI.uploadImage(
+            props.patient.id,
+            file,
+            targetCategory,
+            noteToApply,
+            zoneToApply
+          );
+          if (res?.data) {
+            facialImages.value.push({
+              id: res.data.id || `img_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+              category_type: normalizeImageCategoryType(res.data.category_type || targetCategory),
+              url: res.data.url,
+              s3_key: res.data.s3_key || res.data.storage_key || '',
+              file_name: res.data.file_name || file.name,
+              zone: res.data.zone ?? zoneToApply,
+              note: res.data.note ?? noteToApply,
+              created_at: res.data.created_at || new Date().toISOString()
+            });
+            addedFromBackend = true;
+          }
+        } catch (err) {
+          // Si el endpoint del backend aún no está disponible, se previsualiza localmente en memoria
+          console.info('Modo previsualización local de imagen (pendiente conexión S3/Local backend):', err?.message);
+        }
+      }
+
+      if (!addedFromBackend) {
+        const objectUrl = URL.createObjectURL(file);
+        localObjectUrls.push(objectUrl);
+        facialImages.value.push({
+          id: `local_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+          category_type: targetCategory,
+          url: objectUrl,
+          s3_key: '',
+          file_name: file.name,
+          zone: zoneToApply,
+          note: noteToApply,
+          created_at: new Date().toISOString(),
+          is_local_preview: true
+        });
+      }
+    }
+
+    if (sectionUploadDrafts[targetCategory]) {
+      sectionUploadDrafts[targetCategory].note = '';
+      sectionUploadDrafts[targetCategory].zone = '';
+    }
+    $q.notify({
+      type: 'positive',
+      message: `${files.length === 1 ? 'Imagen cargada correctamente' : `${files.length} imágenes cargadas correctamente`}`,
+      position: 'top',
+      timeout: 2500
+    });
+  } finally {
+    uploadingImage.value = false;
+  }
+}
+
+function openEditImageDialog(img) {
+  editingImageForm.id = img.id;
+  editingImageForm.category_type = normalizeImageCategoryType(img.category_type);
+  editingImageForm.zone = img.zone || '';
+  editingImageForm.note = img.note || '';
+  editingImageForm.url = img.url || '';
+  showEditImageDialog.value = true;
+}
+
+async function saveEditedImage() {
+  const idx = facialImages.value.findIndex(i => i.id === editingImageForm.id);
+  const updatedCategory = normalizeImageCategoryType(editingImageForm.category_type);
+  const updatedZone = editingImageForm.zone ? editingImageForm.zone.trim() : '';
+  const updatedNote = editingImageForm.note ? editingImageForm.note.trim() : '';
+
+  if (idx !== -1) {
+    const currentImg = facialImages.value[idx];
+    if (props.patient?.id && !currentImg.is_local_preview && currentImg.id) {
+      try {
+        const res = await FacialAnalysisAPI.updateImage(props.patient.id, currentImg.id, {
+          category_type: updatedCategory,
+          zone: updatedZone,
+          note: updatedNote
+        });
+        if (res?.data) {
+          facialImages.value[idx] = {
+            ...currentImg,
+            ...res.data,
+            category_type: normalizeImageCategoryType(res.data.category_type || updatedCategory)
+          };
+          showEditImageDialog.value = false;
+          return;
+        }
+      } catch (err) {
+        console.warn('Error actualizando metadatos de imagen en backend:', err?.message);
+      }
+    }
+
+    facialImages.value[idx] = {
+      ...currentImg,
+      category_type: updatedCategory,
+      zone: updatedZone,
+      note: updatedNote
+    };
+  }
+  showEditImageDialog.value = false;
+}
+
+function confirmDeleteImage(img) {
+  $q.dialog({
+    title: 'Eliminar imagen',
+    message: '¿Deseás eliminar esta imagen?',
+    cancel: {
+      label: 'Cancelar',
+      flat: true,
+      color: 'grey-8',
+      class: 'minimal-btn'
+    },
+    ok: {
+      label: 'Eliminar',
+      color: 'negative',
+      class: 'minimal-btn-delete'
+    },
+    persistent: true
+  }).onOk(async () => {
+    if (props.patient?.id && !img.is_local_preview && img.id) {
+      try {
+        await FacialAnalysisAPI.deleteImage(props.patient.id, img.id);
+      } catch (err) {
+        console.warn('Error eliminando imagen en backend o modo local:', err?.message);
+      }
+    }
+    facialImages.value = facialImages.value.filter(item => item.id !== img.id);
+    if (lightboxImage.value?.id === img.id) {
+      showLightboxDialog.value = false;
+      lightboxImage.value = null;
+    }
+  });
+}
+
+function resetLightboxZoom() {
+  lightboxZoom.value = 1;
+  lightboxPan.x = 0;
+  lightboxPan.y = 0;
+  isLightboxPanning.value = false;
+  isPinching.value = false;
+}
+
+function adjustLightboxZoom(delta) {
+  const next = Math.min(5, Math.max(1, Math.round((lightboxZoom.value + delta) * 10) / 10));
+  lightboxZoom.value = next;
+  if (next === 1) {
+    lightboxPan.x = 0;
+    lightboxPan.y = 0;
+  }
+}
+
+function onLightboxSliderZoom(val) {
+  if (val <= 1) {
+    lightboxPan.x = 0;
+    lightboxPan.y = 0;
+  }
+}
+
+function onLightboxWheel(event) {
+  const step = event.deltaY < 0 ? 0.25 : -0.25;
+  adjustLightboxZoom(step);
+}
+
+function toggleLightboxDoubleClickZoom() {
+  if (lightboxZoom.value > 1) {
+    resetLightboxZoom();
+  } else {
+    lightboxZoom.value = 2.5;
+  }
+}
+
+function startLightboxPan(event) {
+  if (lightboxZoom.value <= 1) return;
+  isLightboxPanning.value = true;
+  panStart.x = event.clientX - lightboxPan.x;
+  panStart.y = event.clientY - lightboxPan.y;
+}
+
+function moveLightboxPan(event) {
+  if (!isLightboxPanning.value || lightboxZoom.value <= 1) return;
+  lightboxPan.x = event.clientX - panStart.x;
+  lightboxPan.y = event.clientY - panStart.y;
+}
+
+function endLightboxPan() {
+  isLightboxPanning.value = false;
+}
+
+function getTouchDistance(t1, t2) {
+  const dx = t1.clientX - t2.clientX;
+  const dy = t1.clientY - t2.clientY;
+  return Math.hypot(dx, dy);
+}
+
+function onLightboxTouchStart(event) {
+  if (event.touches.length === 2) {
+    isPinching.value = true;
+    isLightboxPanning.value = false;
+    pinchStartDistance.value = getTouchDistance(event.touches[0], event.touches[1]);
+    pinchStartZoom.value = lightboxZoom.value;
+  } else if (event.touches.length === 1 && lightboxZoom.value > 1) {
+    isLightboxPanning.value = true;
+    panStart.x = event.touches[0].clientX - lightboxPan.x;
+    panStart.y = event.touches[0].clientY - lightboxPan.y;
+  }
+}
+
+function onLightboxTouchMove(event) {
+  if (isPinching.value && event.touches.length === 2 && pinchStartDistance.value > 0) {
+    const currentDist = getTouchDistance(event.touches[0], event.touches[1]);
+    const ratio = currentDist / pinchStartDistance.value;
+    const nextZoom = Math.min(5, Math.max(1, Math.round(pinchStartZoom.value * ratio * 100) / 100));
+    lightboxZoom.value = nextZoom;
+    if (nextZoom === 1) {
+      lightboxPan.x = 0;
+      lightboxPan.y = 0;
+    }
+  } else if (isLightboxPanning.value && event.touches.length === 1 && lightboxZoom.value > 1) {
+    lightboxPan.x = event.touches[0].clientX - panStart.x;
+    lightboxPan.y = event.touches[0].clientY - panStart.y;
+  }
+}
+
+function onLightboxTouchEnd(event) {
+  if (event.touches.length < 2) {
+    isPinching.value = false;
+  }
+  if (event.touches.length === 0) {
+    isLightboxPanning.value = false;
+  }
+}
+
+function openImageLightbox(img) {
+  resetLightboxZoom();
+  lightboxImage.value = img;
+  showLightboxDialog.value = true;
+}
+
+function navigateLightbox(direction) {
+  if (!lightboxImage.value || facialImages.value.length <= 1) return;
+  const currentIdx = facialImages.value.findIndex(i => i.id === lightboxImage.value.id);
+  if (currentIdx === -1) return;
+  const nextIdx = (currentIdx + direction + facialImages.value.length) % facialImages.value.length;
+  resetLightboxZoom();
+  lightboxImage.value = facialImages.value[nextIdx];
+}
+
+function revokeLocalObjectUrls() {
+  while (localObjectUrls.length > 0) {
+    const url = localObjectUrls.pop();
+    try {
+      URL.revokeObjectURL(url);
+    } catch {
+      // Ignore revoke errors
+    }
+  }
+}
+
+onBeforeUnmount(() => {
+  revokeLocalObjectUrls();
+});
+
 function resetData() {
   markers.value = [];
+  facialImages.value = [];
   canvasDataUrl.value = '';
   clearCanvas();
   const defaults = createDefaultOpticalSheet();
@@ -1599,6 +2501,7 @@ function loadData(data) {
 
   if (!data) {
     markers.value = [];
+    facialImages.value = [];
     canvasDataUrl.value = '';
     clearCanvas();
     updateSnapshot();
@@ -1610,6 +2513,28 @@ function loadData(data) {
   } catch (e) {
     console.warn('Error parsing markers_json', e);
     markers.value = [];
+  }
+
+  try {
+    if (Array.isArray(data.images)) {
+      facialImages.value = data.images.map(img => ({
+        ...img,
+        category_type: normalizeImageCategoryType(img.category_type)
+      }));
+    } else if (data.images_json) {
+      const parsedImages = JSON.parse(data.images_json);
+      facialImages.value = Array.isArray(parsedImages)
+        ? parsedImages.map(img => ({
+            ...img,
+            category_type: normalizeImageCategoryType(img.category_type)
+          }))
+        : [];
+    } else {
+      facialImages.value = [];
+    }
+  } catch (e) {
+    console.warn('Error parsing facial analysis images', e);
+    facialImages.value = [];
   }
 
   canvasDataUrl.value = data.canvas_image || '';
@@ -2148,6 +3073,91 @@ defineExpose({
   background-color: #1565c0;
   color: #ffffff;
   transform: scale(1.1);
+}
+
+.facial-image-card {
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.facial-image-card:hover {
+  border-color: #90caf9;
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.08);
+}
+
+.facial-image-thumb-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background-color: #f1f5f9;
+  overflow: hidden;
+}
+
+.facial-image-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.25s ease;
+}
+
+.facial-image-thumb-wrapper:hover .facial-image-thumb {
+  transform: scale(1.04);
+}
+
+.facial-image-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.35);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.facial-image-thumb-wrapper:hover .facial-image-overlay {
+  opacity: 1;
+}
+
+.dropzone-active {
+  border-color: #1976d2 !important;
+  background-color: #eaf1fb !important;
+}
+
+.summary-mini-thumb {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.summary-mini-thumb:hover {
+  transform: scale(1.08);
+  border-color: #1976d2;
+}
+
+.border-subtle {
+  border: 1px solid #e2e8f0;
+}
+
+.lightbox-zoomable-img {
+  max-width: 92vw;
+  max-height: 82vh;
+  object-fit: contain;
+  border-radius: 8px;
+  transform-origin: center center;
+  will-change: transform;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.lightbox-smooth-transition {
+  transition: transform 0.16s ease-out;
+}
+
+.pointer-events-none {
+  pointer-events: none;
 }
 
 @media print {
