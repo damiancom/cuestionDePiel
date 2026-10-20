@@ -402,7 +402,7 @@ const props = defineProps({
 const collapsedLesiones = ref(false);
 
 const biotiposOptions = [
-  { label: 'Eutrófica', value: 'Eutrófica' },
+  { label: 'Normal / Eudermica', value: 'Normal / Eudermica' },
   { label: 'Seca / Alípica', value: 'Seca / Alípica' },
   { label: 'Grasa', value: 'Grasa' },
   { label: 'Mixta', value: 'Mixta' }
