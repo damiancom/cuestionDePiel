@@ -24,7 +24,8 @@ body {
   color: #1f2937;
 }
 
-.q-btn {
+.q-btn,
+.q-tab {
   text-transform: none;
 }
 
