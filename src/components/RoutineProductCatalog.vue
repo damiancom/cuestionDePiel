@@ -50,8 +50,8 @@
           </div>
         </div>
 
-        <!-- Acciones de inserción a Rutina -->
-        <div class="row items-center justify-between q-mt-xs pt-1 border-top-faint">
+        <!-- Acciones de inserción a Rutina (solo visible si está viendo la rutina) -->
+        <div v-if="showRoutineActions" class="row items-center justify-between q-mt-xs pt-1 border-top-faint">
           <span class="text-xs text-grey-6">Agregar a rutina:</span>
           <div class="row q-gutter-xs">
             <q-btn
@@ -101,6 +101,10 @@ const props = defineProps({
   activeStep: {
     type: Object,
     default: () => ({ period: 'day', index: 0 })
+  },
+  showRoutineActions: {
+    type: Boolean,
+    default: false
   }
 });
 

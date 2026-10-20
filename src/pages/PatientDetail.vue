@@ -781,10 +781,11 @@
           <q-btn flat round dense icon="close" color="grey-8" v-close-popup />
         </q-card-section>
 
-        <!-- Contenido con Buscador, Chips y Lista -->
+        <!-- Contenido con Buscador y Lista de Productos -->
         <q-card-section class="col q-pa-md scroll">
           <RoutineProductCatalog
             :products="catalogProducts"
+            :show-routine-actions="tab === 'rutina'"
             @insert-product="handleGlobalCatalogInsert"
           />
         </q-card-section>
