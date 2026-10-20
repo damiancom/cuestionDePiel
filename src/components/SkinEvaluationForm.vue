@@ -402,10 +402,10 @@ const props = defineProps({
 const collapsedLesiones = ref(false);
 
 const biotiposOptions = [
-  { label: 'Normal / Eudermica', value: 'Normal / Eudermica' },
-  { label: 'Seca / Alípica', value: 'Seca / Alípica' },
-  { label: 'Grasa', value: 'Grasa' },
-  { label: 'Mixta', value: 'Mixta' }
+  { label: 'Eudérmica', value: 'Eudérmica' },
+  { label: 'Alípica', value: 'Alípica' },
+  { label: 'Mixta', value: 'Mixta' },
+  { label: 'Grasa', value: 'Grasa' }
 ];
 
 const lesionesList = {
@@ -632,7 +632,14 @@ function loadData(data) {
 
   const rawFototipo = val('phototype', 'phototype', null);
   formData.fototipo = rawFototipo != null && rawFototipo !== '' ? Number(rawFototipo) : null;
-  formData.biotipo = val('skin_biotype', 'skinBiotype', '') || '';
+  const rawBiotype = val('skin_biotype', 'skinBiotype', '') || '';
+  if (['Normal / Eudermica', 'Normal / Eudérmica', 'Normal', 'Eudermica'].includes(rawBiotype)) {
+    formData.biotipo = 'Eudérmica';
+  } else if (['Seca / Alípica', 'Seca / Alipica', 'Seca', 'Alipica'].includes(rawBiotype)) {
+    formData.biotipo = 'Alípica';
+  } else {
+    formData.biotipo = rawBiotype;
+  }
 
   const rawCond = val('skin_conditions', 'skinConditions', '');
   if (Array.isArray(rawCond)) {

@@ -351,7 +351,14 @@ function loadData(data) {
   formData.dermatologicos.cicatrizacionQueloides = !!val('has_keloids_irregular_scarring', 'hasKeloidsIrregularScarring', false);
   const rawFototipo = val('phototype', 'phototype', null);
   formData.dermatologicos.fototipo = rawFototipo != null && rawFototipo !== '' ? Number(rawFototipo) : null;
-  formData.dermatologicos.biotipo = val('skin_biotype', 'skinBiotype', '') || '';
+  const rawBiotype = val('skin_biotype', 'skinBiotype', '') || '';
+  if (['Normal / Eudermica', 'Normal / Eudérmica', 'Normal', 'Eudermica'].includes(rawBiotype)) {
+    formData.dermatologicos.biotipo = 'Eudérmica';
+  } else if (['Seca / Alípica', 'Seca / Alipica', 'Seca', 'Alipica'].includes(rawBiotype)) {
+    formData.dermatologicos.biotipo = 'Alípica';
+  } else {
+    formData.dermatologicos.biotipo = rawBiotype;
+  }
   const rawCond = val('skin_conditions', 'skinConditions', '');
   if (Array.isArray(rawCond)) {
     formData.dermatologicos.condiciones = rawCond;
