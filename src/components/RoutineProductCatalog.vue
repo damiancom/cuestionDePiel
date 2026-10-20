@@ -18,6 +18,27 @@
       </template>
     </q-input>
 
+    <!-- Aviso de contexto para la rutina (si está en la pestaña de Rutina) -->
+    <div
+      v-if="showRoutineActions && !activeStep"
+      class="text-caption text-grey-7 bg-blue-1 q-pa-xs rounded-borders text-center q-mb-sm row items-center justify-center no-wrap"
+    >
+      <q-icon name="touch_app" size="16px" color="primary" class="q-mr-xs" />
+      <span>Selecciona un paso en la rutina para añadir productos</span>
+    </div>
+    <div
+      v-else-if="showRoutineActions && activeStep"
+      class="text-caption text-primary bg-blue-1 q-pa-xs rounded-borders text-center q-mb-sm row items-center justify-center no-wrap text-weight-medium"
+    >
+      <q-icon
+        :name="activeStep.period === 'day' ? 'wb_sunny' : 'bedtime'"
+        size="16px"
+        :color="activeStep.period === 'day' ? 'amber-9' : 'indigo-7'"
+        class="q-mr-xs"
+      />
+      <span>Añadiendo a Paso {{ activeStep.index + 1 }} de {{ activeStep.period === 'day' ? 'Día' : 'Noche' }}</span>
+    </div>
+
     <!-- Lista de Productos (aprovecha toda la altura vertical) -->
     <div class="products-scroll-area col">
       <div
@@ -50,33 +71,37 @@
           </div>
         </div>
 
-        <!-- Acciones de inserción a Rutina (solo visible si está viendo la rutina) -->
-        <div v-if="showRoutineActions" class="row items-center justify-between q-mt-xs pt-1 border-top-faint">
-          <span class="text-xs text-grey-6">Agregar a rutina:</span>
-          <div class="row q-gutter-xs">
+        <!-- Acciones de inserción a Rutina: solo si hay un paso seleccionado -->
+        <div v-if="showRoutineActions && activeStep" class="row items-center justify-between q-mt-xs pt-1 border-top-faint">
+          <span class="text-xs text-grey-6">
+            Paso {{ activeStep.index + 1 }} ({{ activeStep.period === 'day' ? 'Día' : 'Noche' }}):
+          </span>
+          <div>
             <q-btn
+              v-if="activeStep.period === 'day'"
               flat
               dense
               size="sm"
               color="amber-9"
               icon="wb_sunny"
-              label="Día"
-              class="q-px-xs action-btn"
+              label="Agregar a Día"
+              class="q-px-xs action-btn text-weight-medium"
               @click="$emit('insert-product', { product: prod, targetPeriod: 'day' })"
             >
-              <q-tooltip>Añadir a pasos de Día</q-tooltip>
+              <q-tooltip>Añadir al paso {{ activeStep.index + 1 }} de Día</q-tooltip>
             </q-btn>
             <q-btn
+              v-if="activeStep.period === 'night'"
               flat
               dense
               size="sm"
               color="indigo-7"
               icon="bedtime"
-              label="Noche"
-              class="q-px-xs action-btn"
+              label="Agregar a Noche"
+              class="q-px-xs action-btn text-weight-medium"
               @click="$emit('insert-product', { product: prod, targetPeriod: 'night' })"
             >
-              <q-tooltip>Añadir a pasos de Noche</q-tooltip>
+              <q-tooltip>Añadir al paso {{ activeStep.index + 1 }} de Noche</q-tooltip>
             </q-btn>
           </div>
         </div>
@@ -100,7 +125,7 @@ const props = defineProps({
   },
   activeStep: {
     type: Object,
-    default: () => ({ period: 'day', index: 0 })
+    default: null
   },
   showRoutineActions: {
     type: Boolean,

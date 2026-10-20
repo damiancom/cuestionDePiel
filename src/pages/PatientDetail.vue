@@ -412,7 +412,12 @@
               </div>
             </q-tab-panel>
             <q-tab-panel name="rutina">
-              <RoutineGenerator ref="routineEditor" :initialRoutine="mappedRoutine" @save="handleRoutineSave" />
+              <RoutineGenerator
+                ref="routineEditor"
+                :initialRoutine="mappedRoutine"
+                @save="handleRoutineSave"
+                @active-step-change="handleActiveStepChange"
+              />
               <div class="row q-gutter-sm justify-end q-mt-lg">
                 <q-btn flat label="Cancelar" @click="cancelarRutina" color="grey-8" class="minimal-btn" />
                 <q-btn label="Guardar Rutina" color="primary" @click="guardarRutina" class="minimal-btn-save" />
@@ -815,6 +820,7 @@
         <q-card-section class="col q-pa-md scroll">
           <RoutineProductCatalog
             :products="catalogProducts"
+            :active-step="currentActiveStep"
             :show-routine-actions="tab === 'rutina'"
             @insert-product="handleGlobalCatalogInsert"
           />
@@ -840,6 +846,11 @@ import FacialMapping from '../components/FacialMapping.vue';
 // Catálogo Global en Ficha del Paciente (para acceso rápido desde cualquier pestaña / tablet)
 const catalogProducts = ref([]);
 const showGlobalCatalogDrawer = ref(false);
+const currentActiveStep = ref(null);
+
+const handleActiveStepChange = (val) => {
+  currentActiveStep.value = val;
+};
 
 // Onboarding Tooltip Persistente con Cookie
 const showOnboardingTip = ref(false);
@@ -884,6 +895,9 @@ function handleCatalogBtnClick() {
 }
 
 const openGlobalCatalog = () => {
+  if (tab.value === 'rutina' && routineEditor.value?.activeStep) {
+    currentActiveStep.value = routineEditor.value.activeStep;
+  }
   showGlobalCatalogDrawer.value = true;
 };
 
@@ -1124,9 +1138,15 @@ watch(tab, (newTab) => {
   } else if (newTab === 'rutina') {
     nextTick(() => {
       routineEditor.value?.recargarProductos?.();
+      if (routineEditor.value?.activeStep) {
+        currentActiveStep.value = routineEditor.value.activeStep;
+      }
     });
-  } else if (newTab === 'mensajes') {
-    fetchWhatsappMessages();
+  } else {
+    currentActiveStep.value = null;
+    if (newTab === 'mensajes') {
+      fetchWhatsappMessages();
+    }
   }
 });
 

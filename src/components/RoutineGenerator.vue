@@ -56,7 +56,7 @@
                   v-for="(step, index) in routineData.day"
                   :key="'day-' + index"
                   class="step-card step-card--day q-mb-sm"
-                  :class="{ 'step-card--active': activeStep.period === 'day' && activeStep.index === index }"
+                  :class="{ 'step-card--active': activeStep?.period === 'day' && activeStep?.index === index }"
                   @click="setActiveStep('day', index)"
                 >
                   <!-- Cabecera del paso -->
@@ -195,7 +195,7 @@
                   v-for="(step, index) in routineData.night"
                   :key="'night-' + index"
                   class="step-card step-card--night q-mb-sm"
-                  :class="{ 'step-card--active': activeStep.period === 'night' && activeStep.index === index }"
+                  :class="{ 'step-card--active': activeStep?.period === 'night' && activeStep?.index === index }"
                   @click="setActiveStep('night', index)"
                 >
                   <!-- Cabecera del paso -->
@@ -423,7 +423,7 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['save']);
+const emit = defineEmits(['save', 'active-step-change']);
 const $q = useQuasar();
 
 // Estado del componente
@@ -452,10 +452,11 @@ const routineData = reactive({
 });
 
 // Paso activo / enfocado (para inserciones desde el catálogo)
-const activeStep = ref({ period: 'day', index: 0 });
+const activeStep = ref(null);
 
 const setActiveStep = (period, index) => {
   activeStep.value = { period, index };
+  emit('active-step-change', activeStep.value);
 };
 
 // Snapshot para detección de cambios sin guardar
@@ -561,7 +562,7 @@ const handleTextareaInput = (event, period, index) => {
 
   if (match) {
     activeMention.value = { period, index };
-    activeStep.value = { period, index };
+    setActiveStep(period, index);
     mentionQuery.value = match[1];
     mentionStartIndex.value = cursorPosition - match[1].length - 1; // La posición exacta del '@'
     showMentionMenu.value = true;
@@ -646,11 +647,11 @@ const selectQuickPickerProduct = (product) => {
 // INSERCIÓN DESDE EL PANEL LATERAL DE CATÁLOGO
 // ==========================================
 const handleInsertFromCatalog = ({ product, targetPeriod }) => {
-  const period = targetPeriod || activeStep.value.period || 'day';
+  const period = targetPeriod || (activeStep.value ? activeStep.value.period : 'day');
   const prodText = `${product.brand_name} ${product.name}`;
 
   // Si hay un paso activo de ese período y tiene menos de 2 renglones o está vacío, agregamos allí
-  let targetIndex = activeStep.value.period === period ? activeStep.value.index : null;
+  let targetIndex = activeStep.value && activeStep.value.period === period ? activeStep.value.index : null;
 
   if (targetIndex !== null && routineData[period][targetIndex]) {
     const step = routineData[period][targetIndex];
@@ -671,7 +672,7 @@ const handleInsertFromCatalog = ({ product, targetPeriod }) => {
       title: product.category_name || product.function_name || 'Nuevo Paso',
       description: prodText
     });
-    activeStep.value = { period, index: routineData[period].length - 1 };
+    setActiveStep(period, routineData[period].length - 1);
     $q.notify({
       type: 'positive',
       message: `Nuevo paso creado en ${period === 'day' ? 'Día' : 'Noche'} con "${prodText}"`,
@@ -689,13 +690,18 @@ const addStep = (period) => {
     title: '',
     description: ''
   });
-  activeStep.value = { period, index: routineData[period].length - 1 };
+  setActiveStep(period, routineData[period].length - 1);
 };
 
 const removeStep = (period, index) => {
   routineData[period].splice(index, 1);
-  if (activeStep.value.period === period && activeStep.value.index >= routineData[period].length) {
-    activeStep.value.index = Math.max(0, routineData[period].length - 1);
+  if (activeStep.value && activeStep.value.period === period) {
+    if (routineData[period].length === 0) {
+      activeStep.value = null;
+    } else if (activeStep.value.index >= routineData[period].length) {
+      activeStep.value.index = Math.max(0, routineData[period].length - 1);
+    }
+    emit('active-step-change', activeStep.value);
   }
 };
 
@@ -857,7 +863,8 @@ defineExpose({
   updateSnapshot,
   toggleCatalog,
   showCatalog,
-  handleInsertFromCatalog
+  handleInsertFromCatalog,
+  activeStep
 });
 </script>
 
