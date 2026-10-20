@@ -1,6 +1,6 @@
 <template>
   <div class="catalog-product-list column full-height">
-    <!-- Buscador -->
+    <!-- Buscador directo (sin filtros voluminosos que quitan espacio vertical) -->
     <q-input
       v-model="search"
       placeholder="Buscar por nombre, marca o función..."
@@ -8,41 +8,17 @@
       borderless
       class="minimal-search-input full-width q-mb-sm"
       clearable
+      autofocus
     >
       <template #prepend>
         <q-icon name="search" size="20px" color="primary" />
       </template>
+      <template #append v-if="search">
+        <span class="text-caption text-grey-6 text-xs">{{ filtered.length }}</span>
+      </template>
     </q-input>
 
-    <!-- Filtros rápidos por Categoría -->
-    <div class="category-chips-scroll q-mb-sm">
-      <q-chip
-        v-for="cat in categories"
-        :key="cat"
-        clickable
-        dense
-        :color="selectedCategory === cat ? 'primary' : 'grey-2'"
-        :text-color="selectedCategory === cat ? 'white' : 'grey-8'"
-        class="text-caption q-mr-xs q-mb-xs"
-        @click="selectedCategory = cat"
-      >
-        {{ cat }}
-      </q-chip>
-    </div>
-
-    <!-- Filtro de stock y contador -->
-    <div class="row items-center justify-between q-mb-sm text-caption text-grey-7">
-      <span>{{ filtered.length }} producto{{ filtered.length === 1 ? '' : 's' }}</span>
-      <q-toggle
-        v-model="onlyInStock"
-        label="Solo con stock"
-        dense
-        size="xs"
-        color="positive"
-      />
-    </div>
-
-    <!-- Lista de Productos -->
+    <!-- Lista de Productos (aprovecha toda la altura vertical) -->
     <div class="products-scroll-area col">
       <div
         v-for="prod in filtered"
@@ -107,7 +83,7 @@
       </div>
 
       <div v-if="filtered.length === 0" class="text-center text-grey-6 q-pa-lg text-caption">
-        No hay productos disponibles con el criterio seleccionado.
+        No hay productos que coincidan con la búsqueda.
       </div>
     </div>
   </div>
@@ -131,8 +107,6 @@ const props = defineProps({
 defineEmits(['insert-product']);
 
 const search = ref('');
-const selectedCategory = ref('Todos');
-const onlyInStock = ref(false);
 
 function formatPrice(val) {
   if (val == null) return '';
@@ -140,26 +114,11 @@ function formatPrice(val) {
   return isNaN(num) ? '' : num.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-// Categorías dinámicas
-const categories = computed(() => {
-  const set = new Set();
-  props.products.forEach(p => {
-    const cat = p.category_name || p.function_name;
-    if (cat) set.add(cat.trim());
-  });
-  return ['Todos', ...Array.from(set).sort()];
-});
-
-// Filtro reactivo
+// Búsqueda instantánea y limpia sin chips que resten altura
 const filtered = computed(() => {
   const q = search.value.toLowerCase().trim();
+  if (!q) return props.products;
   return props.products.filter(p => {
-    if (onlyInStock.value && (!p.stock || p.stock <= 0)) return false;
-    if (selectedCategory.value !== 'Todos') {
-      const cat = p.category_name || p.function_name || '';
-      if (cat.trim().toLowerCase() !== selectedCategory.value.toLowerCase()) return false;
-    }
-    if (!q) return true;
     const name = String(p.name || '').toLowerCase();
     const brand = String(p.brand_name || '').toLowerCase();
     const cat = String(p.category_name || '').toLowerCase();
@@ -178,17 +137,9 @@ const filtered = computed(() => {
   overflow: hidden;
 }
 
-.category-chips-scroll {
-  display: flex;
-  overflow-x: auto;
-  white-space: nowrap;
-  padding-bottom: 4px;
-}
-
 .products-scroll-area {
   overflow-y: auto;
   padding-right: 4px;
-  max-height: calc(100vh - 240px);
 }
 
 .catalog-product-item {
