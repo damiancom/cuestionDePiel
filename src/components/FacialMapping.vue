@@ -1016,13 +1016,13 @@
                 <div class="row items-center justify-between">
                   <div class="text-caption text-weight-bold text-grey-8">LUZ BLANCA DIRECTA</div>
                   <q-badge
-                    v-if="getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_BLANCA_DIRECTA).length > 0"
+                    v-if="getImagesByCategory(FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT).length > 0"
                     color="blue-grey-1"
                     text-color="blue-grey-9"
                     class="text-caption"
                   >
                     <q-icon name="photo_camera" size="11px" class="q-mr-xs" />
-                    {{ getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_BLANCA_DIRECTA).length }}
+                    {{ getImagesByCategory(FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT).length }}
                   </q-badge>
                 </div>
                 <div v-if="summaryBySection.luzBlanca.length > 0" class="row q-gutter-xs q-mt-xs">
@@ -1037,9 +1037,9 @@
                   </q-badge>
                 </div>
                 <div v-else class="text-caption text-grey-5 italic q-mt-xs">Sin hallazgos superficiales registrados</div>
-                <div v-if="getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_BLANCA_DIRECTA).length > 0" class="row q-gutter-xs q-mt-xs">
+                <div v-if="getImagesByCategory(FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT).length > 0" class="row q-gutter-xs q-mt-xs">
                   <img
-                    v-for="img in getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_BLANCA_DIRECTA)"
+                    v-for="img in getImagesByCategory(FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT)"
                     :key="img.id"
                     :src="img.url"
                     :alt="img.note || 'Luz Blanca'"
@@ -1056,13 +1056,13 @@
                 <div class="row items-center justify-between">
                   <div class="text-caption text-weight-bold text-grey-8">LUZ POLARIZADA CRUZADA</div>
                   <q-badge
-                    v-if="getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_POLARIZADA_CRUZADA).length > 0"
+                    v-if="getImagesByCategory(FACIAL_IMAGE_TYPES.CROSS_POLARIZED_LIGHT).length > 0"
                     color="blue-1"
                     text-color="primary"
                     class="text-caption"
                   >
                     <q-icon name="photo_camera" size="11px" class="q-mr-xs" />
-                    {{ getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_POLARIZADA_CRUZADA).length }}
+                    {{ getImagesByCategory(FACIAL_IMAGE_TYPES.CROSS_POLARIZED_LIGHT).length }}
                   </q-badge>
                 </div>
                 <div v-if="summaryBySection.luzPolarizada.length > 0" class="row q-gutter-xs q-mt-xs">
@@ -1077,9 +1077,9 @@
                   </q-badge>
                 </div>
                 <div v-else class="text-caption text-grey-5 italic q-mt-xs">Sin patrones dérmicos registrados</div>
-                <div v-if="getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_POLARIZADA_CRUZADA).length > 0" class="row q-gutter-xs q-mt-xs">
+                <div v-if="getImagesByCategory(FACIAL_IMAGE_TYPES.CROSS_POLARIZED_LIGHT).length > 0" class="row q-gutter-xs q-mt-xs">
                   <img
-                    v-for="img in getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_POLARIZADA_CRUZADA)"
+                    v-for="img in getImagesByCategory(FACIAL_IMAGE_TYPES.CROSS_POLARIZED_LIGHT)"
                     :key="img.id"
                     :src="img.url"
                     :alt="img.note || 'Luz Polarizada'"
@@ -1096,13 +1096,13 @@
                 <div class="row items-center justify-between">
                   <div class="text-caption text-weight-bold text-grey-8">LUZ UV / FLUORESCENCIA WOOD</div>
                   <q-badge
-                    v-if="getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_UV_WOOD).length > 0"
+                    v-if="getImagesByCategory(FACIAL_IMAGE_TYPES.UV_WOOD_LIGHT).length > 0"
                     color="purple-1"
                     text-color="purple-9"
                     class="text-caption"
                   >
                     <q-icon name="photo_camera" size="11px" class="q-mr-xs" />
-                    {{ getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_UV_WOOD).length }}
+                    {{ getImagesByCategory(FACIAL_IMAGE_TYPES.UV_WOOD_LIGHT).length }}
                   </q-badge>
                 </div>
                 <div v-if="summaryBySection.luzUV.length > 0" class="row q-gutter-xs q-mt-xs">
@@ -1117,9 +1117,9 @@
                   </q-badge>
                 </div>
                 <div v-else class="text-caption text-grey-5 italic q-mt-xs">Sin signos de fluorescencia registrados</div>
-                <div v-if="getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_UV_WOOD).length > 0" class="row q-gutter-xs q-mt-xs">
+                <div v-if="getImagesByCategory(FACIAL_IMAGE_TYPES.UV_WOOD_LIGHT).length > 0" class="row q-gutter-xs q-mt-xs">
                   <img
-                    v-for="img in getImagesByCategory(FACIAL_IMAGE_TYPES.LUZ_UV_WOOD)"
+                    v-for="img in getImagesByCategory(FACIAL_IMAGE_TYPES.UV_WOOD_LIGHT)"
                     :key="img.id"
                     :src="img.url"
                     :alt="img.note || 'Luz UV'"
@@ -2110,22 +2110,22 @@ const imageCategoryTypeOptions = imageCategoryDefinitions.map(c => ({
 }));
 
 function normalizeImageCategoryType(rawType) {
-  if (!rawType) return FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT;
+  if (!rawType) return '';
   const val = String(rawType).trim();
-  if (val === '1' || val === 'luzBlanca' || val === 'LUZ_BLANCA_DIRECTA' || val === FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT) {
+  if (val === '1' || val === FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT) {
     return FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT;
   }
-  if (val === '2' || val === 'luzPolarizada' || val === 'LUZ_POLARIZADA_CRUZADA' || val === FACIAL_IMAGE_TYPES.CROSS_POLARIZED_LIGHT) {
+  if (val === '2' || val === FACIAL_IMAGE_TYPES.CROSS_POLARIZED_LIGHT) {
     return FACIAL_IMAGE_TYPES.CROSS_POLARIZED_LIGHT;
   }
-  if (val === '3' || val === 'luzUV' || val === 'LUZ_UV_WOOD' || val === FACIAL_IMAGE_TYPES.UV_WOOD_LIGHT) {
+  if (val === '3' || val === FACIAL_IMAGE_TYPES.UV_WOOD_LIGHT) {
     return FACIAL_IMAGE_TYPES.UV_WOOD_LIGHT;
   }
-  return FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT;
+  return '';
 }
 
 function getImageCategoryMeta(categoryType) {
-  const normalized = normalizeImageCategoryType(categoryType);
+  const normalized = normalizeImageCategoryType(categoryType) || FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT;
   return imageCategoryDefinitions.find(c => c.type === normalized) || imageCategoryDefinitions[0];
 }
 
@@ -2163,6 +2163,7 @@ const pinchStartZoom = ref(1);
 
 function getImagesByCategory(categoryType) {
   const normalized = normalizeImageCategoryType(categoryType);
+  if (!normalized) return [];
   return facialImages.value.filter(img => normalizeImageCategoryType(img.category_type) === normalized);
 }
 
@@ -2519,14 +2520,14 @@ function loadData(data) {
     if (Array.isArray(data.images)) {
       facialImages.value = data.images.map(img => ({
         ...img,
-        category_type: normalizeImageCategoryType(img.category_type)
+        category_type: normalizeImageCategoryType(img.category_type) || FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT
       }));
     } else if (data.images_json) {
       const parsedImages = JSON.parse(data.images_json);
       facialImages.value = Array.isArray(parsedImages)
         ? parsedImages.map(img => ({
             ...img,
-            category_type: normalizeImageCategoryType(img.category_type)
+            category_type: normalizeImageCategoryType(img.category_type) || FACIAL_IMAGE_TYPES.DIRECT_WHITE_LIGHT
           }))
         : [];
     } else {
