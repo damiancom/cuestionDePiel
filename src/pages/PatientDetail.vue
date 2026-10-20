@@ -91,21 +91,6 @@
               <div class="row justify-center">
                 <q-btn label="Editar Perfil" color="primary" class="full-width minimal-btn-save" @click="editing = true" />
               </div>
-
-              <!-- OPCIÓN 3: ACCESO A CATÁLOGO DESDE EL DOSSIER DEL PACIENTE -->
-              <div v-if="catalogAccessMode === 'sidebar' || catalogAccessMode === 'all'" class="q-mt-sm">
-                <q-btn
-                  outline
-                  color="primary"
-                  icon="inventory_2"
-                  label="Catálogo y Precios"
-                  class="full-width minimal-btn"
-                  @click="openGlobalCatalog"
-                >
-                  <q-badge color="blue-1" text-color="primary" class="q-ml-xs text-weight-bold" :label="catalogProducts.length" />
-                  <q-tooltip>Consultar precios y stock de productos</q-tooltip>
-                </q-btn>
-              </div>
             </div>
 
             <div v-else class="full-width">
@@ -239,19 +224,17 @@
               <q-tab v-if="hasPhone" name="mensajes" label="Mensajes" />
             </q-tabs>
 
-            <!-- OPCIÓN 1: BOTÓN EN BARRA DE PESTAÑAS (DERECHA) -->
+            <!-- ACCESO A CATÁLOGO DE PRODUCTOS (SOLO ÍCONO) -->
             <q-btn
-              v-if="catalogAccessMode === 'tabs' || catalogAccessMode === 'all'"
               flat
+              round
               dense
               color="primary"
               icon="inventory_2"
-              :label="$q.screen.gt.sm ? 'Catálogo / Precios' : ''"
-              class="minimal-btn q-px-sm q-ml-xs"
+              class="q-ml-xs"
               @click="openGlobalCatalog"
             >
-              <q-badge color="blue-1" text-color="primary" class="q-ml-xs text-weight-bold" :label="catalogProducts.length" />
-              <q-tooltip>Consultar precios y stock de productos</q-tooltip>
+              <q-tooltip>Catálogo de productos, precios y stock</q-tooltip>
             </q-btn>
           </div>
           <q-separator />
@@ -775,26 +758,6 @@
       </q-card>
     </q-dialog>
 
-    <!-- OPCIÓN 2: BOTÓN FLOTANTE (FAB) IDEAL PARA TABLET HORIZONTAL (PULGAR DERECHO) -->
-    <q-page-sticky
-      v-if="catalogAccessMode === 'fab' || catalogAccessMode === 'all'"
-      position="bottom-right"
-      :offset="[24, 24]"
-      style="z-index: 1500;"
-    >
-      <q-btn
-        fab
-        color="primary"
-        icon="inventory_2"
-        :label="$q.screen.gt.sm ? 'Catálogo' : ''"
-        class="shadow-4 minimal-btn"
-        @click="openGlobalCatalog"
-      >
-        <q-badge floating color="amber-8" text-color="white" class="text-weight-bold" :label="catalogProducts.length" />
-        <q-tooltip anchor="center left" self="center right">Catálogo de productos y precios (Tablet)</q-tooltip>
-      </q-btn>
-    </q-page-sticky>
-
     <!-- DRAWER LATERAL DERECHO DE CATÁLOGO (CONSULTA GLOBAL DESDE CUALQUIER PESTAÑA) -->
     <q-dialog
       v-model="showGlobalCatalogDrawer"
@@ -839,7 +802,6 @@ import axios from "axios";
 import { useQuasar } from "quasar";
 import RoutineGenerator from '../components/RoutineGenerator.vue';
 import RoutineProductCatalog from '../components/RoutineProductCatalog.vue';
-import { catalogAccessMode } from '../composables/useCatalogAccessMode';
 import SkinEvaluationForm from '../components/SkinEvaluationForm.vue';
 import HealthSafetyHabitsForm from '../components/HealthSafetyHabitsForm.vue';
 import FacialMapping from '../components/FacialMapping.vue';
