@@ -13,13 +13,8 @@
       </div>
     </div>
 
-    <!-- CONTENEDOR PRINCIPAL: RUTINA + PANEL LATERAL DE CATÁLOGO (DESKTOP) -->
-    <div class="row q-col-gutter-lg items-start">
-      
-      <!-- COLUMNA PRINCIPAL: EDITOR DE RUTINA (DÍA + NOCHE + NOTAS) -->
-      <div :class="showCatalog && $q.screen.gt.md ? 'col-12 col-lg-8' : 'col-12'">
-        
-        <div class="routine-card" id="routine-preview">
+    <!-- CONTENEDOR PRINCIPAL DE RUTINA -->
+    <div class="routine-card" id="routine-preview">
           
           <!-- Encabezado para impresión / PDF -->
           <div class="routine-header q-mb-lg pdf-only">
@@ -348,79 +343,6 @@
           </div>
 
         </div> <!-- /routine-card -->
-      </div>
-
-      <!-- ============================================================= -->
-      <!-- COLUMNA DERECHA: PANEL LATERAL DE CATÁLOGO (DESKTOP)          -->
-      <!-- ============================================================= -->
-      <div
-        v-if="showCatalog && $q.screen.gt.md"
-        class="col-12 col-lg-4 catalog-side-col"
-      >
-        <q-card flat class="catalog-panel-card q-pa-md minimal-card">
-          <!-- Cabecera del panel de catálogo -->
-          <div class="row items-center justify-between q-mb-sm">
-            <div class="row items-center no-wrap">
-              <q-icon name="inventory_2" size="20px" color="primary" class="q-mr-xs" />
-              <div class="text-subtitle1 text-weight-bold text-primary">
-                Catálogo de Productos
-              </div>
-            </div>
-            <q-btn flat round dense icon="close" size="sm" color="grey-7" @click="showCatalog = false">
-              <q-tooltip>Cerrar catálogo</q-tooltip>
-            </q-btn>
-          </div>
-
-          <div class="text-caption text-grey-7 q-mb-sm">
-            Consulta precios y stock para ofrecer al paciente o inserta directamente a la rutina.
-          </div>
-
-          <!-- Componente de búsqueda y lista de productos -->
-          <div class="catalog-content-wrapper">
-            <RoutineProductCatalog
-              :products="availableProducts"
-              :active-step="activeStep"
-              @insert-product="handleInsertFromCatalog"
-            />
-          </div>
-        </q-card>
-      </div>
-
-    </div>
-
-    <!-- ============================================================= -->
-    <!-- DIÁLOGO / DRAWER LATERAL DE CATÁLOGO (MÓVIL Y TABLET)        -->
-    <!-- ============================================================= -->
-    <q-dialog
-      v-if="$q.screen.lt.lg"
-      v-model="showCatalog"
-      position="right"
-      maximized
-      transition-show="slide-left"
-      transition-hide="slide-right"
-    >
-      <q-card class="column full-height catalog-mobile-drawer" style="max-width: 480px; width: 95vw;">
-        <!-- Cabecera Drawer Móvil -->
-        <q-card-section class="row items-center justify-between q-pb-sm bg-grey-1 border-bottom">
-          <div class="row items-center no-wrap">
-            <q-icon name="inventory_2" size="22px" color="primary" class="q-mr-sm" />
-            <div class="text-subtitle1 text-weight-bold text-primary">
-              Catálogo de Productos
-            </div>
-          </div>
-          <q-btn flat round dense icon="close" color="grey-8" v-close-popup />
-        </q-card-section>
-
-        <!-- Contenido Drawer Móvil -->
-        <q-card-section class="col q-pa-md scroll">
-          <RoutineProductCatalog
-            :products="availableProducts"
-            :active-step="activeStep"
-            @insert-product="handleInsertFromCatalog"
-          />
-        </q-card-section>
-      </q-card>
-    </q-dialog>
 
     <!-- MENÚ POPUP SELECTOR RÁPIDO PARA UN PASO ESPECÍFICO -->
     <q-menu
@@ -934,7 +856,8 @@ defineExpose({
   isDirty,
   updateSnapshot,
   toggleCatalog,
-  showCatalog
+  showCatalog,
+  handleInsertFromCatalog
 });
 </script>
 

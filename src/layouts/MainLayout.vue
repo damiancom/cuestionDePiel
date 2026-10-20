@@ -28,10 +28,56 @@
             <span>Panel Dermatocosmiátrico</span>
           </div>
         </q-toolbar-title>
-        <q-space v-else />
+        <q-space />
 
-        <!-- Acciones de Usuario a la Derecha -->
+        <!-- Acciones a la Derecha: Selector de Acceso a Catálogo y Usuario -->
         <div class="row items-center q-gutter-sm q-mr-md">
+          <!-- Selector para probar opciones de acceso al catálogo en tablet/desktop -->
+          <q-btn-dropdown
+            flat
+            dense
+            color="primary"
+            icon="tune"
+            :label="$q.screen.gt.sm ? `Catálogo: ${catalogModeLabels[catalogAccessMode]}` : ''"
+            class="minimal-btn"
+            auto-close
+          >
+            <q-list dense style="min-width: 260px;">
+              <q-item-label header class="text-caption text-weight-bold text-primary">
+                PROBAR ACCESO A PRODUCTOS EN FICHA
+              </q-item-label>
+              <q-item clickable @click="catalogAccessMode = 'tabs'" :active="catalogAccessMode === 'tabs'">
+                <q-item-section avatar style="min-width: 32px;"><q-icon name="tab" size="18px" color="primary" /></q-item-section>
+                <q-item-section>
+                  <q-item-label class="text-weight-medium">1. En Barra de Pestañas</q-item-label>
+                  <q-item-label caption>Botón a la derecha de las tabs clínicas</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item clickable @click="catalogAccessMode = 'fab'" :active="catalogAccessMode === 'fab'">
+                <q-item-section avatar style="min-width: 32px;"><q-icon name="smart_button" size="18px" color="primary" /></q-item-section>
+                <q-item-section>
+                  <q-item-label class="text-weight-medium">2. Botón Flotante (FAB)</q-item-label>
+                  <q-item-label caption>Esquina inferior derecha (pulgar en tablet)</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item clickable @click="catalogAccessMode = 'sidebar'" :active="catalogAccessMode === 'sidebar'">
+                <q-item-section avatar style="min-width: 32px;"><q-icon name="view_sidebar" size="18px" color="primary" /></q-item-section>
+                <q-item-section>
+                  <q-item-label class="text-weight-medium">3. En Dossier del Paciente</q-item-label>
+                  <q-item-label caption>Botón en columna lateral izquierda</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-separator class="q-my-xs" />
+              <q-item clickable @click="catalogAccessMode = 'all'" :active="catalogAccessMode === 'all'">
+                <q-item-section avatar style="min-width: 32px;"><q-icon name="visibility" size="18px" color="positive" /></q-item-section>
+                <q-item-section>
+                  <q-item-label class="text-weight-bold text-primary">Ver Todas las Opciones</q-item-label>
+                  <q-item-label caption>Habilita las 3 para comparar ergonomía</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+
           <q-avatar size="32px" class="q-mr-xs" v-if="$q.screen.gt.xs">
             <img src="/user-avatar.png" alt="Usuario" />
           </q-avatar>
@@ -210,9 +256,17 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { logout } from '../services/auth';
+import { catalogAccessMode } from '../composables/useCatalogAccessMode';
 
 const router = useRouter();
 const leftDrawerOpen = ref(true);
+
+const catalogModeLabels = {
+  tabs: 'Pestañas',
+  fab: 'Flotante (FAB)',
+  sidebar: 'Dossier',
+  all: 'Todas (Comparar)'
+};
 
 async function handleLogout() {
   await logout();

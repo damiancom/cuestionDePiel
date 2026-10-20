@@ -91,6 +91,21 @@
               <div class="row justify-center">
                 <q-btn label="Editar Perfil" color="primary" class="full-width minimal-btn-save" @click="editing = true" />
               </div>
+
+              <!-- OPCIÓN 3: ACCESO A CATÁLOGO DESDE EL DOSSIER DEL PACIENTE -->
+              <div v-if="catalogAccessMode === 'sidebar' || catalogAccessMode === 'all'" class="q-mt-sm">
+                <q-btn
+                  outline
+                  color="primary"
+                  icon="inventory_2"
+                  label="Catálogo y Precios"
+                  class="full-width minimal-btn"
+                  @click="openGlobalCatalog"
+                >
+                  <q-badge color="blue-1" text-color="primary" class="q-ml-xs text-weight-bold" :label="catalogProducts.length" />
+                  <q-tooltip>Consultar precios y stock de productos</q-tooltip>
+                </q-btn>
+              </div>
             </div>
 
             <div v-else class="full-width">
@@ -223,6 +238,21 @@
               <q-tab name="consentimiento" label="Consentimiento" />
               <q-tab v-if="hasPhone" name="mensajes" label="Mensajes" />
             </q-tabs>
+
+            <!-- OPCIÓN 1: BOTÓN EN BARRA DE PESTAÑAS (DERECHA) -->
+            <q-btn
+              v-if="catalogAccessMode === 'tabs' || catalogAccessMode === 'all'"
+              flat
+              dense
+              color="primary"
+              icon="inventory_2"
+              :label="$q.screen.gt.sm ? 'Catálogo / Precios' : ''"
+              class="minimal-btn q-px-sm q-ml-xs"
+              @click="openGlobalCatalog"
+            >
+              <q-badge color="blue-1" text-color="primary" class="q-ml-xs text-weight-bold" :label="catalogProducts.length" />
+              <q-tooltip>Consultar precios y stock de productos</q-tooltip>
+            </q-btn>
           </div>
           <q-separator />
           
@@ -374,7 +404,7 @@
                 <q-btn flat label="Cancelar" @click="cancelarRutina" color="grey-8" class="minimal-btn" />
                 <q-btn label="Guardar Rutina" color="primary" @click="guardarRutina" class="minimal-btn-save" />
                 <q-btn outline :label="$q.screen.gt.xs ? 'Descargar' : ''" color="primary" icon="download" @click="descargarRutina" class="minimal-btn" />
-                <q-btn outline :label="$q.screen.gt.xs ? 'Catálogo' : ''" color="primary" icon="inventory_2" @click="routineEditor?.toggleCatalog?.()" class="minimal-btn">
+                <q-btn outline :label="$q.screen.gt.xs ? 'Catálogo' : ''" color="primary" icon="inventory_2" @click="openGlobalCatalog" class="minimal-btn">
                   <q-tooltip>Abrir catálogo de productos para consultar precios y stock</q-tooltip>
                 </q-btn>
               </div>
@@ -745,19 +775,114 @@
       </q-card>
     </q-dialog>
 
+    <!-- OPCIÓN 2: BOTÓN FLOTANTE (FAB) IDEAL PARA TABLET HORIZONTAL (PULGAR DERECHO) -->
+    <q-page-sticky
+      v-if="catalogAccessMode === 'fab' || catalogAccessMode === 'all'"
+      position="bottom-right"
+      :offset="[24, 24]"
+      style="z-index: 1500;"
+    >
+      <q-btn
+        fab
+        color="primary"
+        icon="inventory_2"
+        :label="$q.screen.gt.sm ? 'Catálogo' : ''"
+        class="shadow-4 minimal-btn"
+        @click="openGlobalCatalog"
+      >
+        <q-badge floating color="amber-8" text-color="white" class="text-weight-bold" :label="catalogProducts.length" />
+        <q-tooltip anchor="center left" self="center right">Catálogo de productos y precios (Tablet)</q-tooltip>
+      </q-btn>
+    </q-page-sticky>
+
+    <!-- DRAWER LATERAL DERECHO DE CATÁLOGO (CONSULTA GLOBAL DESDE CUALQUIER PESTAÑA) -->
+    <q-dialog
+      v-model="showGlobalCatalogDrawer"
+      position="right"
+      maximized
+      transition-show="slide-left"
+      transition-hide="slide-right"
+    >
+      <q-card class="column full-height catalog-global-drawer" style="max-width: 440px; width: 92vw;">
+        <!-- Cabecera Drawer -->
+        <q-card-section class="row items-center justify-between q-py-sm bg-grey-1 border-bottom">
+          <div class="row items-center no-wrap">
+            <q-icon name="inventory_2" size="22px" color="primary" class="q-mr-sm" />
+            <div>
+              <div class="text-subtitle1 text-weight-bold text-primary">
+                Catálogo de Productos
+              </div>
+              <div class="text-caption text-grey-7">Consulta rápida de precios y stock</div>
+            </div>
+          </div>
+          <q-btn flat round dense icon="close" color="grey-8" v-close-popup />
+        </q-card-section>
+
+        <!-- Contenido con Buscador, Chips y Lista -->
+        <q-card-section class="col q-pa-md scroll">
+          <RoutineProductCatalog
+            :products="catalogProducts"
+            @insert-product="handleGlobalCatalogInsert"
+          />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
   </q-page>
 </template>
 
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
-import { PATIENTS_URL, ROUTINES_ENDPOINT, SessionsAPI, ConsentsAPI, SkinEvaluationAPI, HealthSafetyHabitsAPI, FacialAnalysisAPI, WhatsappMessagesAPI } from "../services/api";
+import { PATIENTS_URL, ROUTINES_ENDPOINT, SessionsAPI, ConsentsAPI, SkinEvaluationAPI, HealthSafetyHabitsAPI, FacialAnalysisAPI, WhatsappMessagesAPI, RecommendedProductsAPI } from "../services/api";
 import axios from "axios";
 import { useQuasar } from "quasar";
 import RoutineGenerator from '../components/RoutineGenerator.vue';
+import RoutineProductCatalog from '../components/RoutineProductCatalog.vue';
+import { catalogAccessMode } from '../composables/useCatalogAccessMode';
 import SkinEvaluationForm from '../components/SkinEvaluationForm.vue';
 import HealthSafetyHabitsForm from '../components/HealthSafetyHabitsForm.vue';
 import FacialMapping from '../components/FacialMapping.vue';
+
+// Catálogo Global en Ficha del Paciente (para acceso rápido desde cualquier pestaña / tablet)
+const catalogProducts = ref([]);
+const showGlobalCatalogDrawer = ref(false);
+
+const openGlobalCatalog = () => {
+  showGlobalCatalogDrawer.value = true;
+};
+
+const loadCatalogProducts = async () => {
+  try {
+    const res = await RecommendedProductsAPI.list();
+    catalogProducts.value = res.data || [];
+  } catch (e) {
+    console.error('Error cargando catálogo en ficha:', e);
+  }
+};
+
+function formatPrice(val) {
+  if (val == null) return '';
+  const num = typeof val === 'number' ? val : parseFloat(val);
+  return isNaN(num) ? '' : num.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+const handleGlobalCatalogInsert = ({ product, targetPeriod }) => {
+  if (tab.value === 'rutina' && routineEditor.value) {
+    routineEditor.value.handleInsertFromCatalog?.({ product, targetPeriod });
+  } else {
+    const priceText = product.selling_price != null
+      ? `$${formatPrice(product.selling_price)}`
+      : 'Sin precio asignado';
+    $q.notify({
+      type: 'info',
+      message: `${product.brand_name} ${product.name} — ${priceText} (${product.stock || 0} en stock)`,
+      icon: 'inventory_2',
+      position: 'top',
+      timeout: 3500
+    });
+  }
+};
 
 const skinEvaluationFormRef = ref(null);
 const skinEvaluationBackup = ref(null);
@@ -1318,6 +1443,7 @@ onMounted(async () => {
     await fetchSessions(route.params.id);
     await fetchConsentStatus(route.params.id);
     await fetchWhatsappMessages();
+    await loadCatalogProducts();
   }
 });
 
