@@ -38,6 +38,9 @@
                   <div class="text-caption text-grey-8">
                     <span v-if="calculateAge(patient.birth_date) !== ''">{{ calculateAge(patient.birth_date) }} años • </span>{{ formatDate(patient.birth_date) }}
                   </div>
+                  <q-badge v-if="birthdayStatus" :color="birthdayStatus.color" :text-color="birthdayStatus.textColor" class="q-mt-xs q-pa-xs">
+                    <q-icon :name="birthdayStatus.icon" size="14px" class="q-mr-xs" />{{ birthdayStatus.label }}
+                  </q-badge>
                 </div>
 
                 <!-- Bloque Contacto -->
@@ -309,6 +312,9 @@
                       <div class="text-caption text-grey-8">
                         <span v-if="calculateAge(patient.birth_date) !== ''">{{ calculateAge(patient.birth_date) }} años • </span>{{ formatDate(patient.birth_date) }}
                       </div>
+                      <q-badge v-if="birthdayStatus" :color="birthdayStatus.color" :text-color="birthdayStatus.textColor" class="q-mt-xs q-pa-xs">
+                        <q-icon :name="birthdayStatus.icon" size="14px" class="q-mr-xs" />{{ birthdayStatus.label }}
+                      </q-badge>
                     </div>
 
                     <!-- Bloque Contacto -->
@@ -1868,6 +1874,33 @@ function calculateAge(date) {
   if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < birth.getDate())) age--;
   return age >= 0 ? age : '';
 }
+
+// Estado del cumpleaños: ventana de 7 días antes/después
+const BIRTHDAY_WINDOW_DAYS = 7;
+const birthdayStatus = computed(() => {
+  const str = String(patient.birth_date || '').trim().substring(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(str)) return null;
+  const [, m, d] = str.split('-').map(Number);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const msDay = 86400000;
+  // Cumpleaños más cercano (año anterior, actual o siguiente)
+  let diff = null;
+  for (const y of [today.getFullYear() - 1, today.getFullYear(), today.getFullYear() + 1]) {
+    const delta = Math.round((new Date(y, m - 1, d) - today) / msDay);
+    if (diff === null || Math.abs(delta) < Math.abs(diff)) diff = delta;
+  }
+  if (diff === 0) return { label: '¡Hoy es su cumpleaños!', color: 'positive', textColor: 'white', icon: 'cake' };
+  if (diff === 1) return { label: '¡Cumple mañana!', color: 'orange', textColor: 'white', icon: 'notifications_active' };
+  if (diff > 0 && diff <= BIRTHDAY_WINDOW_DAYS) {
+    return { label: `Cumple en ${diff} ${diff === 1 ? 'día' : 'días'}`, color: 'warning', textColor: 'black', icon: 'event' };
+  }
+  if (diff < 0 && diff >= -BIRTHDAY_WINDOW_DAYS) {
+    const n = -diff;
+    return { label: `Cumplió hace ${n} ${n === 1 ? 'día' : 'días'}`, color: 'grey-6', textColor: 'white', icon: 'history' };
+  }
+  return null;
+});
 
 // ─── Rutina Facial (endpoint propio /routines) ───
 const routineState = reactive({
