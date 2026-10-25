@@ -38,9 +38,21 @@
                   <div class="text-caption text-grey-8">
                     <span v-if="calculateAge(patient.birth_date) !== ''">{{ calculateAge(patient.birth_date) }} años • </span>{{ formatDate(patient.birth_date) }}
                   </div>
-                  <q-badge v-if="birthdayStatus" :color="birthdayStatus.color" :text-color="birthdayStatus.textColor" class="q-mt-xs q-pa-xs">
-                    <q-icon :name="birthdayStatus.icon" size="14px" class="q-mr-xs" />{{ birthdayStatus.label }}
-                  </q-badge>
+                  <!-- Etiquetas de estado (Cumpleaños y Consentimiento) -->
+                  <div class="row justify-center q-gutter-xs q-mt-xs">
+                    <q-badge v-if="birthdayStatus" :color="birthdayStatus.color" :text-color="birthdayStatus.textColor" class="q-pa-xs">
+                      <q-icon :name="birthdayStatus.icon" size="14px" class="q-mr-xs" />{{ birthdayStatus.label }}
+                    </q-badge>
+                    <q-badge
+                      v-if="consentStatus"
+                      :color="consentStatus.is_signed ? 'positive' : (consentStatus.signed_version ? 'warning' : 'negative')"
+                      class="q-pa-xs cursor-pointer text-caption text-weight-bold"
+                      @click="handleTabChange('consentimiento')"
+                    >
+                      <q-icon :name="consentStatus.is_signed ? 'verified' : (consentStatus.signed_version ? 'update' : 'draw')" class="q-mr-xs" />
+                      {{ consentStatus.is_signed ? `Consentimiento OK (v${consentStatus.signed_version})` : (consentStatus.signed_version ? 'Consentimiento Desactualizado' : 'Falta Consentimiento') }}
+                    </q-badge>
+                  </div>
                 </div>
 
                 <!-- Bloque Contacto -->
@@ -80,16 +92,6 @@
                 </div>
               </div>
 
-              <div class="q-my-sm text-center" v-if="consentStatus">
-                <q-badge
-                  :color="consentStatus.is_signed ? 'positive' : (consentStatus.signed_version ? 'warning' : 'negative')"
-                  class="q-pa-xs cursor-pointer text-caption text-weight-bold"
-                  @click="handleTabChange('consentimiento')"
-                >
-                  <q-icon :name="consentStatus.is_signed ? 'verified' : (consentStatus.signed_version ? 'update' : 'draw')" class="q-mr-xs" />
-                  {{ consentStatus.is_signed ? `Consentimiento OK (v${consentStatus.signed_version})` : (consentStatus.signed_version ? 'Consentimiento Desactualizado' : 'Falta Consentimiento') }}
-                </q-badge>
-              </div>
               <div class="text-caption text-grey-6 text-center q-my-sm">ID: {{ patient.id }}</div>
               <div class="row justify-center">
                 <q-btn label="Editar Perfil" color="primary" class="full-width minimal-btn-save" @click="editing = true" />
@@ -312,9 +314,21 @@
                       <div class="text-caption text-grey-8">
                         <span v-if="calculateAge(patient.birth_date) !== ''">{{ calculateAge(patient.birth_date) }} años • </span>{{ formatDate(patient.birth_date) }}
                       </div>
-                      <q-badge v-if="birthdayStatus" :color="birthdayStatus.color" :text-color="birthdayStatus.textColor" class="q-mt-xs q-pa-xs">
-                        <q-icon :name="birthdayStatus.icon" size="14px" class="q-mr-xs" />{{ birthdayStatus.label }}
-                      </q-badge>
+                      <!-- Etiquetas de estado (Cumpleaños y Consentimiento) -->
+                      <div class="row justify-center q-gutter-xs q-mt-xs">
+                        <q-badge v-if="birthdayStatus" :color="birthdayStatus.color" :text-color="birthdayStatus.textColor" class="q-pa-xs">
+                          <q-icon :name="birthdayStatus.icon" size="14px" class="q-mr-xs" />{{ birthdayStatus.label }}
+                        </q-badge>
+                        <q-badge
+                          v-if="consentStatus"
+                          :color="consentStatus.is_signed ? 'positive' : (consentStatus.signed_version ? 'warning' : 'negative')"
+                          class="q-pa-xs cursor-pointer text-caption text-weight-bold"
+                          @click="handleTabChange('consentimiento')"
+                        >
+                          <q-icon :name="consentStatus.is_signed ? 'verified' : (consentStatus.signed_version ? 'update' : 'draw')" class="q-mr-xs" />
+                          {{ consentStatus.is_signed ? `Consentimiento OK (v${consentStatus.signed_version})` : (consentStatus.signed_version ? 'Consentimiento Desactualizado' : 'Falta Consentimiento') }}
+                        </q-badge>
+                      </div>
                     </div>
 
                     <!-- Bloque Contacto -->
@@ -352,16 +366,6 @@
                       <div class="text-caption text-grey-8 q-mb-xs">Profesión: {{ patient.profession || '-' }}</div>
                       <div v-if="patient.additional_note" class="text-caption text-grey-8" style="white-space: pre-wrap;">Nota: {{ patient.additional_note }}</div>
                     </div>
-                  </div>
-                  <div class="q-my-sm text-center" v-if="consentStatus">
-                    <q-badge
-                      :color="consentStatus.is_signed ? 'positive' : (consentStatus.signed_version ? 'warning' : 'negative')"
-                      class="q-pa-xs cursor-pointer text-caption text-weight-bold"
-                      @click="handleTabChange('consentimiento')"
-                    >
-                      <q-icon :name="consentStatus.is_signed ? 'verified' : (consentStatus.signed_version ? 'update' : 'draw')" class="q-mr-xs" />
-                      {{ consentStatus.is_signed ? `Consentimiento OK (v${consentStatus.signed_version})` : (consentStatus.signed_version ? 'Consentimiento Desactualizado' : 'Falta Consentimiento') }}
-                    </q-badge>
                   </div>
                   <div class="text-caption text-grey-6 text-center q-mb-md">ID: {{ patient.id }}</div>
                   <div class="row justify-center">
@@ -1891,13 +1895,13 @@ const birthdayStatus = computed(() => {
     if (diff === null || Math.abs(delta) < Math.abs(diff)) diff = delta;
   }
   if (diff === 0) return { label: '¡Hoy es su cumpleaños!', color: 'positive', textColor: 'white', icon: 'cake' };
-  if (diff === 1) return { label: '¡Cumple mañana!', color: 'orange', textColor: 'white', icon: 'notifications_active' };
+  if (diff === 1) return { label: '¡Su cumpleaños es mañana!', color: 'orange', textColor: 'white', icon: 'notifications_active' };
   if (diff > 0 && diff <= BIRTHDAY_WINDOW_DAYS) {
-    return { label: `Cumple en ${diff} ${diff === 1 ? 'día' : 'días'}`, color: 'warning', textColor: 'black', icon: 'event' };
+    return { label: `Su cumpleaños es en ${diff} días`, color: 'warning', textColor: 'black', icon: 'event' };
   }
   if (diff < 0 && diff >= -BIRTHDAY_WINDOW_DAYS) {
     const n = -diff;
-    return { label: `Cumplió hace ${n} ${n === 1 ? 'día' : 'días'}`, color: 'grey-6', textColor: 'white', icon: 'history' };
+    return { label: `Su cumpleaños fue hace ${n} ${n === 1 ? 'día' : 'días'}`, color: 'grey-6', textColor: 'white', icon: 'history' };
   }
   return null;
 });
